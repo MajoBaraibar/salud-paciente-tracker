@@ -14,6 +14,8 @@ import NuevoPaciente from "./pages/NuevoPaciente";
 import Mensajes from "./pages/Mensajes";
 import Anuncios from "./pages/Anuncios";
 import Calendario from "./pages/Calendario";
+import Requisiciones from "./pages/Requisiciones";
+import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +26,21 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const user = localStorage.getItem("user");
+  const isAdmin = user ? JSON.parse(user).role === "admin" : false;
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (!isAdmin) {
+    return <Navigate to="/dashboard" replace />;
   }
   
   return <>{children}</>;
@@ -109,6 +126,24 @@ const App = () => (
               <ProtectedRoute>
                 <Calendario />
               </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/requisiciones" 
+            element={
+              <ProtectedRoute>
+                <Requisiciones />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/admin" 
+            element={
+              <AdminRoute>
+                <Admin />
+              </AdminRoute>
             } 
           />
           

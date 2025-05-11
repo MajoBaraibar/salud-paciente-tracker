@@ -8,9 +8,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EntradaHistorial } from "@/components/EntradaHistorial";
 import { NuevaEntradaForm } from "@/components/NuevaEntradaForm";
+import { EmergencyContact } from "@/components/patient/EmergencyContact";
 import { getPacienteById, getHistorialPaciente } from "../data/mockData";
 import { calcularEdad } from "@/lib/utils";
-import { FileText, Plus, User, Edit, Trash2, CalendarDays, FileUpload } from "lucide-react";
+import { FileText, Plus, User, Edit, Trash2, CalendarDays, FileUpload, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
@@ -47,6 +48,14 @@ const DetallesPaciente = () => {
     }
     return { role: "medico" };
   });
+  
+  // Mock emergency contact data
+  const mockEmergencyContact = {
+    name: "María López García",
+    relationship: "familiar",
+    phone: "+34 612 345 678",
+    email: "maria.lopez@ejemplo.com"
+  };
   
   if (!pacienteOriginal) {
     return (
@@ -150,7 +159,7 @@ const DetallesPaciente = () => {
             
             {/* Pestañas */}
             <Tabs defaultValue="perfil" value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-2 w-full mb-6">
+              <TabsList className="grid grid-cols-3 w-full mb-6">
                 <TabsTrigger value="perfil" className="flex gap-2 items-center">
                   <User size={16} />
                   <span>Información personal</span>
@@ -158,6 +167,10 @@ const DetallesPaciente = () => {
                 <TabsTrigger value="historial" className="flex gap-2 items-center">
                   <FileText size={16} />
                   <span>Historial médico</span>
+                </TabsTrigger>
+                <TabsTrigger value="contacto" className="flex gap-2 items-center">
+                  <Phone size={16} />
+                  <span>Contacto de emergencia</span>
                 </TabsTrigger>
               </TabsList>
               
@@ -244,6 +257,14 @@ const DetallesPaciente = () => {
                     </Button>
                   </div>
                 )}
+              </TabsContent>
+              
+              {/* Contenido del Contacto de Emergencia */}
+              <TabsContent value="contacto">
+                <EmergencyContact 
+                  patientId={pacienteOriginal.id} 
+                  initialContact={mockEmergencyContact} 
+                />
               </TabsContent>
             </Tabs>
           </div>
