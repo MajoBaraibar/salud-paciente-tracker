@@ -6,7 +6,7 @@ import {
   SidebarContent,
   SidebarMenu,
   SidebarMenuItem,
-  SidebarMenuLink,
+  SidebarMenuButton,
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import {
@@ -43,22 +43,31 @@ export const AppSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarMenu>
-          <SidebarMenuItem active={location.pathname === "/dashboard"}>
-            <SidebarMenuLink onClick={() => navigate("/dashboard")}>
+          <SidebarMenuItem>
+            <SidebarMenuButton 
+              isActive={location.pathname === "/dashboard"}
+              onClick={() => navigate("/dashboard")}
+            >
               <Home size={20} />
               <span>Inicio</span>
-            </SidebarMenuLink>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           
-          <SidebarMenuItem active={location.pathname === "/pacientes" || location.pathname.includes("/pacientes/")}>
-            <SidebarMenuLink onClick={() => navigate("/pacientes")}>
+          <SidebarMenuItem>
+            <SidebarMenuButton 
+              isActive={location.pathname === "/pacientes" || location.pathname.includes("/pacientes/")}
+              onClick={() => navigate("/pacientes")}
+            >
               <Users size={20} />
               <span>Pacientes</span>
-            </SidebarMenuLink>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           
-          <SidebarMenuItem active={location.pathname === "/calendario"}>
-            <SidebarMenuLink onClick={() => navigate("/calendario")}>
+          <SidebarMenuItem>
+            <SidebarMenuButton 
+              isActive={location.pathname === "/calendario"}
+              onClick={() => navigate("/calendario")}
+            >
               <Calendar size={20} />
               <span>Calendario</span>
               {notifications.calendario > 0 && (
@@ -66,11 +75,14 @@ export const AppSidebar = () => {
                   {notifications.calendario}
                 </span>
               )}
-            </SidebarMenuLink>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           
-          <SidebarMenuItem active={location.pathname === "/mensajes"}>
-            <SidebarMenuLink onClick={() => navigate("/mensajes")}>
+          <SidebarMenuItem>
+            <SidebarMenuButton 
+              isActive={location.pathname === "/mensajes"}
+              onClick={() => navigate("/mensajes")}
+            >
               <MessageSquare size={20} />
               <span>Mensajes</span>
               {notifications.mensajes > 0 && (
@@ -78,11 +90,14 @@ export const AppSidebar = () => {
                   {notifications.mensajes}
                 </span>
               )}
-            </SidebarMenuLink>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           
-          <SidebarMenuItem active={location.pathname === "/anuncios"}>
-            <SidebarMenuLink onClick={() => navigate("/anuncios")}>
+          <SidebarMenuItem>
+            <SidebarMenuButton 
+              isActive={location.pathname === "/anuncios"}
+              onClick={() => navigate("/anuncios")}
+            >
               <FileText size={20} />
               <span>Tablón de anuncios</span>
               {notifications.anuncios > 0 && (
@@ -90,21 +105,27 @@ export const AppSidebar = () => {
                   {notifications.anuncios}
                 </span>
               )}
-            </SidebarMenuLink>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           
-          <SidebarMenuItem active={location.pathname === "/requisiciones"}>
-            <SidebarMenuLink onClick={() => navigate("/requisiciones")}>
+          <SidebarMenuItem>
+            <SidebarMenuButton 
+              isActive={location.pathname === "/requisiciones"}
+              onClick={() => navigate("/requisiciones")}
+            >
               <Package size={20} />
               <span>Requisiciones</span>
-            </SidebarMenuLink>
+            </SidebarMenuButton>
           </SidebarMenuItem>
           
-          <SidebarMenuItem active={location.pathname === "/admin"}>
-            <SidebarMenuLink onClick={() => navigate("/admin")}>
+          <SidebarMenuItem>
+            <SidebarMenuButton 
+              isActive={location.pathname === "/admin"}
+              onClick={() => navigate("/admin")}
+            >
               <Settings size={20} />
               <span>Administración</span>
-            </SidebarMenuLink>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
