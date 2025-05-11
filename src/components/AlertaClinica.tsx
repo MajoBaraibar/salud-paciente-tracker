@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { AlertTriangle, FileMedical, PillIcon, ExternalLink } from "lucide-react";
+import { AlertTriangle, File, PillIcon, ExternalLink } from "lucide-react";
 
 interface Alerta {
   id: string;
@@ -25,7 +25,7 @@ export const AlertaClinica: React.FC<AlertaClinicaProps> = ({ alerta }) => {
       case "alergia":
         return <AlertTriangle className="h-5 w-5 text-red-500" />;
       case "estudio":
-        return <FileMedical className="h-5 w-5 text-blue-500" />;
+        return <File className="h-5 w-5 text-blue-500" />;
       case "medicacion":
         return <PillIcon className="h-5 w-5 text-green-500" />;
       default:

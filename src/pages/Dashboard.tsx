@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -47,25 +46,25 @@ const Dashboard = () => {
       id: "1",
       pacienteId: pacientesMock[0].id,
       pacienteNombre: `${pacientesMock[0].nombre} ${pacientesMock[0].apellido}`,
-      tipo: "alergia",
+      tipo: "alergia" as const,
       descripcion: "Alergia severa a penicilina",
-      prioridad: "alta",
+      prioridad: "alta" as const,
     },
     {
       id: "2",
       pacienteId: pacientesMock[1].id,
       pacienteNombre: `${pacientesMock[1].nombre} ${pacientesMock[1].apellido}`,
-      tipo: "estudio",
+      tipo: "estudio" as const,
       descripcion: "Resultados críticos en hemograma",
-      prioridad: "alta",
+      prioridad: "alta" as const,
     },
     {
       id: "3",
       pacienteId: pacientesMock[2].id,
       pacienteNombre: `${pacientesMock[2].nombre} ${pacientesMock[2].apellido}`,
-      tipo: "medicacion",
+      tipo: "medicacion" as const,
       descripcion: "Medicamento pendiente de administrar",
-      prioridad: "media",
+      prioridad: "media" as const,
     },
   ];
   
