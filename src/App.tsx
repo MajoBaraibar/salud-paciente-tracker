@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -28,84 +29,86 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          
-          {/* Ruta raíz redirige a dashboard o login según autenticación */}
-          <Route 
-            path="/" 
-            element={
-              localStorage.getItem("user") ? 
-                <Navigate to="/dashboard" replace /> : 
-                <Index />
-            } 
-          />
-          
-          {/* Rutas protegidas */}
-          <Route 
-            path="/dashboard" 
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route 
-            path="/pacientes" 
-            element={
-              <ProtectedRoute>
-                <Pacientes />
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route 
-            path="/pacientes/:id" 
-            element={
-              <ProtectedRoute>
-                <DetallesPaciente />
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route 
-            path="/pacientes/nuevo" 
-            element={
-              <ProtectedRoute>
-                <NuevoPaciente />
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route 
-            path="/mensajes" 
-            element={
-              <ProtectedRoute>
-                <Mensajes />
-              </ProtectedRoute>
-            } 
-          />
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            
+            {/* Ruta raíz redirige a dashboard o login según autenticación */}
+            <Route 
+              path="/" 
+              element={
+                localStorage.getItem("user") ? 
+                  <Navigate to="/dashboard" replace /> : 
+                  <Index />
+              } 
+            />
+            
+            {/* Rutas protegidas */}
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/pacientes" 
+              element={
+                <ProtectedRoute>
+                  <Pacientes />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/pacientes/:id" 
+              element={
+                <ProtectedRoute>
+                  <DetallesPaciente />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/pacientes/nuevo" 
+              element={
+                <ProtectedRoute>
+                  <NuevoPaciente />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route 
+              path="/mensajes" 
+              element={
+                <ProtectedRoute>
+                  <Mensajes />
+                </ProtectedRoute>
+              } 
+            />
 
-          <Route 
-            path="/anuncios" 
-            element={
-              <ProtectedRoute>
-                <Anuncios />
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            <Route 
+              path="/anuncios" 
+              element={
+                <ProtectedRoute>
+                  <Anuncios />
+                </ProtectedRoute>
+              } 
+            />
+            
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </TooltipProvider>
       </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+    </QueryClientProvider>
+  </React.StrictMode>
 );
 
 export default App;
