@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Pacientes from "./pages/Pacientes";
 import DetallesPaciente from "./pages/DetallesPaciente";
 import NuevoPaciente from "./pages/NuevoPaciente";
+import Mensajes from "./pages/Mensajes";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -77,6 +78,15 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <NuevoPaciente />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/mensajes" 
+            element={
+              <ProtectedRoute>
+                <Mensajes />
               </ProtectedRoute>
             } 
           />
