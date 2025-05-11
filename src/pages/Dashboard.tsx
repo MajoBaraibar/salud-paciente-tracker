@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -9,13 +10,12 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { PacienteResumen } from "@/components/PacienteResumen";
 import { AlertaClinica } from "@/components/AlertaClinica";
 import { pacientesMock } from "../data/mockData";
 import { calcularEdad } from "@/lib/utils";
 import { 
   Calendar, Users, FileText, AlertTriangle, 
-  Activity, BarChart, User, Bell 
+  Activity, BarChart, User, Bell, CreditCard
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -37,9 +37,6 @@ const Dashboard = () => {
     setLoading(false);
   }, [navigate]);
   
-  // Pacientes recientes (últimos 5)
-  const pacientesRecientes = pacientesMock.slice(0, 5);
-  
   // Alertas clínicas mock
   const alertasClinicas = [
     {
@@ -49,6 +46,7 @@ const Dashboard = () => {
       tipo: "alergia" as const,
       descripcion: "Alergia severa a penicilina",
       prioridad: "alta" as const,
+      condicion: "Insuficiencia renal"
     },
     {
       id: "2",
@@ -57,6 +55,7 @@ const Dashboard = () => {
       tipo: "estudio" as const,
       descripcion: "Resultados críticos en hemograma",
       prioridad: "alta" as const,
+      condicion: "Diabetes no controlada"
     },
     {
       id: "3",
@@ -65,6 +64,7 @@ const Dashboard = () => {
       tipo: "medicacion" as const,
       descripcion: "Medicamento pendiente de administrar",
       prioridad: "media" as const,
+      condicion: "Hipertensión arterial"
     },
   ];
   
@@ -190,15 +190,15 @@ const Dashboard = () => {
             </div>
             
             {/* Pestañas principales */}
-            <Tabs defaultValue="pacientes">
+            <Tabs defaultValue="pacientes-criticos">
               <TabsList className="mb-6 bg-white border">
-                <TabsTrigger value="pacientes" className="data-[state=active]:bg-health-50">
-                  <Users className="h-4 w-4 mr-2" />
-                  Pacientes recientes
-                </TabsTrigger>
-                <TabsTrigger id="alertas-tab" value="alertas" className="data-[state=active]:bg-health-50">
+                <TabsTrigger value="pacientes-criticos" className="data-[state=active]:bg-health-50">
                   <AlertTriangle className="h-4 w-4 mr-2" />
                   Pacientes críticos
+                </TabsTrigger>
+                <TabsTrigger id="alertas-tab" value="alertas" className="data-[state=active]:bg-health-50">
+                  <Users className="h-4 w-4 mr-2" />
+                  Condiciones médicas
                 </TabsTrigger>
                 <TabsTrigger value="actividad" className="data-[state=active]:bg-health-50">
                   <Activity className="h-4 w-4 mr-2" />
@@ -206,19 +206,32 @@ const Dashboard = () => {
                 </TabsTrigger>
               </TabsList>
               
-              {/* Contenido de pacientes recientes */}
-              <TabsContent value="pacientes" className="mt-0">
+              {/* Contenido de pacientes críticos */}
+              <TabsContent value="pacientes-criticos" className="mt-0">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-xl">Pacientes recientes</CardTitle>
+                    <CardTitle className="text-xl">Pacientes críticos</CardTitle>
                     <CardDescription>
-                      Los últimos pacientes que han sido atendidos
+                      Pacientes que requieren atención especial
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {pacientesRecientes.map((paciente) => (
-                        <PacienteResumen key={paciente.id} paciente={paciente} />
+                      {alertasClinicas.map((alerta) => (
+                        <div key={alerta.id} className="p-4 border rounded-lg flex items-center justify-between">
+                          <div>
+                            <p className="font-medium">{alerta.pacienteNombre}</p>
+                            <p className="text-sm text-muted-foreground">{alerta.condicion}</p>
+                          </div>
+                          <Badge className={
+                            alerta.prioridad === "alta" ? "bg-red-100 text-red-700" :
+                            alerta.prioridad === "media" ? "bg-amber-100 text-amber-700" :
+                            "bg-blue-100 text-blue-700"
+                          }>
+                            {alerta.prioridad === "alta" ? "Crítico" : 
+                             alerta.prioridad === "media" ? "Requiere atención" : "Estable"}
+                          </Badge>
+                        </div>
                       ))}
                       
                       <div className="text-center pt-4">
@@ -235,9 +248,9 @@ const Dashboard = () => {
               <TabsContent value="alertas" className="mt-0">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-xl">Pacientes críticos</CardTitle>
+                    <CardTitle className="text-xl">Condiciones médicas</CardTitle>
                     <CardDescription>
-                      Pacientes que requieren atención inmediata
+                      Detalle de condiciones que requieren seguimiento
                     </CardDescription>
                   </CardHeader>
                   <CardContent>

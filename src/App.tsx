@@ -15,7 +15,7 @@ import Mensajes from "./pages/Mensajes";
 import Anuncios from "./pages/Anuncios";
 import Calendario from "./pages/Calendario";
 import Requisiciones from "./pages/Requisiciones";
-import Admin from "./pages/Admin";
+import Pagos from "./pages/Pagos";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +40,22 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   }
   
   if (!isAdmin) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+const MedicoEnfermeraRoute = ({ children }: { children: React.ReactNode }) => {
+  const user = localStorage.getItem("user");
+  const role = user ? JSON.parse(user).role : "";
+  const isMedicoOrEnfermera = role === "medico" || role === "enfermera";
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (!isMedicoOrEnfermera && role !== "admin") {
     return <Navigate to="/dashboard" replace />;
   }
   
@@ -78,9 +94,9 @@ const App = () => (
           <Route 
             path="/pacientes" 
             element={
-              <ProtectedRoute>
+              <MedicoEnfermeraRoute>
                 <Pacientes />
-              </ProtectedRoute>
+              </MedicoEnfermeraRoute>
             } 
           />
           
@@ -96,9 +112,9 @@ const App = () => (
           <Route 
             path="/pacientes/nuevo" 
             element={
-              <ProtectedRoute>
+              <AdminRoute>
                 <NuevoPaciente />
-              </ProtectedRoute>
+              </AdminRoute>
             } 
           />
           
@@ -139,10 +155,10 @@ const App = () => (
           />
           
           <Route 
-            path="/admin" 
+            path="/pagos" 
             element={
               <AdminRoute>
-                <Admin />
+                <Pagos />
               </AdminRoute>
             } 
           />

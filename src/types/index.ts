@@ -20,6 +20,7 @@ export interface EntradaHistorial {
   diagnostico: string;
   tratamiento: string;
   notas: string;
+  tipo: "interno" | "externo"; // Interno para personal médico, externo para familiar
 }
 
 // Type alias for Paciente to use in components
@@ -59,9 +60,22 @@ export interface PaymentType {
 export interface UserType {
   id: string;
   email: string;
-  role: "admin" | "medico" | "enfermera";
+  role: "admin" | "medico" | "enfermera" | "familiar";
   nombre?: string;
   apellido?: string;
   especialidad?: string;
   imagenUrl?: string;
+  // Solo para tipo "familiar"
+  pacienteId?: string;
+}
+
+export interface FamiliarType {
+  id: string;
+  userId: string;
+  pacienteId: string;
+  nombre: string;
+  apellido: string;
+  relacion: string;
+  telefono: string;
+  email: string;
 }

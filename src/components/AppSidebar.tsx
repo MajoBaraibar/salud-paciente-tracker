@@ -14,9 +14,9 @@ import {
   Calendar,
   MessageSquare,
   FileText,
-  Settings,
   Package,
   Home,
+  CreditCard,
 } from "lucide-react";
 
 export const AppSidebar = () => {
@@ -29,6 +29,10 @@ export const AppSidebar = () => {
     calendario: 1,
     anuncios: 2,
   };
+
+  // Get current user role
+  const currentUser = JSON.parse(localStorage.getItem("user") || '{"role":"medico"}');
+  const userRole = currentUser.role;
 
   return (
     <Sidebar>
@@ -53,15 +57,17 @@ export const AppSidebar = () => {
             </SidebarMenuButton>
           </SidebarMenuItem>
           
-          <SidebarMenuItem>
-            <SidebarMenuButton 
-              isActive={location.pathname === "/pacientes" || location.pathname.includes("/pacientes/")}
-              onClick={() => navigate("/pacientes")}
-            >
-              <Users size={20} />
-              <span>Pacientes</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {(userRole === "admin" || userRole === "medico" || userRole === "enfermera") && (
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                isActive={location.pathname === "/pacientes" || location.pathname.includes("/pacientes/")}
+                onClick={() => navigate("/pacientes")}
+              >
+                <Users size={20} />
+                <span>Pacientes</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
           
           <SidebarMenuItem>
             <SidebarMenuButton 
@@ -108,25 +114,29 @@ export const AppSidebar = () => {
             </SidebarMenuButton>
           </SidebarMenuItem>
           
-          <SidebarMenuItem>
-            <SidebarMenuButton 
-              isActive={location.pathname === "/requisiciones"}
-              onClick={() => navigate("/requisiciones")}
-            >
-              <Package size={20} />
-              <span>Requisiciones</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {(userRole === "admin" || userRole === "medico" || userRole === "enfermera") && (
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                isActive={location.pathname === "/requisiciones"}
+                onClick={() => navigate("/requisiciones")}
+              >
+                <Package size={20} />
+                <span>Requisiciones</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
           
-          <SidebarMenuItem>
-            <SidebarMenuButton 
-              isActive={location.pathname === "/admin"}
-              onClick={() => navigate("/admin")}
-            >
-              <Settings size={20} />
-              <span>Administración</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {userRole === "admin" && (
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                isActive={location.pathname === "/pagos"}
+                onClick={() => navigate("/pagos")}
+              >
+                <CreditCard size={20} />
+                <span>Pagos</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t p-4 text-xs text-muted-foreground text-center">

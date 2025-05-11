@@ -22,12 +22,16 @@ type Evento = {
   fecha: Date;
   horaInicio: string;
   horaFin: string;
-  tipo: "consulta" | "cirugia" | "reunion" | "otro";
+  tipo: "consulta" | "visita" | "reunion" | "otro";
   pacienteId?: string;
   pacienteNombre?: string;
   descripcion: string;
   participantes?: string[];
 }
+
+// Current user role for conditional rendering
+const currentUser = JSON.parse(localStorage.getItem("user") || '{"role":"medico"}');
+const userRole = currentUser.role;
 
 // Datos de ejemplo
 const eventosMock: Evento[] = [
@@ -45,15 +49,15 @@ const eventosMock: Evento[] = [
   },
   {
     id: "2",
-    titulo: "Cirugía programada - Carlos Rodríguez",
+    titulo: "Visita familiar - Carlos Rodríguez",
     fecha: new Date(2025, 4, 14, 8, 0),
     horaInicio: "08:00",
-    horaFin: "12:00",
-    tipo: "cirugia",
+    horaFin: "09:00",
+    tipo: "visita",
     pacienteId: "3",
     pacienteNombre: "Carlos Rodríguez",
-    descripcion: "Apendicectomía",
-    participantes: ["Dr. Martínez", "Dra. López", "Enf. Sánchez"]
+    descripcion: "Visita de hija",
+    participantes: ["Familiar: Ana Rodríguez"]
   },
   {
     id: "3",
@@ -62,7 +66,7 @@ const eventosMock: Evento[] = [
     horaInicio: "14:00",
     horaFin: "15:00",
     tipo: "reunion",
-    descripcion: "Revisión de protocolos de emergencia",
+    descripcion: "Revisión de protocolos de atención",
     participantes: ["Todo el personal"]
   }
 ];
@@ -106,7 +110,7 @@ export default function Calendario() {
       fecha: nuevoEvento.fecha!,
       horaInicio: nuevoEvento.horaInicio!,
       horaFin: nuevoEvento.horaFin!,
-      tipo: nuevoEvento.tipo as "consulta" | "cirugia" | "reunion" | "otro",
+      tipo: nuevoEvento.tipo as "consulta" | "visita" | "reunion" | "otro",
       descripcion: nuevoEvento.descripcion || "",
       pacienteId: nuevoEvento.pacienteId,
       pacienteNombre: nuevoEvento.pacienteNombre,
@@ -124,8 +128,8 @@ export default function Calendario() {
     switch (tipo) {
       case "consulta":
         return "bg-blue-100 text-blue-800 border-blue-300";
-      case "cirugia":
-        return "bg-red-100 text-red-800 border-red-300";
+      case "visita":
+        return "bg-green-100 text-green-800 border-green-300";
       case "reunion":
         return "bg-purple-100 text-purple-800 border-purple-300";
       default:
@@ -196,10 +200,26 @@ export default function Calendario() {
                       <SelectValue placeholder="Seleccione el tipo de evento" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="consulta">Consulta</SelectItem>
-                      <SelectItem value="cirugia">Cirugía</SelectItem>
-                      <SelectItem value="reunion">Reunión</SelectItem>
-                      <SelectItem value="otro">Otro</SelectItem>
+                      {userRole === "admin" && (
+                        <>
+                          <SelectItem value="visita">Visita familiar</SelectItem>
+                          <SelectItem value="reunion">Reunión</SelectItem>
+                          <SelectItem value="otro">Otro</SelectItem>
+                        </>
+                      )}
+                      {(userRole === "medico" || userRole === "enfermera") && (
+                        <>
+                          <SelectItem value="consulta">Consulta</SelectItem>
+                          <SelectItem value="reunion">Reunión</SelectItem>
+                          <SelectItem value="otro">Otro</SelectItem>
+                        </>
+                      )}
+                      {userRole === "familiar" && (
+                        <>
+                          <SelectItem value="visita">Visita familiar</SelectItem>
+                          <SelectItem value="otro">Otro</SelectItem>
+                        </>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -249,7 +269,7 @@ export default function Calendario() {
                 <h4 className="font-medium">Tipos de eventos:</h4>
                 <div className="flex flex-wrap gap-2">
                   <Badge className="bg-blue-100 text-blue-800 border-blue-300">Consulta</Badge>
-                  <Badge className="bg-red-100 text-red-800 border-red-300">Cirugía</Badge>
+                  <Badge className="bg-green-100 text-green-800 border-green-300">Visita</Badge>
                   <Badge className="bg-purple-100 text-purple-800 border-purple-300">Reunión</Badge>
                   <Badge className="bg-gray-100 text-gray-800 border-gray-300">Otro</Badge>
                 </div>
