@@ -1,5 +1,5 @@
 
-import { Home, User, Search, Plus, MessageSquare } from "lucide-react";
+import { Home, User, Search, Plus, MessageSquare, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   Sidebar,
@@ -47,6 +47,14 @@ export function AppSidebar() {
                   <Link to="/mensajes" className="flex items-center gap-3">
                     <MessageSquare size={18} />
                     <span>Mensajes</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/anuncios" className="flex items-center gap-3">
+                    <Bell size={18} />
+                    <span>Tablón de Anuncios</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

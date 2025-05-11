@@ -11,6 +11,7 @@ import Pacientes from "./pages/Pacientes";
 import DetallesPaciente from "./pages/DetallesPaciente";
 import NuevoPaciente from "./pages/NuevoPaciente";
 import Mensajes from "./pages/Mensajes";
+import Anuncios from "./pages/Anuncios";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -87,6 +88,15 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Mensajes />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/anuncios" 
+            element={
+              <ProtectedRoute>
+                <Anuncios />
               </ProtectedRoute>
             } 
           />
