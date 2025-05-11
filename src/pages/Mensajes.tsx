@@ -13,7 +13,7 @@ import {
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { MessageSquare, MessageSquareText, Search, Send, User, Plus } from "lucide-react";
+import { MessageSquare, MessageSquareText, Search, Send, Plus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
@@ -307,12 +307,6 @@ const Mensajes = () => {
   const seleccionarConversacion = (conversacionId: string) => {
     setConversacionActiva(conversacionId);
     marcarConversacionComoLeida(conversacionId);
-  };
-
-  // Encontrar nombre de usuario por ID
-  const encontrarNombreUsuario = (id: string): string => {
-    const usuario = usuarios.find(user => user.id === id);
-    return usuario ? usuario.nombre : "Usuario desconocido";
   };
 
   // Formatear fecha
