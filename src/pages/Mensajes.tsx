@@ -58,6 +58,15 @@ const Mensajes = () => {
   const [busqueda, setBusqueda] = useState("");
   const { toast } = useToast();
 
+  // Obtener el usuario actual del localStorage (simulado)
+  const usuarioActualId = "1"; // Simulando que el usuario actual es el Dr. Juan Pérez
+  
+  // Encontrar nombre de usuario por ID - MOVIDO AQUÍ ANTES DE SU USO
+  const encontrarNombreUsuario = (id: string): string => {
+    const usuario = usuarios.find(user => user.id === id);
+    return usuario ? usuario.nombre : "Usuario desconocido";
+  };
+
   // Simular carga de mensajes, usuarios y conversaciones
   useEffect(() => {
     // Datos de ejemplo para usuarios
@@ -151,9 +160,6 @@ const Mensajes = () => {
     setMensajes(mensajesMock);
     setConversaciones(conversacionesMock);
   }, []);
-
-  // Obtener el usuario actual del localStorage (simulado)
-  const usuarioActualId = "1"; // Simulando que el usuario actual es el Dr. Juan Pérez
 
   // Filtrar mensajes de la conversación activa
   const mensajesConversacion = conversacionActiva
