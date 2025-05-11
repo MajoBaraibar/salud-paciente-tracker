@@ -13,6 +13,7 @@ import DetallesPaciente from "./pages/DetallesPaciente";
 import NuevoPaciente from "./pages/NuevoPaciente";
 import Mensajes from "./pages/Mensajes";
 import Anuncios from "./pages/Anuncios";
+import Calendario from "./pages/Calendario";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,86 +30,93 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const App = () => (
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            
-            {/* Ruta raíz redirige a dashboard o login según autenticación */}
-            <Route 
-              path="/" 
-              element={
-                localStorage.getItem("user") ? 
-                  <Navigate to="/dashboard" replace /> : 
-                  <Index />
-              } 
-            />
-            
-            {/* Rutas protegidas */}
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } 
-            />
-            
-            <Route 
-              path="/pacientes" 
-              element={
-                <ProtectedRoute>
-                  <Pacientes />
-                </ProtectedRoute>
-              } 
-            />
-            
-            <Route 
-              path="/pacientes/:id" 
-              element={
-                <ProtectedRoute>
-                  <DetallesPaciente />
-                </ProtectedRoute>
-              } 
-            />
-            
-            <Route 
-              path="/pacientes/nuevo" 
-              element={
-                <ProtectedRoute>
-                  <NuevoPaciente />
-                </ProtectedRoute>
-              } 
-            />
-            
-            <Route 
-              path="/mensajes" 
-              element={
-                <ProtectedRoute>
-                  <Mensajes />
-                </ProtectedRoute>
-              } 
-            />
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          
+          {/* Ruta raíz redirige a dashboard o login según autenticación */}
+          <Route 
+            path="/" 
+            element={
+              localStorage.getItem("user") ? 
+                <Navigate to="/dashboard" replace /> : 
+                <Index />
+            } 
+          />
+          
+          {/* Rutas protegidas */}
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/pacientes" 
+            element={
+              <ProtectedRoute>
+                <Pacientes />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/pacientes/:id" 
+            element={
+              <ProtectedRoute>
+                <DetallesPaciente />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/pacientes/nuevo" 
+            element={
+              <ProtectedRoute>
+                <NuevoPaciente />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/mensajes" 
+            element={
+              <ProtectedRoute>
+                <Mensajes />
+              </ProtectedRoute>
+            } 
+          />
 
-            <Route 
-              path="/anuncios" 
-              element={
-                <ProtectedRoute>
-                  <Anuncios />
-                </ProtectedRoute>
-              } 
-            />
-            
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </TooltipProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
-  </React.StrictMode>
+          <Route 
+            path="/anuncios" 
+            element={
+              <ProtectedRoute>
+                <Anuncios />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/calendario" 
+            element={
+              <ProtectedRoute>
+                <Calendario />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </TooltipProvider>
+    </BrowserRouter>
+  </QueryClientProvider>
 );
 
 export default App;

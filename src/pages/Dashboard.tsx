@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -130,7 +131,10 @@ const Dashboard = () => {
             
             {/* Resumen estadístico */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card>
+              <Card 
+                className="cursor-pointer transition-all hover:shadow-md" 
+                onClick={() => navigate("/pacientes")}
+              >
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -144,7 +148,10 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card 
+                className="cursor-pointer transition-all hover:shadow-md" 
+                onClick={() => navigate("/calendario")}
+              >
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -158,7 +165,10 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card 
+                className="cursor-pointer transition-all hover:shadow-md"
+                onClick={() => document.getElementById('alertas-tab')?.click()}
+              >
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -172,11 +182,14 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card 
+                className="cursor-pointer transition-all hover:shadow-md"
+                onClick={() => navigate("/anuncios")}
+              >
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Historias nuevas</p>
+                      <p className="text-sm text-muted-foreground">Anuncios nuevos</p>
                       <p className="text-3xl font-bold">8</p>
                     </div>
                     <div className="p-2 bg-purple-100 rounded-full">
@@ -194,7 +207,7 @@ const Dashboard = () => {
                   <Users className="h-4 w-4 mr-2" />
                   Pacientes recientes
                 </TabsTrigger>
-                <TabsTrigger value="alertas" className="data-[state=active]:bg-health-50">
+                <TabsTrigger id="alertas-tab" value="alertas" className="data-[state=active]:bg-health-50">
                   <AlertTriangle className="h-4 w-4 mr-2" />
                   Alertas clínicas
                 </TabsTrigger>
