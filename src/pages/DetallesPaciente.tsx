@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -184,10 +183,6 @@ const DetallesPaciente = () => {
                         <p>{pacienteEditado?.nombre} {pacienteEditado?.apellido}</p>
                       </div>
                       <div>
-                        <h3 className="text-sm font-medium text-muted-foreground">Número de identificación</h3>
-                        <p>{pacienteEditado?.numeroIdentificacion}</p>
-                      </div>
-                      <div>
                         <h3 className="text-sm font-medium text-muted-foreground">Fecha de nacimiento</h3>
                         <p>{pacienteEditado?.fechaNacimiento ? new Date(pacienteEditado.fechaNacimiento).toLocaleDateString('es-ES') : ""}</p>
                       </div>
@@ -198,14 +193,6 @@ const DetallesPaciente = () => {
                       <div>
                         <h3 className="text-sm font-medium text-muted-foreground">Género</h3>
                         <p>{pacienteEditado?.genero}</p>
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium text-muted-foreground">Teléfono</h3>
-                        <p>{pacienteEditado?.telefono}</p>
-                      </div>
-                      <div className="md:col-span-2">
-                        <h3 className="text-sm font-medium text-muted-foreground">Dirección</h3>
-                        <p>{pacienteEditado?.direccion}</p>
                       </div>
                     </div>
                   </CardContent>

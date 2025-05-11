@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -93,13 +92,6 @@ const Dashboard = () => {
               </div>
               
               <div className="flex items-center space-x-4">
-                <div className="relative">
-                  <Bell className="h-6 w-6 text-muted-foreground cursor-pointer" />
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    3
-                  </span>
-                </div>
-                
                 <div className="flex items-center space-x-3">
                   <Avatar>
                     <AvatarImage src="" />
@@ -131,10 +123,7 @@ const Dashboard = () => {
             
             {/* Resumen estadístico */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <Card 
-                className="cursor-pointer transition-all hover:shadow-md" 
-                onClick={() => navigate("/pacientes")}
-              >
+              <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
@@ -172,7 +161,7 @@ const Dashboard = () => {
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Alertas activas</p>
+                      <p className="text-sm text-muted-foreground">Pacientes críticos</p>
                       <p className="text-3xl font-bold">{alertasClinicas.length}</p>
                     </div>
                     <div className="p-2 bg-red-100 rounded-full">
@@ -209,7 +198,7 @@ const Dashboard = () => {
                 </TabsTrigger>
                 <TabsTrigger id="alertas-tab" value="alertas" className="data-[state=active]:bg-health-50">
                   <AlertTriangle className="h-4 w-4 mr-2" />
-                  Alertas clínicas
+                  Pacientes críticos
                 </TabsTrigger>
                 <TabsTrigger value="actividad" className="data-[state=active]:bg-health-50">
                   <Activity className="h-4 w-4 mr-2" />
@@ -246,9 +235,9 @@ const Dashboard = () => {
               <TabsContent value="alertas" className="mt-0">
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-xl">Alertas clínicas</CardTitle>
+                    <CardTitle className="text-xl">Pacientes críticos</CardTitle>
                     <CardDescription>
-                      Alertas prioritarias que requieren atención
+                      Pacientes que requieren atención inmediata
                     </CardDescription>
                   </CardHeader>
                   <CardContent>

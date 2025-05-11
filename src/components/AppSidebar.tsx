@@ -1,161 +1,116 @@
 
-import { useState, useEffect } from "react";
-import { Home, User, Search, Plus, MessageSquare, Bell, Calendar, ShoppingCart, Settings } from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
+  SidebarContent,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger
+  SidebarMenuLink,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
+import {
+  Users,
+  Calendar,
+  MessageSquare,
+  FileText,
+  Settings,
+  Package,
+  Home,
+} from "lucide-react";
 
-export function AppSidebar() {
+export const AppSidebar = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const [currentUser, setCurrentUser] = useState<{ role: string } | null>(null);
-  
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      setCurrentUser(JSON.parse(user));
-    }
-  }, []);
-  
+
+  // Mock notification counts
+  const notifications = {
+    mensajes: 3,
+    calendario: 1,
+    anuncios: 2,
+  };
+
   return (
-    <Sidebar className="border-r border-border">
-      <SidebarHeader className="px-6 py-3 border-b">
-        <h2 className="text-xl font-bold text-health-700">Salud Pacientes</h2>
+    <Sidebar>
+      <SidebarHeader className="flex justify-center items-center h-16 border-b">
+        <button 
+          onClick={() => navigate("/dashboard")}
+          className="text-xl font-bold text-health-700 flex items-center"
+        >
+          <span className="bg-health-100 text-health-700 p-1.5 rounded mr-2">HC</span>
+          HealthCenter
+        </button>
       </SidebarHeader>
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Principal</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link 
-                    to="/dashboard" 
-                    className={`flex items-center gap-3 ${location.pathname === "/dashboard" ? "text-health-700 font-medium" : ""}`}
-                  >
-                    <Home size={18} />
-                    <span>Inicio</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link 
-                    to="/pacientes" 
-                    className={`flex items-center gap-3 ${location.pathname === "/pacientes" ? "text-health-700 font-medium" : ""}`}
-                  >
-                    <User size={18} />
-                    <span>Pacientes</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link 
-                    to="/calendario" 
-                    className={`flex items-center gap-3 ${location.pathname === "/calendario" ? "text-health-700 font-medium" : ""}`}
-                  >
-                    <Calendar size={18} />
-                    <span>Calendario</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link 
-                    to="/mensajes" 
-                    className={`flex items-center gap-3 ${location.pathname === "/mensajes" ? "text-health-700 font-medium" : ""}`}
-                  >
-                    <MessageSquare size={18} />
-                    <span>Mensajes</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link 
-                    to="/anuncios" 
-                    className={`flex items-center gap-3 ${location.pathname === "/anuncios" ? "text-health-700 font-medium" : ""}`}
-                  >
-                    <Bell size={18} />
-                    <span>Tablón de Anuncios</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-        
-        <SidebarGroup>
-          <SidebarGroupLabel>Acciones</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link 
-                    to="/pacientes/nuevo" 
-                    className={`flex items-center gap-3 ${location.pathname === "/pacientes/nuevo" ? "text-health-700 font-medium" : ""}`}
-                  >
-                    <Plus size={18} />
-                    <span>Nuevo Paciente</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link 
-                    to="/requisiciones" 
-                    className={`flex items-center gap-3 ${location.pathname === "/requisiciones" ? "text-health-700 font-medium" : ""}`}
-                  >
-                    <ShoppingCart size={18} />
-                    <span>Requisiciones</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link 
-                    to="/buscar" 
-                    className={`flex items-center gap-3 ${location.pathname === "/buscar" ? "text-health-700 font-medium" : ""}`}
-                  >
-                    <Search size={18} />
-                    <span>Buscar</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              
-              {currentUser?.role === "admin" && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <Link 
-                      to="/admin" 
-                      className={`flex items-center gap-3 ${location.pathname === "/admin" ? "text-health-700 font-medium" : ""}`}
-                    >
-                      <Settings size={18} />
-                      <span>Administración</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+        <SidebarMenu>
+          <SidebarMenuItem active={location.pathname === "/dashboard"}>
+            <SidebarMenuLink onClick={() => navigate("/dashboard")}>
+              <Home size={20} />
+              <span>Inicio</span>
+            </SidebarMenuLink>
+          </SidebarMenuItem>
+          
+          <SidebarMenuItem active={location.pathname === "/pacientes" || location.pathname.includes("/pacientes/")}>
+            <SidebarMenuLink onClick={() => navigate("/pacientes")}>
+              <Users size={20} />
+              <span>Pacientes</span>
+            </SidebarMenuLink>
+          </SidebarMenuItem>
+          
+          <SidebarMenuItem active={location.pathname === "/calendario"}>
+            <SidebarMenuLink onClick={() => navigate("/calendario")}>
+              <Calendar size={20} />
+              <span>Calendario</span>
+              {notifications.calendario > 0 && (
+                <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {notifications.calendario}
+                </span>
               )}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+            </SidebarMenuLink>
+          </SidebarMenuItem>
+          
+          <SidebarMenuItem active={location.pathname === "/mensajes"}>
+            <SidebarMenuLink onClick={() => navigate("/mensajes")}>
+              <MessageSquare size={20} />
+              <span>Mensajes</span>
+              {notifications.mensajes > 0 && (
+                <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {notifications.mensajes}
+                </span>
+              )}
+            </SidebarMenuLink>
+          </SidebarMenuItem>
+          
+          <SidebarMenuItem active={location.pathname === "/anuncios"}>
+            <SidebarMenuLink onClick={() => navigate("/anuncios")}>
+              <FileText size={20} />
+              <span>Tablón de anuncios</span>
+              {notifications.anuncios > 0 && (
+                <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {notifications.anuncios}
+                </span>
+              )}
+            </SidebarMenuLink>
+          </SidebarMenuItem>
+          
+          <SidebarMenuItem active={location.pathname === "/requisiciones"}>
+            <SidebarMenuLink onClick={() => navigate("/requisiciones")}>
+              <Package size={20} />
+              <span>Requisiciones</span>
+            </SidebarMenuLink>
+          </SidebarMenuItem>
+          
+          <SidebarMenuItem active={location.pathname === "/admin"}>
+            <SidebarMenuLink onClick={() => navigate("/admin")}>
+              <Settings size={20} />
+              <span>Administración</span>
+            </SidebarMenuLink>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="px-6 py-3 border-t">
-        <div className="text-xs text-muted-foreground">
-          Casa de Salud &copy; 2025
-        </div>
+      <SidebarFooter className="border-t p-4 text-xs text-muted-foreground text-center">
+        v1.0 © 2025 HealthCenter
       </SidebarFooter>
     </Sidebar>
   );
-}
+};
