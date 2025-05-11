@@ -1,8 +1,8 @@
-
 import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { RequisitionForm } from "@/components/requisitions/RequisitionForm";
+import { InventoryList } from "@/components/requisitions/InventoryList";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -77,7 +77,7 @@ const Requisiciones = () => {
         <AppSidebar />
         <div className="flex-1 p-8">
           <div className="max-w-4xl mx-auto">
-            <Tabs defaultValue={currentUser.role === "admin" ? "requisitions-list" : "new-requisition"}>
+            <Tabs defaultValue={currentUser.role === "admin" ? "requisitions-list" : "inventory-list"}>
               <div className="mb-6 flex items-center justify-between">
                 <div>
                   <h1 className="text-3xl font-bold text-health-700">Requisiciones</h1>
@@ -93,12 +93,20 @@ const Requisiciones = () => {
                     </>
                   ) : (
                     <>
+                      <TabsTrigger value="inventory-list">Lista existente</TabsTrigger>
                       <TabsTrigger value="new-requisition">Nueva solicitud</TabsTrigger>
                       <TabsTrigger value="my-requisitions">Mis solicitudes</TabsTrigger>
                     </>
                   )}
                 </TabsList>
               </div>
+              
+              {/* New inventory list tab */}
+              {currentUser.role !== "admin" && (
+                <TabsContent value="inventory-list">
+                  <InventoryList />
+                </TabsContent>
+              )}
               
               {currentUser.role === "admin" ? (
                 <>

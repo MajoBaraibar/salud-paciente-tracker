@@ -68,7 +68,8 @@ export const historialMock: EntradaHistorial[] = [
     motivoConsulta: "Dolor de cabeza persistente",
     diagnostico: "Migraña",
     tratamiento: "Sumatriptán 50mg, una tableta cada 8 horas según necesidad",
-    notas: "Paciente refiere síntomas que comenzaron hace aproximadamente 2 semanas"
+    notas: "Paciente refiere síntomas que comenzaron hace aproximadamente 2 semanas",
+    tipo: "interno"
   },
   {
     id: "h2",
@@ -78,7 +79,8 @@ export const historialMock: EntradaHistorial[] = [
     motivoConsulta: "Seguimiento de migraña",
     diagnostico: "Migraña en remisión parcial",
     tratamiento: "Continuar con Sumatriptán según necesidad, agregar amitriptilina 25mg por la noche",
-    notas: "Mejora notable pero persisten episodios ocasionales"
+    notas: "Mejora notable pero persisten episodios ocasionales",
+    tipo: "interno"
   },
   {
     id: "h3",
@@ -88,7 +90,8 @@ export const historialMock: EntradaHistorial[] = [
     motivoConsulta: "Dolor en rodilla derecha",
     diagnostico: "Osteoartritis temprana",
     tratamiento: "Ibuprofeno 400mg cada 8 horas, fisioterapia 2 veces por semana",
-    notas: "Se recomienda bajar de peso para disminuir la carga articular"
+    notas: "Se recomienda bajar de peso para disminuir la carga articular",
+    tipo: "interno"
   },
   {
     id: "h4",
@@ -98,7 +101,8 @@ export const historialMock: EntradaHistorial[] = [
     motivoConsulta: "Revisión anual",
     diagnostico: "Salud general buena",
     tratamiento: "Mantener estilo de vida saludable, suplemento de vitamina D",
-    notas: "Se recomiendan análisis de sangre en 6 meses"
+    notas: "Se recomiendan análisis de sangre en 6 meses",
+    tipo: "externo"
   },
   {
     id: "h5",
@@ -108,7 +112,8 @@ export const historialMock: EntradaHistorial[] = [
     motivoConsulta: "Presión arterial elevada",
     diagnostico: "Hipertensión estadio 1",
     tratamiento: "Enalapril 10mg diarios, dieta baja en sodio",
-    notas: "Control en un mes, monitoreo diario de presión"
+    notas: "Control en un mes, monitoreo diario de presión",
+    tipo: "externo"
   }
 ];
 
