@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -11,7 +11,7 @@ import { NuevaEntradaForm } from "@/components/NuevaEntradaForm";
 import { EmergencyContact } from "@/components/patient/EmergencyContact";
 import { getPacienteById, getHistorialPaciente } from "../data/mockData";
 import { calcularEdad } from "@/lib/utils";
-import { FileText, Plus, User, Edit, Trash2, CalendarDays, FileUpload, Phone } from "lucide-react";
+import { FileText, Plus, User, Edit, Trash2, CalendarDays, Upload, Phone } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
@@ -34,7 +34,7 @@ const DetallesPaciente = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [imagenPerfil, setImagenPerfil] = useState<string | null>(null);
-  const fileInputRef = useState<HTMLInputElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   
   // Obtener el paciente inicial
   const pacienteOriginal = getPacienteById(id || "");
@@ -122,14 +122,14 @@ const DetallesPaciente = () => {
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex items-center justify-center rounded-full transition-opacity">
-                        <FileUpload className="h-6 w-6 text-white" />
+                        <Upload className="h-6 w-6 text-white" />
                       </div>
                       <input 
                         type="file" 
                         accept="image/*" 
                         className="hidden" 
                         onChange={handleImagenChange}
-                        ref={(input) => fileInputRef.current = input}
+                        ref={fileInputRef}
                       />
                     </div>
                   </div>
