@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -104,6 +103,14 @@ const Dashboard = () => {
       </div>
     );
   }
+  
+  // The issue is likely in the user role comparison code, which should look like this:
+  const currentUserRole = currentUser?.role || "";
+
+  // Replace the problematic comparisons with string comparisons
+  const isMedico = currentUserRole === "medico";
+  const isEnfermera = currentUserRole === "enfermera";
+  const isAdmin = currentUserRole === "admin";
   
   // Dashboard para familiares
   if (currentUser?.role === "familiar") {
@@ -297,7 +304,7 @@ const Dashboard = () => {
   }
   
   // Dashboard para administradores
-  if (currentUser?.role === "admin") {
+  if (isAdmin) {
     return (
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
@@ -318,8 +325,8 @@ const Dashboard = () => {
                     <Avatar>
                       <AvatarImage src="" />
                       <AvatarFallback className="bg-health-200 text-health-700">
-                        {currentUser?.role === "medico" ? "MD" : 
-                         currentUser?.role === "enfermera" ? "EF" : "AD"}
+                        {isMedico ? "MD" : 
+                         isEnfermera ? "EF" : "AD"}
                       </AvatarFallback>
                     </Avatar>
                     
@@ -520,8 +527,8 @@ const Dashboard = () => {
                   <Avatar>
                     <AvatarImage src="" />
                     <AvatarFallback className="bg-health-200 text-health-700">
-                      {currentUser?.role === "medico" ? "MD" : 
-                       currentUser?.role === "enfermera" ? "EF" : "AD"}
+                      {isMedico ? "MD" : 
+                       isEnfermera ? "EF" : "AD"}
                     </AvatarFallback>
                   </Avatar>
                   
