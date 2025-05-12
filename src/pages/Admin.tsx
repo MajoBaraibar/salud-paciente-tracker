@@ -3,6 +3,8 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { PaymentTracker } from "@/components/admin/PaymentTracker";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { StaffSchedule } from "@/components/admin/StaffSchedule";
+import { UserManagement } from "@/components/admin/UserManagement";
 
 const Admin = () => {
   return (
@@ -22,6 +24,7 @@ const Admin = () => {
                 <TabsList>
                   <TabsTrigger value="payments">Pagos</TabsTrigger>
                   <TabsTrigger value="requisitions">Requisiciones</TabsTrigger>
+                  <TabsTrigger value="schedule">Horarios</TabsTrigger>
                   <TabsTrigger value="users">Usuarios</TabsTrigger>
                 </TabsList>
               </div>
@@ -38,12 +41,12 @@ const Admin = () => {
                 </div>
               </TabsContent>
               
+              <TabsContent value="schedule">
+                <StaffSchedule />
+              </TabsContent>
+              
               <TabsContent value="users">
-                <div className="text-center py-12 bg-muted/30 rounded-lg">
-                  <p className="text-muted-foreground">
-                    Gestión de usuarios del sistema
-                  </p>
-                </div>
+                <UserManagement />
               </TabsContent>
             </Tabs>
           </div>

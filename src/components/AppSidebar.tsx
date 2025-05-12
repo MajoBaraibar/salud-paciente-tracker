@@ -17,6 +17,8 @@ import {
   Package,
   Home,
   CreditCard,
+  LogOut,
+  Settings,
 } from "lucide-react";
 
 export const AppSidebar = () => {
@@ -33,6 +35,11 @@ export const AppSidebar = () => {
   // Get current user role
   const currentUser = JSON.parse(localStorage.getItem("user") || '{"role":"medico"}');
   const userRole = currentUser.role;
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   return (
     <Sidebar>
@@ -99,20 +106,22 @@ export const AppSidebar = () => {
             </SidebarMenuButton>
           </SidebarMenuItem>
           
-          <SidebarMenuItem>
-            <SidebarMenuButton 
-              isActive={location.pathname === "/anuncios"}
-              onClick={() => navigate("/anuncios")}
-            >
-              <FileText size={20} />
-              <span>Tablón de anuncios</span>
-              {notifications.anuncios > 0 && (
-                <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {notifications.anuncios}
-                </span>
-              )}
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {userRole !== "familiar" && (
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                isActive={location.pathname === "/anuncios"}
+                onClick={() => navigate("/anuncios")}
+              >
+                <FileText size={20} />
+                <span>Tablón de anuncios</span>
+                {notifications.anuncios > 0 && (
+                  <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {notifications.anuncios}
+                  </span>
+                )}
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
           
           {(userRole === "admin" || userRole === "medico" || userRole === "enfermera") && (
             <SidebarMenuItem>
@@ -129,6 +138,18 @@ export const AppSidebar = () => {
           {userRole === "admin" && (
             <SidebarMenuItem>
               <SidebarMenuButton 
+                isActive={location.pathname === "/admin"}
+                onClick={() => navigate("/admin")}
+              >
+                <CreditCard size={20} />
+                <span>Administración</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
+          
+          {userRole === "familiar" && (
+            <SidebarMenuItem>
+              <SidebarMenuButton 
                 isActive={location.pathname === "/pagos"}
                 onClick={() => navigate("/pagos")}
               >
@@ -137,6 +158,27 @@ export const AppSidebar = () => {
               </SidebarMenuButton>
             </SidebarMenuItem>
           )}
+          
+          <SidebarMenuItem>
+            <SidebarMenuButton 
+              isActive={location.pathname === "/configuracion"}
+              onClick={() => navigate("/configuracion")}
+            >
+              <Settings size={20} />
+              <span>Configuración</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          
+          {/* Logout button - always visible for all users */}
+          <SidebarMenuItem>
+            <SidebarMenuButton 
+              onClick={handleLogout}
+              className="text-red-500 hover:text-red-600 hover:bg-red-50"
+            >
+              <LogOut size={20} />
+              <span>Salir</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t p-4 text-xs text-muted-foreground text-center">

@@ -16,6 +16,8 @@ import Anuncios from "./pages/Anuncios";
 import Calendario from "./pages/Calendario";
 import Requisiciones from "./pages/Requisiciones";
 import Pagos from "./pages/Pagos";
+import Admin from "./pages/Admin";
+import Configuracion from "./pages/Configuracion";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +33,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Componente para rutas de administrador
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const user = localStorage.getItem("user");
   const isAdmin = user ? JSON.parse(user).role === "admin" : false;
@@ -46,6 +49,7 @@ const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+// Componente para rutas de personal médico (médicos y enfermeras)
 const MedicoEnfermeraRoute = ({ children }: { children: React.ReactNode }) => {
   const user = localStorage.getItem("user");
   const role = user ? JSON.parse(user).role : "";
@@ -57,6 +61,27 @@ const MedicoEnfermeraRoute = ({ children }: { children: React.ReactNode }) => {
   
   if (!isMedicoOrEnfermera && role !== "admin") {
     return <Navigate to="/dashboard" replace />;
+  }
+  
+  return <>{children}</>;
+};
+
+// Componente para rutas de familiares (acceso restringido)
+const FamiliarRoute = ({ children, pacienteId }: { children: React.ReactNode, pacienteId?: string }) => {
+  const user = localStorage.getItem("user");
+  const isFamiliar = user ? JSON.parse(user).role === "familiar" : false;
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (isFamiliar) {
+    // Si es un familiar y está accediendo a un paciente que no es suyo
+    // (esto es un ejemplo, en producción habría que verificar con la base de datos)
+    const familiarPatientId = "1"; // Simulamos que el familiar está asignado al paciente con ID 1
+    if (pacienteId && pacienteId !== familiarPatientId) {
+      return <Navigate to="/pacientes/1" replace />;
+    }
   }
   
   return <>{children}</>;
@@ -157,9 +182,27 @@ const App = () => (
           <Route 
             path="/pagos" 
             element={
-              <AdminRoute>
+              <ProtectedRoute>
                 <Pagos />
+              </ProtectedRoute>
+            } 
+          />
+          
+          <Route 
+            path="/admin" 
+            element={
+              <AdminRoute>
+                <Admin />
               </AdminRoute>
+            } 
+          />
+          
+          <Route 
+            path="/configuracion" 
+            element={
+              <ProtectedRoute>
+                <Configuracion />
+              </ProtectedRoute>
             } 
           />
           
