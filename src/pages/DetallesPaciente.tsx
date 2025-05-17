@@ -8,13 +8,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { EntradaHistorial } from "@/components/EntradaHistorial";
 import { NuevaEntradaForm } from "@/components/NuevaEntradaForm";
+import { NuevaNotaEnfermeria } from "@/components/patient/NuevaNotaEnfermeria";
 import { EmergencyContact } from "@/components/patient/EmergencyContact";
+import { ResumenMedico } from "@/components/patient/ResumenMedico";
 import { getPacienteById, getHistorialPaciente } from "../data/mockData";
 import { calcularEdad } from "@/lib/utils";
 import { 
   FileText, Plus, User, Edit, Trash2, CalendarDays, 
   Upload, Phone, Heart, Thermometer, Activity, 
-  Droplets, UserCheck, Clipboard, AlertTriangle
+  Droplets, UserCheck, Clipboard, AlertTriangle,
+  FilePen
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -69,6 +72,30 @@ const DetallesPaciente = () => {
     }
     return { role: "medico" };
   });
+  
+  // Notas de enfermería (ejemplo)
+  const [notasEnfermeria, setNotasEnfermeria] = useState<{
+    id: string;
+    tipo: 'evolucion' | 'conducta';
+    fecha: string;
+    contenido: string;
+    enfermera: string;
+  }[]>([
+    {
+      id: '1',
+      tipo: 'evolucion',
+      fecha: new Date().toISOString(),
+      contenido: 'Paciente estable, signos vitales dentro de los parámetros normales.',
+      enfermera: 'Enf. Ana Rodríguez'
+    },
+    {
+      id: '2',
+      tipo: 'conducta',
+      fecha: new Date(Date.now() - 86400000).toISOString(), // 1 día atrás
+      contenido: 'Paciente colaborador con el personal de enfermería. No presenta problemas conductuales.',
+      enfermera: 'Enf. Carlos López'
+    }
+  ]);
   
   // Mock emergency contact data
   const mockEmergencyContact = {
@@ -129,6 +156,12 @@ const DetallesPaciente = () => {
     setIsEditing(false);
     toast.success("Información del paciente actualizada correctamente");
     setEditDialogOpen(false);
+  };
+
+  const handleNuevaNotaEnfermeria = () => {
+    // Esta función sería implementada para actualizar las notas de enfermería
+    // cuando se agregue una nueva desde el componente NuevaNotaEnfermeria
+    console.log("Nueva nota de enfermería agregada");
   };
   
   return (
@@ -196,6 +229,9 @@ const DetallesPaciente = () => {
               </div>
             </Card>
             
+            {/* Resumen Médico - Nuevo componente */}
+            <ResumenMedico pacienteId={id || ""} />
+            
             {/* Signos vitales recientes */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <Card>
@@ -260,7 +296,7 @@ const DetallesPaciente = () => {
             
             {/* Pestañas */}
             <Tabs defaultValue="perfil" value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-3 w-full mb-6">
+              <TabsList className="grid grid-cols-4 w-full mb-6">
                 <TabsTrigger value="perfil" className="flex gap-2 items-center">
                   <User size={16} />
                   <span>Información personal</span>
@@ -268,6 +304,10 @@ const DetallesPaciente = () => {
                 <TabsTrigger value="historial" className="flex gap-2 items-center">
                   <FileText size={16} />
                   <span>Historial médico</span>
+                </TabsTrigger>
+                <TabsTrigger value="enfermeria" className="flex gap-2 items-center">
+                  <FilePen size={16} />
+                  <span>Notas de enfermería</span>
                 </TabsTrigger>
                 <TabsTrigger value="contacto" className="flex gap-2 items-center">
                   <Phone size={16} />
@@ -373,14 +413,82 @@ const DetallesPaciente = () => {
                     <p className="text-muted-foreground mb-4">
                       No hay entradas en el historial médico de este paciente
                     </p>
-                    <Button 
-                      onClick={() => setMostrarFormulario(true)}
-                      variant="outline"
-                      disabled={currentUser.role !== "medico"}
-                    >
-                      <Plus size={16} className="mr-2" />
-                      Agregar primera entrada
-                    </Button>
+                    {currentUser.role === "medico" && (
+                      <Button 
+                        onClick={() => setMostrarFormulario(true)}
+                        variant="outline"
+                      >
+                        <Plus size={16} className="mr-2" />
+                        Agregar primera entrada
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </TabsContent>
+              
+              {/* Nueva pestaña: Notas de enfermería */}
+              <TabsContent value="enfermeria">
+                <div className="mb-6 flex justify-between items-center">
+                  <h2 className="text-xl font-semibold flex items-center">
+                    <FilePen className="mr-2 h-5 w-5 text-health-600" />
+                    Notas de Enfermería
+                  </h2>
+                </div>
+                
+                {/* Solo enfermeras pueden agregar notas */}
+                {currentUser.role === "enfermera" && (
+                  <NuevaNotaEnfermeria 
+                    pacienteId={pacienteOriginal.id} 
+                    onSuccess={handleNuevaNotaEnfermeria}
+                  />
+                )}
+                
+                {notasEnfermeria.length > 0 ? (
+                  <div className="space-y-4">
+                    {notasEnfermeria.map(nota => (
+                      <Card key={nota.id} className={`border-l-4 ${
+                        nota.tipo === 'evolucion' ? 'border-l-blue-500' : 'border-l-purple-500'
+                      }`}>
+                        <CardHeader className={`bg-gradient-to-r ${
+                          nota.tipo === 'evolucion' ? 'from-blue-50' : 'from-purple-50'
+                        } to-transparent pb-2 flex flex-row items-center justify-between`}>
+                          <div>
+                            <CardTitle className="text-base font-medium flex items-center">
+                              {nota.tipo === 'evolucion' ? 
+                                'Evolución' : 
+                                'Conducta'
+                              }
+                              <Badge className={`ml-2 ${
+                                nota.tipo === 'evolucion' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800'
+                              }`}>
+                                {nota.tipo.toUpperCase()}
+                              </Badge>
+                            </CardTitle>
+                            <CardDescription>
+                              {format(new Date(nota.fecha), "d 'de' MMMM, yyyy")} - {nota.enfermera}
+                            </CardDescription>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="pt-4">
+                          <p className="text-gray-700">{nota.contenido}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 bg-muted/30 rounded-lg">
+                    <p className="text-muted-foreground mb-4">
+                      No hay notas de enfermería para este paciente
+                    </p>
+                    {currentUser.role === "enfermera" && (
+                      <Button 
+                        onClick={() => {}} // Se manejará desde el componente NuevaNotaEnfermeria
+                        variant="outline"
+                      >
+                        <Plus size={16} className="mr-2" />
+                        Agregar primera nota
+                      </Button>
+                    )}
                   </div>
                 )}
               </TabsContent>

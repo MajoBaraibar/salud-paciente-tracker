@@ -48,8 +48,8 @@ export const AppSidebar = () => {
           onClick={() => navigate("/dashboard")}
           className="text-xl font-bold text-health-700 flex items-center"
         >
-          <span className="bg-health-100 text-health-700 p-1.5 rounded mr-2">HC</span>
-          HealthCenter
+          <span className="bg-health-100 text-health-700 p-1.5 rounded mr-2">ES</span>
+          En Suma
         </button>
       </SidebarHeader>
       <SidebarContent>
@@ -182,7 +182,7 @@ export const AppSidebar = () => {
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="border-t p-4 text-xs text-muted-foreground text-center">
-        v1.0 © 2025 HealthCenter
+        v1.0 © 2025 En Suma
       </SidebarFooter>
     </Sidebar>
   );

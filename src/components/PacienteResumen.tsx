@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { calcularEdad } from "@/lib/utils";
 import { Paciente } from "@/types";
-import { FileText, User } from "lucide-react";
+import { FileText, User, FilePen } from "lucide-react";
 
 interface PacienteResumenProps {
   paciente: Paciente;
@@ -55,13 +55,22 @@ export const PacienteResumen: React.FC<PacienteResumenProps> = ({ paciente }) =>
             size="sm" 
             asChild 
             className="flex items-center space-x-1"
-            onClick={() => {
-              // Navegar directamente a la pestaña de historial
-            }}
           >
-            <Link to={`/pacientes/${paciente.id}`}>
+            <Link to={`/pacientes/${paciente.id}`} state={{ tab: "historial" }}>
               <FileText className="h-4 w-4" />
               <span>Historial</span>
+            </Link>
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            size="sm" 
+            asChild 
+            className="flex items-center space-x-1 hidden md:flex"
+          >
+            <Link to={`/pacientes/${paciente.id}`} state={{ tab: "enfermeria" }}>
+              <FilePen className="h-4 w-4" />
+              <span>Notas</span>
             </Link>
           </Button>
         </div>

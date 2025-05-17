@@ -20,6 +20,9 @@ import Admin from "./pages/Admin";
 import Configuracion from "./pages/Configuracion";
 import NotFound from "./pages/NotFound";
 
+// Cambiar el título de la página a "En Suma"
+document.title = "En Suma | Sistema Integral de Gestión Médica";
+
 const queryClient = new QueryClient();
 
 // Componente para rutas protegidas
