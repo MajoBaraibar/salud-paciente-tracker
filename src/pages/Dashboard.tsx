@@ -1,9 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -14,13 +15,20 @@ import { pacientesMock } from "../data/mockData";
 import { calcularEdad } from "@/lib/utils";
 import { 
   Calendar, Users, FileText, AlertTriangle, 
-  Activity, BarChart, User, Bell, CreditCard
+  Activity, BarChart, User, Bell, CreditCard,
+  ExternalLink, Info, Clock
 } from "lucide-react";
+
+// Import the notification context
+import { useNotificationStore } from "@/stores/notificationStore";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [currentUser, setCurrentUser] = useState<{ email: string; role: string, patientId?: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  // Access notification store
+  const { totalUnread } = useNotificationStore();
   
   useEffect(() => {
     // Verificar si el usuario está autenticado
@@ -99,7 +107,10 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p>Cargando...</p>
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-health-600"></div>
+          <p className="text-health-700">Cargando información...</p>
+        </div>
       </div>
     );
   }
@@ -111,9 +122,10 @@ const Dashboard = () => {
   const isMedico = currentUserRole === "medico";
   const isEnfermera = currentUserRole === "enfermera";
   const isAdmin = currentUserRole === "admin";
+  const isFamiliar = currentUserRole === "familiar";
   
   // Dashboard para familiares
-  if (currentUser?.role === "familiar") {
+  if (isFamiliar) {
     return (
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
@@ -174,7 +186,7 @@ const Dashboard = () => {
                             </div>
                             <div className="bg-muted rounded-lg p-3">
                               <p className="text-sm text-muted-foreground mb-1">Última evolución</p>
-                              <p className="font-medium">{new Date(familiarPatientInfo.ultimaEvolucion).toLocaleDateString()}</p>
+                              <p className="font-medium">{new Date(familiarPatientInfo.ultimaEvolucion).toLocaleDateString('es-ES')}</p>
                             </div>
                           </div>
                           
@@ -230,39 +242,38 @@ const Dashboard = () => {
                   </CardContent>
                 </Card>
                 
-                {/* Panel de pagos */}
+                {/* Aviso Informativo */}
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle>Información de pago</CardTitle>
-                    <CardDescription>
-                      Estado de la cuenta
-                    </CardDescription>
+                    <CardTitle className="flex items-center">
+                      <Info className="h-5 w-5 mr-2 text-blue-500" />
+                      Información
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
-                        <div>
-                          <p className="text-sm text-muted-foreground">Estado</p>
-                          <p className="font-medium capitalize">{familiarPatientInfo.estadoPago}</p>
-                        </div>
-                        <Badge className="bg-green-100 text-green-700">
-                          Al día
-                        </Badge>
+                      <Alert>
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTitle>Acceso limitado</AlertTitle>
+                        <AlertDescription>
+                          Como familiar, solo tiene acceso a la información básica del paciente y la posibilidad de ver su historial clínico. Para consultas sobre pagos o trámites administrativos, por favor contacte a recepción.
+                        </AlertDescription>
+                      </Alert>
+                      
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <h3 className="text-sm font-medium flex items-center text-blue-700 mb-2">
+                          <Clock className="h-4 w-4 mr-2" />
+                          Horario de visitas
+                        </h3>
+                        <p className="text-sm text-blue-600">Lunes a viernes: 10:00 - 12:00 y 16:00 - 19:00</p>
+                        <p className="text-sm text-blue-600">Fines de semana: 11:00 - 20:00</p>
                       </div>
                       
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="p-3 bg-muted rounded-lg">
-                          <p className="text-sm text-muted-foreground mb-1">Próximo pago</p>
-                          <p className="font-medium">{new Date(familiarPatientInfo.proximoPago).toLocaleDateString()}</p>
-                        </div>
-                        <div className="p-3 bg-muted rounded-lg">
-                          <p className="text-sm text-muted-foreground mb-1">Monto</p>
-                          <p className="font-medium">${familiarPatientInfo.monto.toFixed(2)}</p>
-                        </div>
-                      </div>
-                      
-                      <Button asChild className="w-full">
-                        <Link to="/pagos">Ver detalle de pagos</Link>
+                      <Button variant="outline" className="w-full" asChild>
+                        <Link to="/anuncios">
+                          <Bell className="h-4 w-4 mr-2" />
+                          Ver anuncios importantes
+                        </Link>
                       </Button>
                     </div>
                   </CardContent>
@@ -282,7 +293,7 @@ const Dashboard = () => {
                     {familiarPatientInfo.notasEnfermeria.map((nota, i) => (
                       <div key={i} className="p-4 border rounded-md">
                         <p className="text-sm font-medium text-muted-foreground mb-1">
-                          {new Date(nota.fecha).toLocaleDateString()} - {new Date(nota.fecha).toLocaleTimeString()} hrs
+                          {new Date(nota.fecha).toLocaleDateString('es-ES')} - {new Date(nota.fecha).toLocaleTimeString()} hrs
                         </p>
                         <p>{nota.nota}</p>
                       </div>
@@ -397,7 +408,7 @@ const Dashboard = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm text-muted-foreground">Anuncios nuevos</p>
-                        <p className="text-3xl font-bold">8</p>
+                        <p className="text-3xl font-bold">{totalUnread}</p>
                       </div>
                       <div className="p-2 bg-purple-100 rounded-full">
                         <FileText className="h-6 w-6 text-purple-600" />
@@ -600,7 +611,7 @@ const Dashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">Anuncios nuevos</p>
-                      <p className="text-3xl font-bold">8</p>
+                      <p className="text-3xl font-bold">{totalUnread}</p>
                     </div>
                     <div className="p-2 bg-purple-100 rounded-full">
                       <FileText className="h-6 w-6 text-purple-600" />

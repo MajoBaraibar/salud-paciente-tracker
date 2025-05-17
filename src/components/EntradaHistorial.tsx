@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { CalendarDays, Edit, Trash2, FileText, CalendarCheck, User, FilePlus } from 'lucide-react';
+import { CalendarDays, Edit, Trash2, FileText, CalendarCheck, User, FilePlus, Paperclip, MessageSquare } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -37,10 +37,13 @@ export const EntradaHistorial = ({ entrada, userRole = 'medico' }: Props) => {
   const [entradaEditada, setEntradaEditada] = useState(entrada);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [adjuntoDialogOpen, setAdjuntoDialogOpen] = useState(false);
+  const [observacionDialogOpen, setObservacionDialogOpen] = useState(false);
   const [nombreAdjunto, setNombreAdjunto] = useState("");
   const [descripcionAdjunto, setDescripcionAdjunto] = useState("");
   const [archivoAdjunto, setArchivoAdjunto] = useState<File | null>(null);
+  const [observacion, setObservacion] = useState("");
   const [adjuntos, setAdjuntos] = useState<{nombre: string, descripcion: string}[]>([]);
+  const [observaciones, setObservaciones] = useState<{fecha: string, autor: string, contenido: string}[]>([]);
 
   const handleGuardarEdicion = () => {
     toast.success('Entrada de historial actualizada correctamente');
@@ -72,6 +75,24 @@ export const EntradaHistorial = ({ entrada, userRole = 'medico' }: Props) => {
     toast.success('Archivo adjuntado correctamente');
   };
 
+  const handleAgregarObservacion = () => {
+    if (!observacion) {
+      toast.error('Por favor escriba una observación');
+      return;
+    }
+
+    const nuevaObservacion = {
+      fecha: new Date().toISOString(),
+      autor: userRole === 'enfermera' ? 'Enf. Rodriguez' : 'Dr. Martínez',
+      contenido: observacion
+    };
+
+    setObservaciones([...observaciones, nuevaObservacion]);
+    setObservacion('');
+    setObservacionDialogOpen(false);
+    toast.success('Observación agregada correctamente');
+  };
+
   const formatearFecha = (fechaStr: string) => {
     try {
       const fecha = new Date(fechaStr);
@@ -82,8 +103,8 @@ export const EntradaHistorial = ({ entrada, userRole = 'medico' }: Props) => {
   };
 
   return (
-    <Card className="border-l-4 border-l-health-600">
-      <CardHeader className="flex flex-row items-center justify-between">
+    <Card className="border-l-4 border-l-health-600 overflow-hidden">
+      <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-health-50 to-transparent">
         <div className="flex items-center space-x-2">
           <CalendarDays className="h-5 w-5 text-health-700" />
           <div>
@@ -110,14 +131,20 @@ export const EntradaHistorial = ({ entrada, userRole = 'medico' }: Props) => {
                 <DropdownMenuItem onClick={() => setIsEditing(true)}>
                   <Edit className="h-4 w-4 mr-2" /> Editar entrada
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setAdjuntoDialogOpen(true)}>
+                  <Paperclip className="h-4 w-4 mr-2" /> Adjuntar archivo
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setObservacionDialogOpen(true)}>
+                  <MessageSquare className="h-4 w-4 mr-2" /> Agregar observación
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => setDeleteDialogOpen(true)}>
                   <Trash2 className="h-4 w-4 mr-2" /> Eliminar entrada
                 </DropdownMenuItem>
               </>
             )}
             {userRole === 'enfermera' && (
-              <DropdownMenuItem onClick={() => setAdjuntoDialogOpen(true)}>
-                <FilePlus className="h-4 w-4 mr-2" /> Adjuntar examen
+              <DropdownMenuItem onClick={() => setObservacionDialogOpen(true)}>
+                <MessageSquare className="h-4 w-4 mr-2" /> Agregar observación
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
@@ -162,13 +189,39 @@ export const EntradaHistorial = ({ entrada, userRole = 'medico' }: Props) => {
               </div>
             )}
 
+            {/* Sección para observaciones */}
+            {observaciones.length > 0 && (
+              <div className="mt-4 pt-4 border-t">
+                <h3 className="font-medium text-sm mb-2 flex items-center">
+                  <MessageSquare className="h-4 w-4 mr-2 text-health-700" />
+                  Observaciones
+                </h3>
+                <div className="space-y-2">
+                  {observaciones.map((obs, index) => (
+                    <div key={index} className="text-sm p-3 bg-blue-50 rounded-md">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="font-medium">{obs.autor}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(obs.fecha).toLocaleDateString()} {new Date(obs.fecha).toLocaleTimeString()}
+                        </p>
+                      </div>
+                      <p className="text-sm">{obs.contenido}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Sección para adjuntos */}
             {adjuntos.length > 0 && (
               <div className="mt-4 pt-4 border-t">
-                <h3 className="font-medium text-sm mb-2">Exámenes adjuntos</h3>
-                <div className="space-y-2">
+                <h3 className="font-medium text-sm mb-2 flex items-center">
+                  <Paperclip className="h-4 w-4 mr-2 text-health-700" />
+                  Archivos adjuntos
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {adjuntos.map((adjunto, index) => (
-                    <div key={index} className="text-sm p-2 bg-secondary/20 rounded flex justify-between items-center">
+                    <div key={index} className="text-sm p-3 bg-secondary/20 rounded flex justify-between items-center">
                       <div>
                         <p className="font-medium">{adjunto.nombre}</p>
                         {adjunto.descripcion && <p className="text-xs text-muted-foreground">{adjunto.descripcion}</p>}
@@ -257,22 +310,22 @@ export const EntradaHistorial = ({ entrada, userRole = 'medico' }: Props) => {
         </DialogContent>
       </Dialog>
       
-      {/* Dialog para adjuntar archivos (solo enfermeras) */}
+      {/* Dialog para adjuntar archivos */}
       <Dialog open={adjuntoDialogOpen} onOpenChange={setAdjuntoDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
-            <DialogTitle>Adjuntar resultado de examen</DialogTitle>
+            <DialogTitle>Adjuntar archivo</DialogTitle>
             <DialogDescription>
-              Suba un archivo con los resultados del examen para que el médico pueda revisarlos.
+              Adjunte un archivo al historial médico del paciente (resultados de pruebas, radiografías, etc.)
             </DialogDescription>
           </DialogHeader>
           
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="nombre-adjunto">Nombre del examen</Label>
+              <Label htmlFor="nombre-adjunto">Nombre del archivo</Label>
               <Input
                 id="nombre-adjunto"
-                placeholder="Ej: Hemograma completo"
+                placeholder="Ej: Radiografía de tórax"
                 value={nombreAdjunto}
                 onChange={(e) => setNombreAdjunto(e.target.value)}
               />
@@ -282,7 +335,7 @@ export const EntradaHistorial = ({ entrada, userRole = 'medico' }: Props) => {
               <Label htmlFor="descripcion-adjunto">Descripción (opcional)</Label>
               <Textarea
                 id="descripcion-adjunto"
-                placeholder="Agregue detalles adicionales sobre el examen"
+                placeholder="Agregue detalles adicionales sobre el archivo"
                 value={descripcionAdjunto}
                 onChange={(e) => setDescripcionAdjunto(e.target.value)}
               />
@@ -290,11 +343,21 @@ export const EntradaHistorial = ({ entrada, userRole = 'medico' }: Props) => {
             
             <div className="space-y-2">
               <Label htmlFor="archivo">Archivo</Label>
-              <Input
-                id="archivo"
-                type="file"
-                onChange={(e) => e.target.files && setArchivoAdjunto(e.target.files[0])}
-              />
+              <div className="border-2 border-dashed rounded-md p-6 text-center cursor-pointer hover:bg-muted/50 transition-colors">
+                <Input
+                  id="archivo"
+                  type="file"
+                  className="hidden"
+                  onChange={(e) => e.target.files && setArchivoAdjunto(e.target.files[0])}
+                />
+                <Label htmlFor="archivo" className="cursor-pointer flex flex-col items-center">
+                  <Paperclip className="h-6 w-6 mb-2 text-muted-foreground" />
+                  <p className="text-sm font-medium mb-1">Haga clic para seleccionar un archivo</p>
+                  <p className="text-xs text-muted-foreground">
+                    {archivoAdjunto ? archivoAdjunto.name : "PDF, JPG, PNG (máx 10MB)"}
+                  </p>
+                </Label>
+              </div>
             </div>
           </div>
           
@@ -302,8 +365,44 @@ export const EntradaHistorial = ({ entrada, userRole = 'medico' }: Props) => {
             <Button variant="outline" onClick={() => setAdjuntoDialogOpen(false)}>
               Cancelar
             </Button>
-            <Button onClick={handleAdjuntarArchivo}>
+            <Button onClick={handleAdjuntarArchivo} disabled={!archivoAdjunto || !nombreAdjunto}>
               Adjuntar archivo
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Dialog para agregar observación */}
+      <Dialog open={observacionDialogOpen} onOpenChange={setObservacionDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Agregar observación</DialogTitle>
+            <DialogDescription>
+              {userRole === 'enfermera' 
+                ? "Agregue una observación de enfermería al historial médico del paciente"
+                : "Agregue una observación médica al historial del paciente"}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="observacion">Observación</Label>
+              <Textarea
+                id="observacion"
+                placeholder="Escriba su observación aquí..."
+                value={observacion}
+                onChange={(e) => setObservacion(e.target.value)}
+                className="min-h-[120px]"
+              />
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setObservacionDialogOpen(false)}>
+              Cancelar
+            </Button>
+            <Button onClick={handleAgregarObservacion} disabled={!observacion}>
+              Guardar observación
             </Button>
           </DialogFooter>
         </DialogContent>

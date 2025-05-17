@@ -1,206 +1,154 @@
 
-import { useState } from 'react';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { CalendarDays, FileText, CalendarCheck, User, PlusCircle } from 'lucide-react';
-import { toast } from 'sonner';
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
+import { AlertTriangle } from "lucide-react";
 
-type Props = {
+interface NuevaEntradaFormProps {
   pacienteId: string;
   onSuccess: () => void;
   userRole?: string;
-};
+}
 
-export const NuevaEntradaForm = ({ pacienteId, onSuccess, userRole = 'medico' }: Props) => {
-  const [motivoConsulta, setMotivoConsulta] = useState('');
-  const [diagnostico, setDiagnostico] = useState('');
-  const [tratamiento, setTratamiento] = useState('');
-  const [notas, setNotas] = useState('');
-  const [resultadoExamen, setResultadoExamen] = useState('');
-  const [archivoExamen, setArchivoExamen] = useState<File | null>(null);
-  const [nombreExamen, setNombreExamen] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleGuardar = () => {
-    // Validación básica según el rol
-    if (userRole === 'medico') {
-      if (!motivoConsulta || !diagnostico) {
-        toast.error('Por favor complete los campos obligatorios');
-        return;
-      }
-    } else if (userRole === 'enfermera') {
-      if (!notas) {
-        toast.error('Las notas son obligatorias para registrar una entrada');
-        return;
-      }
+export const NuevaEntradaForm = ({ pacienteId, onSuccess, userRole = "medico" }: NuevaEntradaFormProps) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { register, handleSubmit, formState: { errors }, reset } = useForm({
+    defaultValues: {
+      motivoConsulta: "",
+      diagnostico: "",
+      tratamiento: "",
+      notas: "",
     }
-
-    setLoading(true);
+  });
+  
+  if (userRole === "enfermera") {
+    return (
+      <Card className="mb-6 p-4">
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 p-3 rounded-md flex items-start mb-4">
+          <AlertTriangle className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" />
+          <div>
+            <p className="font-medium">Acceso limitado</p>
+            <p className="text-sm">Como enfermera, no puede crear entradas médicas completas. Para agregar observaciones, use la opción "Agregar observación" en las entradas existentes.</p>
+          </div>
+        </div>
+        <div className="flex justify-end">
+          <Button variant="outline" onClick={onSuccess}>
+            Cerrar
+          </Button>
+        </div>
+      </Card>
+    );
+  }
+  
+  const onSubmit = async (data: any) => {
+    setIsSubmitting(true);
     
-    // Simulación de envío a servidor
-    setTimeout(() => {
-      setLoading(false);
-      toast.success('Entrada añadida al historial médico');
+    try {
+      // En un caso real, aquí iría la llamada a la API
+      console.log("Nueva entrada:", { pacienteId, ...data });
       
-      // Limpiar formulario
-      setMotivoConsulta('');
-      setDiagnostico('');
-      setTratamiento('');
-      setNotas('');
-      setResultadoExamen('');
-      setArchivoExamen(null);
-      setNombreExamen('');
+      // Simulamos una espera
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       
-      // Notificar éxito
+      toast.success("Entrada médica agregada correctamente");
+      reset();
       onSuccess();
-    }, 1000);
+    } catch (error) {
+      console.error("Error al guardar entrada:", error);
+      toast.error("Error al guardar la entrada médica");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setArchivoExamen(e.target.files[0]);
-    }
-  };
-
   return (
-    <Card className="mb-6 border-l-4 border-l-health-400">
-      <CardContent className="pt-6 space-y-4">
-        <div className="flex items-center mb-2">
-          <PlusCircle className="h-5 w-5 text-health-600 mr-2" />
-          <h3 className="font-semibold text-health-600">
-            {userRole === 'medico' ? 'Nueva entrada en historial médico' : 'Registrar atención de enfermería'}
-          </h3>
+    <Card className="mb-6 p-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div>
+          <Label htmlFor="motivoConsulta" className="mb-2 block">
+            Motivo de consulta <span className="text-red-500">*</span>
+          </Label>
+          <Textarea
+            id="motivoConsulta"
+            className="min-h-[80px]"
+            placeholder="Describa el motivo de la consulta"
+            {...register("motivoConsulta", { 
+              required: "Este campo es obligatorio" 
+            })}
+          />
+          {errors.motivoConsulta && (
+            <p className="text-sm text-red-500 mt-1">{errors.motivoConsulta.message}</p>
+          )}
         </div>
-
-        {/* Campos visibles para médicos */}
-        {userRole === 'medico' && (
-          <>
-            <div>
-              <Label htmlFor="motivo-consulta" className="flex items-center mb-1">
-                <FileText className="h-4 w-4 mr-1 text-health-700" />
-                Motivo de consulta *
-              </Label>
-              <Textarea
-                id="motivo-consulta"
-                value={motivoConsulta}
-                onChange={(e) => setMotivoConsulta(e.target.value)}
-                placeholder="Describa el motivo de la consulta..."
-                className="min-h-[60px]"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="diagnostico" className="flex items-center mb-1">
-                <User className="h-4 w-4 mr-1 text-health-700" />
-                Diagnóstico *
-              </Label>
-              <Textarea
-                id="diagnostico"
-                value={diagnostico}
-                onChange={(e) => setDiagnostico(e.target.value)}
-                placeholder="Ingrese el diagnóstico del paciente..."
-                className="min-h-[60px]"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="tratamiento" className="flex items-center mb-1">
-                <CalendarCheck className="h-4 w-4 mr-1 text-health-700" />
-                Tratamiento
-              </Label>
-              <Textarea
-                id="tratamiento"
-                value={tratamiento}
-                onChange={(e) => setTratamiento(e.target.value)}
-                placeholder="Describa el tratamiento recomendado..."
-                className="min-h-[60px]"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="notas" className="mb-1">Notas adicionales</Label>
-              <Textarea
-                id="notas"
-                value={notas}
-                onChange={(e) => setNotas(e.target.value)}
-                placeholder="Agregue cualquier nota o observación adicional..."
-                className="min-h-[60px]"
-              />
-            </div>
-            
-            <div>
-              <Label htmlFor="resultados-examen" className="mb-1">
-                Observaciones de exámenes
-              </Label>
-              <Textarea
-                id="resultados-examen"
-                value={resultadoExamen}
-                onChange={(e) => setResultadoExamen(e.target.value)}
-                placeholder="Agregue observaciones sobre resultados de exámenes..."
-                className="min-h-[60px]"
-              />
-            </div>
-          </>
-        )}
         
-        {/* Campos visibles para enfermeras */}
-        {userRole === 'enfermera' && (
-          <>
-            <div>
-              <Label htmlFor="notas" className="mb-1">Notas de enfermería *</Label>
-              <Textarea
-                id="notas"
-                value={notas}
-                onChange={(e) => setNotas(e.target.value)}
-                placeholder="Registre procedimientos realizados, administración de medicamentos, signos vitales, etc."
-                className="min-h-[80px]"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="nombre-examen" className="mb-1">Nombre del examen</Label>
-              <Input
-                id="nombre-examen"
-                value={nombreExamen}
-                onChange={(e) => setNombreExamen(e.target.value)}
-                placeholder="Ej: Hemograma completo"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="adjuntar-examen" className="mb-1">Adjuntar resultados de examen</Label>
-              <Input
-                id="adjuntar-examen"
-                type="file"
-                onChange={handleFileChange}
-              />
-              <p className="text-xs text-muted-foreground">
-                Adjunte archivos de resultados de exámenes para revisión del médico
-              </p>
-            </div>
-          </>
-        )}
-      </CardContent>
-      
-      <CardFooter className="flex justify-end space-x-2">
-        <Button
-          variant="outline"
-          onClick={onSuccess}
-          disabled={loading}
-        >
-          Cancelar
-        </Button>
-        <Button
-          onClick={handleGuardar}
-          disabled={loading}
-          className="bg-health-600 hover:bg-health-700"
-        >
-          {loading ? 'Guardando...' : 'Guardar'}
-        </Button>
-      </CardFooter>
+        <div>
+          <Label htmlFor="diagnostico" className="mb-2 block">
+            Diagnóstico <span className="text-red-500">*</span>
+          </Label>
+          <Textarea
+            id="diagnostico"
+            className="min-h-[80px]"
+            placeholder="Indique el diagnóstico del paciente"
+            {...register("diagnostico", { 
+              required: "Este campo es obligatorio" 
+            })}
+          />
+          {errors.diagnostico && (
+            <p className="text-sm text-red-500 mt-1">{errors.diagnostico.message}</p>
+          )}
+        </div>
+        
+        <div>
+          <Label htmlFor="tratamiento" className="mb-2 block">
+            Tratamiento <span className="text-red-500">*</span>
+          </Label>
+          <Textarea
+            id="tratamiento"
+            className="min-h-[80px]"
+            placeholder="Describa el tratamiento indicado"
+            {...register("tratamiento", { 
+              required: "Este campo es obligatorio" 
+            })}
+          />
+          {errors.tratamiento && (
+            <p className="text-sm text-red-500 mt-1">{errors.tratamiento.message}</p>
+          )}
+        </div>
+        
+        <div>
+          <Label htmlFor="notas" className="mb-2 block">
+            Notas adicionales
+          </Label>
+          <Textarea
+            id="notas"
+            className="min-h-[80px]"
+            placeholder="Comentarios adicionales, observaciones, etc."
+            {...register("notas")}
+          />
+        </div>
+        
+        <div className="flex justify-end space-x-2 pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+              reset();
+              onSuccess();
+            }}
+            disabled={isSubmitting}
+          >
+            Cancelar
+          </Button>
+          <Button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Guardando..." : "Guardar entrada"}
+          </Button>
+        </div>
+      </form>
     </Card>
   );
 };
