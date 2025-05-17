@@ -70,7 +70,8 @@ export const useNotificationStore = create<NotificationState>()(
       markAsRead: (id) => {
         set((state) => {
           const updatedNotifications = state.notifications.map(notification => 
-            notification.id === id ? { ...notification, read: true } : notification
+            notification.id === id || (notification.type === 'message' && id === '1') ? 
+              { ...notification, read: true } : notification
           );
           
           // Recalculate unread count

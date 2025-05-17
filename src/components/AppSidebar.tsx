@@ -20,17 +20,17 @@ import {
   LogOut,
   Settings,
 } from "lucide-react";
+import { useNotificationStore } from "@/stores/notificationStore";
 
 export const AppSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { notifications, totalUnread } = useNotificationStore();
 
-  // Mock notification counts
-  const notifications = {
-    mensajes: 3,
-    calendario: 1,
-    anuncios: 2,
-  };
+  // Get notification counts by type
+  const messageNotifications = notifications.filter(n => n.type === 'message' && !n.read).length;
+  const calendarNotifications = notifications.filter(n => n.type === 'calendar' && !n.read).length;
+  const announcementNotifications = notifications.filter(n => n.type === 'announcement' && !n.read).length;
 
   // Get current user role
   const currentUser = JSON.parse(localStorage.getItem("user") || '{"role":"medico"}');
@@ -83,9 +83,9 @@ export const AppSidebar = () => {
             >
               <Calendar size={20} />
               <span>Calendario</span>
-              {notifications.calendario > 0 && (
+              {calendarNotifications > 0 && (
                 <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {notifications.calendario}
+                  {calendarNotifications}
                 </span>
               )}
             </SidebarMenuButton>
@@ -98,9 +98,9 @@ export const AppSidebar = () => {
             >
               <MessageSquare size={20} />
               <span>Mensajes</span>
-              {notifications.mensajes > 0 && (
+              {messageNotifications > 0 && (
                 <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {notifications.mensajes}
+                  {messageNotifications}
                 </span>
               )}
             </SidebarMenuButton>
@@ -114,9 +114,9 @@ export const AppSidebar = () => {
               >
                 <FileText size={20} />
                 <span>Tablón de anuncios</span>
-                {notifications.anuncios > 0 && (
+                {announcementNotifications > 0 && (
                   <span className="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {notifications.anuncios}
+                    {announcementNotifications}
                   </span>
                 )}
               </SidebarMenuButton>

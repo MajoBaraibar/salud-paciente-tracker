@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -19,6 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useNotificationStore } from "@/stores/notificationStore";
 
 // Tipos para el sistema de mensajes
 interface Mensaje {
@@ -57,6 +57,7 @@ const Mensajes = () => {
   const [nuevoMensaje, setNuevoMensaje] = useState("");
   const [busqueda, setBusqueda] = useState("");
   const { toast } = useToast();
+  const { markAsRead } = useNotificationStore();
 
   // Obtener el usuario actual del localStorage (simulado)
   const usuarioActualId = "1"; // Simulando que el usuario actual es el Dr. Juan Pérez
@@ -301,6 +302,10 @@ const Mensajes = () => {
     setConversaciones(conversaciones.map(conv => 
       conv.id === conversacionId ? { ...conv, noLeidos: 0 } : conv
     ));
+
+    // Mark notifications as read in the notification store
+    // This is the crucial part that was missing before
+    markAsRead('1'); // Marking the message notification as read
   };
 
   // Función para seleccionar una conversación
@@ -337,6 +342,12 @@ const Mensajes = () => {
   const obtenerIniciales = (nombre: string): string => {
     return nombre.charAt(0);
   };
+
+  // Mark message notifications as read when opening the Messages page
+  useEffect(() => {
+    // Mark message notifications as read when the component mounts
+    markAsRead('1');
+  }, [markAsRead]);
 
   return (
     <SidebarProvider>
