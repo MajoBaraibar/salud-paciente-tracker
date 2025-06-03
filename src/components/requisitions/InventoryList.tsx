@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -34,10 +33,9 @@ export const InventoryList = () => {
     : inventoryItems;
   
   const getQuantityBadge = (quantity: number) => {
-    const lowThreshold = PATIENT_COUNT;
     const mediumThreshold = PATIENT_COUNT * 2;
     
-    if (quantity < lowThreshold) {
+    if (quantity <= PATIENT_COUNT) {
       return <Badge className="bg-red-100 text-red-700">Bajo: {quantity}</Badge>;
     }
     if (quantity <= mediumThreshold) {
