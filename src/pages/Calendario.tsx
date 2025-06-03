@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Calendar } from "@/components/ui/calendar";
@@ -15,6 +14,7 @@ import { es } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { Calendar as CalendarIcon, Clock, Plus, User, Users } from "lucide-react";
 import { toast } from "sonner";
+import { eventosMock } from "@/components/dashboard/MedicoDashboard";
 
 type Evento = {
   id: string;
@@ -32,44 +32,6 @@ type Evento = {
 // Current user role for conditional rendering
 const currentUser = JSON.parse(localStorage.getItem("user") || '{"role":"medico"}');
 const userRole = currentUser.role;
-
-// Datos de ejemplo
-const eventosMock: Evento[] = [
-  {
-    id: "1",
-    titulo: "Consulta María González",
-    fecha: new Date(2025, 4, 13, 10, 0),
-    horaInicio: "10:00",
-    horaFin: "10:30",
-    tipo: "consulta",
-    pacienteId: "1",
-    pacienteNombre: "María González",
-    descripcion: "Control mensual de diabetes",
-    participantes: ["Dr. Martínez"]
-  },
-  {
-    id: "2",
-    titulo: "Visita familiar - Carlos Rodríguez",
-    fecha: new Date(2025, 4, 14, 8, 0),
-    horaInicio: "08:00",
-    horaFin: "09:00",
-    tipo: "visita",
-    pacienteId: "3",
-    pacienteNombre: "Carlos Rodríguez",
-    descripcion: "Visita de hija",
-    participantes: ["Familiar: Ana Rodríguez"]
-  },
-  {
-    id: "3",
-    titulo: "Reunión de personal",
-    fecha: new Date(2025, 4, 12, 14, 0),
-    horaInicio: "14:00",
-    horaFin: "15:00",
-    tipo: "reunion",
-    descripcion: "Revisión de protocolos de atención",
-    participantes: ["Todo el personal"]
-  }
-];
 
 export default function Calendario() {
   const [date, setDate] = useState<Date | undefined>(new Date());

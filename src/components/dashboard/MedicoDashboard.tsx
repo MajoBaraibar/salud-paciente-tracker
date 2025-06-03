@@ -16,9 +16,79 @@ interface MedicoDashboardProps {
   isEnfermera: boolean;
 }
 
+// Eventos compartidos que se usan en el calendario
+export const eventosMock = [
+  {
+    id: "1",
+    titulo: "Consulta María González",
+    fecha: new Date(),
+    horaInicio: "10:00",
+    horaFin: "10:30",
+    tipo: "consulta" as const,
+    pacienteId: "1",
+    pacienteNombre: "María González",
+    descripcion: "Control mensual de diabetes",
+    participantes: ["Dr. Martínez"]
+  },
+  {
+    id: "2",
+    titulo: "Consulta Juan Pérez",
+    fecha: new Date(),
+    horaInicio: "11:00",
+    horaFin: "11:30",
+    tipo: "consulta" as const,
+    pacienteId: "2",
+    pacienteNombre: "Juan Pérez",
+    descripcion: "Revisión de presión arterial",
+    participantes: ["Dr. Martínez"]
+  },
+  {
+    id: "3",
+    titulo: "Consulta Ana López",
+    fecha: new Date(),
+    horaInicio: "14:00",
+    horaFin: "14:30",
+    tipo: "consulta" as const,
+    pacienteId: "3",
+    pacienteNombre: "Ana López",
+    descripcion: "Control post-operatorio",
+    participantes: ["Dr. Martínez"]
+  },
+  {
+    id: "4",
+    titulo: "Visita familiar - Carlos Rodríguez",
+    fecha: new Date(new Date().getTime() + 24 * 60 * 60 * 1000), // Mañana
+    horaInicio: "08:00",
+    horaFin: "09:00",
+    tipo: "visita" as const,
+    pacienteId: "4",
+    pacienteNombre: "Carlos Rodríguez",
+    descripcion: "Visita de hija",
+    participantes: ["Familiar: Ana Rodríguez"]
+  },
+  {
+    id: "5",
+    titulo: "Reunión de personal",
+    fecha: new Date(new Date().getTime() - 24 * 60 * 60 * 1000), // Ayer
+    horaInicio: "14:00",
+    horaFin: "15:00",
+    tipo: "reunion" as const,
+    descripcion: "Revisión de protocolos de atención",
+    participantes: ["Todo el personal"]
+  }
+];
+
 export const MedicoDashboard = ({ currentUser, isMedico, isEnfermera }: MedicoDashboardProps) => {
   const navigate = useNavigate();
   const { totalUnread } = useNotificationStore();
+
+  // Calcular consultas del día de hoy
+  const today = new Date();
+  const consultasHoy = eventosMock.filter(evento => {
+    const eventoFecha = new Date(evento.fecha);
+    return eventoFecha.toDateString() === today.toDateString() && 
+           evento.tipo === "consulta";
+  }).length;
 
   // Alertas clínicas mock
   const alertasClinicas = [
@@ -72,7 +142,7 @@ export const MedicoDashboard = ({ currentUser, isMedico, isEnfermera }: MedicoDa
         
         <StatCard
           title="Consultas hoy"
-          value={12}
+          value={consultasHoy}
           icon={Calendar}
           iconColor="bg-green-100 text-green-600"
           onClick={() => navigate("/calendario")}
