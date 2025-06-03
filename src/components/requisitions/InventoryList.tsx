@@ -20,6 +20,9 @@ const inventoryItems = [
   { id: "10", name: "Sabanas desechables", quantity: 25, category: "Ropa de cama" }
 ];
 
+// Mock patient count - in a real app this would come from your patient data
+const PATIENT_COUNT = 10;
+
 export const InventoryList = () => {
   const [searchTerm, setSearchTerm] = useState("");
   
@@ -31,8 +34,15 @@ export const InventoryList = () => {
     : inventoryItems;
   
   const getQuantityBadge = (quantity: number) => {
-    if (quantity <= 5) return <Badge className="bg-red-100 text-red-700">Bajo: {quantity}</Badge>;
-    if (quantity <= 10) return <Badge className="bg-amber-100 text-amber-700">Medio: {quantity}</Badge>;
+    const lowThreshold = PATIENT_COUNT;
+    const mediumThreshold = PATIENT_COUNT * 2;
+    
+    if (quantity < lowThreshold) {
+      return <Badge className="bg-red-100 text-red-700">Bajo: {quantity}</Badge>;
+    }
+    if (quantity <= mediumThreshold) {
+      return <Badge className="bg-amber-100 text-amber-700">Medio: {quantity}</Badge>;
+    }
     return <Badge className="bg-green-100 text-green-700">Alto: {quantity}</Badge>;
   };
   
@@ -52,7 +62,7 @@ export const InventoryList = () => {
         <CardHeader>
           <CardTitle>Inventario existente</CardTitle>
           <CardDescription>
-            Consulte esta lista antes de solicitar nuevos insumos
+            Consulte esta lista antes de solicitar nuevos insumos (criterio basado en {PATIENT_COUNT} pacientes)
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -78,7 +88,7 @@ export const InventoryList = () => {
                     No se encontraron coincidencias
                   </TableCell>
                 </TableRow>
-              )}
+                )}
             </TableBody>
           </Table>
         </CardContent>
