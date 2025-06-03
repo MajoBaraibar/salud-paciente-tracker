@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/Layout";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar as CalendarIcon, Clock, Plus, User, Users } from "lucide-react";
 import { toast } from "sonner";
 import { eventosMock } from "@/components/dashboard/MedicoDashboard";
+import { useNotificationStore } from "@/stores/notificationStore";
 
 type Evento = {
   id: string;
@@ -42,6 +43,12 @@ export default function Calendario() {
     tipo: "consulta",
   });
   const [vista, setVista] = useState<"dia" | "semana">("dia");
+  const { markAllAsRead } = useNotificationStore();
+
+  // Marcar notificaciones de calendario como leídas al entrar a la página
+  useEffect(() => {
+    markAllAsRead('calendar');
+  }, [markAllAsRead]);
 
   // Filtrar eventos para el día seleccionado o semana
   const eventosFiltrados = eventos.filter(evento => {
