@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -517,7 +516,7 @@ const Dashboard = () => {
     );
   }
   
-  // Dashboard para médicos y enfermeras (incluye vista de pacientes críticos)
+  // Dashboard para médicos y enfermeras (modificado para eliminar duplicación)
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -588,7 +587,7 @@ const Dashboard = () => {
               
               <Card 
                 className="cursor-pointer transition-all hover:shadow-md"
-                onClick={() => document.getElementById('alertas-tab')?.click()}
+                onClick={() => document.getElementById('pacientes-criticos-tab')?.click()}
               >
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
@@ -621,16 +620,12 @@ const Dashboard = () => {
               </Card>
             </div>
             
-            {/* Pestañas principales */}
+            {/* Pestañas principales - modificadas para eliminar duplicación */}
             <Tabs defaultValue="pacientes-criticos">
               <TabsList className="mb-6 bg-white border">
-                <TabsTrigger value="pacientes-criticos" className="data-[state=active]:bg-health-50">
+                <TabsTrigger id="pacientes-criticos-tab" value="pacientes-criticos" className="data-[state=active]:bg-health-50">
                   <AlertTriangle className="h-4 w-4 mr-2" />
                   Pacientes críticos
-                </TabsTrigger>
-                <TabsTrigger id="alertas-tab" value="alertas" className="data-[state=active]:bg-health-50">
-                  <Users className="h-4 w-4 mr-2" />
-                  Condiciones médicas
                 </TabsTrigger>
                 <TabsTrigger value="actividad" className="data-[state=active]:bg-health-50">
                   <Activity className="h-4 w-4 mr-2" />
@@ -638,22 +633,31 @@ const Dashboard = () => {
                 </TabsTrigger>
               </TabsList>
               
-              {/* Contenido de pacientes críticos */}
+              {/* Contenido de pacientes críticos - mejorado con navegación directa */}
               <TabsContent value="pacientes-criticos" className="mt-0">
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-xl">Pacientes críticos</CardTitle>
                     <CardDescription>
-                      Pacientes que requieren atención especial
+                      Pacientes que requieren atención especial - Click en el nombre para acceder al historial médico
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       {alertasClinicas.map((alerta) => (
-                        <div key={alerta.id} className="p-4 border rounded-lg flex items-center justify-between">
-                          <div>
-                            <p className="font-medium">{alerta.pacienteNombre}</p>
-                            <p className="text-sm text-muted-foreground">{alerta.condicion}</p>
+                        <div key={alerta.id} className="p-4 border rounded-lg flex items-center justify-between hover:bg-muted/20 transition-colors">
+                          <div className="flex-1">
+                            <Button
+                              variant="link"
+                              className="p-0 h-auto font-medium text-health-700 hover:text-health-800"
+                              asChild
+                            >
+                              <Link to={`/pacientes/${alerta.pacienteId}`} state={{ tab: "historial" }}>
+                                {alerta.pacienteNombre}
+                              </Link>
+                            </Button>
+                            <p className="text-sm text-muted-foreground mt-1">{alerta.condicion}</p>
+                            <p className="text-xs text-muted-foreground">{alerta.descripcion}</p>
                           </div>
                           <Badge className={
                             alerta.prioridad === "alta" ? "bg-red-100 text-red-700" :
@@ -671,25 +675,6 @@ const Dashboard = () => {
                           <Link to="/pacientes">Ver todos los pacientes</Link>
                         </Button>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-              
-              {/* Contenido de alertas clínicas */}
-              <TabsContent value="alertas" className="mt-0">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-xl">Condiciones médicas</CardTitle>
-                    <CardDescription>
-                      Detalle de condiciones que requieren seguimiento
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {alertasClinicas.map((alerta) => (
-                        <AlertaClinica key={alerta.id} alerta={alerta} />
-                      ))}
                     </div>
                   </CardContent>
                 </Card>
