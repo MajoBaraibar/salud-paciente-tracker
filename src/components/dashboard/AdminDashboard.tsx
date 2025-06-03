@@ -1,0 +1,89 @@
+
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Users, CreditCard, AlertTriangle, FileText, Activity } from "lucide-react";
+import { DashboardHeader } from "./DashboardHeader";
+import { StatCard } from "./StatCard";
+import { ActivityTable } from "./ActivityTable";
+import { useNotificationStore } from "@/stores/notificationStore";
+import { pacientesMock } from "@/data/mockData";
+
+interface AdminDashboardProps {
+  currentUser: { email: string; role: string };
+}
+
+export const AdminDashboard = ({ currentUser }: AdminDashboardProps) => {
+  const navigate = useNavigate();
+  const { totalUnread } = useNotificationStore();
+
+  return (
+    <div className="max-w-7xl mx-auto space-y-6">
+      <DashboardHeader
+        title="Panel Administrativo"
+        subtitle={`Bienvenido ${currentUser.role}, aquí está el resumen del día`}
+        userEmail={currentUser.email}
+        userRole={currentUser.role}
+        avatarFallback="AD"
+      />
+      
+      {/* Resumen estadístico */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <StatCard
+          title="Pacientes activos"
+          value={pacientesMock.length}
+          icon={Users}
+          iconColor="bg-blue-100 text-blue-600"
+        />
+        
+        <StatCard
+          title="Pagos pendientes"
+          value={8}
+          icon={CreditCard}
+          iconColor="bg-green-100 text-green-600"
+          onClick={() => navigate("/admin")}
+        />
+        
+        <StatCard
+          title="Requisiciones"
+          value={5}
+          icon={AlertTriangle}
+          iconColor="bg-red-100 text-red-600"
+        />
+        
+        <StatCard
+          title="Anuncios nuevos"
+          value={totalUnread}
+          icon={FileText}
+          iconColor="bg-purple-100 text-purple-600"
+          onClick={() => navigate("/anuncios")}
+        />
+      </div>
+      
+      {/* Pestañas principales */}
+      <Tabs defaultValue="actividad">
+        <TabsList className="mb-6 bg-white border">
+          <TabsTrigger value="actividad" className="data-[state=active]:bg-health-50">
+            <Activity className="h-4 w-4 mr-2" />
+            Actividad reciente
+          </TabsTrigger>
+        </TabsList>
+        
+        {/* Contenido de actividad reciente */}
+        <TabsContent value="actividad" className="mt-0">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-xl">Actividad reciente</CardTitle>
+              <CardDescription>
+                Últimas acciones realizadas en el sistema
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ActivityTable />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+};
