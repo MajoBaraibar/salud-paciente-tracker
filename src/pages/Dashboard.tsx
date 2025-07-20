@@ -1,40 +1,13 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { FamiliarDashboard } from "@/components/dashboard/FamiliarDashboard";
 import { AdminDashboard } from "@/components/dashboard/AdminDashboard";
 import { MedicoDashboard } from "@/components/dashboard/MedicoDashboard";
-import { authService, AuthUser } from "@/lib/auth";
+import { useAuth } from "@/hooks/useAuth";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true);
-  
-  useEffect(() => {
-    // Verificar autenticación con Supabase
-    const checkAuth = async () => {
-      try {
-        const user = await authService.getCurrentUser();
-        
-        if (!user) {
-          navigate("/login");
-          return;
-        }
-        
-        setCurrentUser(user);
-      } catch (error) {
-        console.error("Error al verificar autenticación:", error);
-        navigate("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    checkAuth();
-  }, [navigate]);
+  const { user, loading } = useAuth();
   
   if (loading) {
     return (
@@ -47,7 +20,7 @@ const Dashboard = () => {
     );
   }
   
-  const currentUserRole = currentUser?.role || "";
+  const currentUserRole = user?.role || "";
 
   const isMedico = currentUserRole === "medico";
   const isEnfermera = currentUserRole === "enfermera";
@@ -61,7 +34,7 @@ const Dashboard = () => {
         <div className="min-h-screen flex w-full">
           <AppSidebar />
           <div className="flex-1 p-6">
-            <FamiliarDashboard currentUser={currentUser} />
+            <FamiliarDashboard currentUser={user} />
           </div>
         </div>
       </SidebarProvider>
@@ -75,7 +48,7 @@ const Dashboard = () => {
         <div className="min-h-screen flex w-full">
           <AppSidebar />
           <div className="flex-1 p-6">
-            <AdminDashboard currentUser={currentUser} />
+            <AdminDashboard currentUser={user} />
           </div>
         </div>
       </SidebarProvider>
@@ -89,7 +62,7 @@ const Dashboard = () => {
         <AppSidebar />
         <div className="flex-1 p-6">
           <MedicoDashboard 
-            currentUser={currentUser} 
+            currentUser={user} 
             isMedico={isMedico}
             isEnfermera={isEnfermera}
           />
