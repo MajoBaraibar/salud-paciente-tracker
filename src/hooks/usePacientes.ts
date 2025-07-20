@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Paciente } from '@/types';
 import { pacientesMock } from '@/data/mockData';
+import { useDemoStore } from '@/stores/demoStore';
 
 export const usePacientes = () => {
+  const { isDemoMode, pacientes: demoPacientes } = useDemoStore();
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -12,6 +14,14 @@ export const usePacientes = () => {
     try {
       setLoading(true);
       setError(null);
+      
+      // Si está en modo demo, usar datos del store
+      if (isDemoMode) {
+        console.log('Usando datos demo del store');
+        setPacientes(demoPacientes);
+        setLoading(false);
+        return;
+      }
       
       // Verificar si hay usuario temporal (no autenticado con Supabase)
       const userString = localStorage.getItem("user");
@@ -63,7 +73,7 @@ export const usePacientes = () => {
 
   useEffect(() => {
     fetchPacientes();
-  }, []);
+  }, [isDemoMode, demoPacientes]);
 
   return { pacientes, loading, error, refetch: fetchPacientes };
 };

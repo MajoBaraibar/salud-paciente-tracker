@@ -10,10 +10,13 @@ import { usePacientes } from "@/hooks/usePacientes";
 import { PacienteCard } from "@/components/PacienteCard";
 import { Search, Plus, Filter, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useDemoStore } from "@/stores/demoStore";
+import { DemoControls } from "@/components/DemoControls";
 
 const Pacientes = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { isDemoMode } = useDemoStore();
   const { pacientes, loading, error } = usePacientes();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterGenero, setFilterGenero] = useState("todos");
@@ -52,6 +55,7 @@ const Pacientes = () => {
   
   return (
     <SidebarProvider>
+      <DemoControls />
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <div className="flex-1 p-8">
@@ -59,7 +63,7 @@ const Pacientes = () => {
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-3xl font-bold text-health-700">Pacientes</h1>
               <Button 
-                onClick={() => navigate("/pacientes/nuevo")} 
+                onClick={() => navigate(isDemoMode ? "/demo/pacientes/nuevo" : "/pacientes/nuevo")} 
                 className="bg-health-600 hover:bg-health-700"
               >
                 <Plus className="mr-2 h-4 w-4" />

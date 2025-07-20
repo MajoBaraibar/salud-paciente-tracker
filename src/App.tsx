@@ -10,6 +10,8 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import DemoNuevoPaciente from "./pages/DemoNuevoPaciente";
+import DemoPresentation from "./pages/DemoPresentation";
 import Dashboard from "./pages/Dashboard";
 import Pacientes from "./pages/Pacientes";
 import DetallesPaciente from "./pages/DetallesPaciente";
@@ -53,15 +55,21 @@ const App = () => (
            <Route path="/login" element={<Login />} />
            <Route path="/register" element={<Register />} />
           
-          {/* Ruta raíz */}
-          <Route 
-            path="/" 
-            element={
-              <PublicRoute>
-                <Index />
-              </PublicRoute>
-            } 
-          />
+           {/* Ruta raíz - Presentación Demo */}
+           <Route 
+             path="/" 
+             element={<DemoPresentation />} 
+           />
+           
+           {/* Ruta original de index si es necesaria */}
+           <Route 
+             path="/index" 
+             element={
+               <PublicRoute>
+                 <Index />
+               </PublicRoute>
+             } 
+           />
           
           {/* Rutas protegidas con control de roles */}
           <Route 
@@ -91,14 +99,19 @@ const App = () => (
             } 
           />
           
-          <Route 
-            path="/pacientes/nuevo" 
-            element={
-              <ProtectedRoute requiredRole="admin">
-                <NuevoPaciente />
-              </ProtectedRoute>
-            } 
-          />
+           <Route 
+             path="/pacientes/nuevo" 
+             element={
+               <ProtectedRoute requiredRole="admin">
+                 <NuevoPaciente />
+               </ProtectedRoute>
+             } 
+           />
+           
+           <Route 
+             path="/demo/pacientes/nuevo" 
+             element={<DemoNuevoPaciente />} 
+           />
           
           <Route 
             path="/mensajes" 
