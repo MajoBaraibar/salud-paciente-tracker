@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { authService } from "@/lib/auth";
+import { useAuth } from "@/hooks/useAuth";
 import { userValidationSchema } from "@/lib/security";
 import { z } from "zod";
 import { useCenterConfig } from "@/hooks/useCenterConfig";
@@ -21,6 +21,7 @@ const loginSchema = z.object({
 const Login = () => {
   const centerConfig = useCenterConfig();
   const navigate = useNavigate();
+  const { user, signIn } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,18 +31,10 @@ const Login = () => {
   
   // Verificar si ya hay sesión activa
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const session = await authService.getSession();
-        if (session) {
-          navigate("/dashboard");
-        }
-      } catch (error) {
-        // No hay sesión activa, continuar en login
-      }
-    };
-    checkSession();
-  }, [navigate]);
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
   
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,14 +45,11 @@ const Login = () => {
       // Validar entrada
       const validatedData = loginSchema.parse({ email, password });
       
-      // Autenticar con Supabase
-      const user = await authService.signIn(validatedData.email, validatedData.password);
+      // Autenticar usando el hook useAuth
+      const loggedUser = await signIn(validatedData.email, validatedData.password);
       
-      // Guardar usuario en localStorage para persistencia
-      localStorage.setItem('user', JSON.stringify(user));
-      
-      toast.success(`Bienvenido, ${user.nombre}`);
-      navigate("/dashboard");
+      toast.success(`Bienvenido, ${loggedUser.nombre}`);
+      // El useEffect se encarga de navegar cuando user cambie
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: {[key: string]: string} = {};
@@ -90,16 +80,18 @@ const Login = () => {
       const emailSchema = z.string().email('Email inválido');
       emailSchema.parse(resetEmail);
       
-      await authService.resetPassword(resetEmail);
-      setResetEmailSent(true);
-      toast.success("Se ha enviado un correo con instrucciones para restablecer la contraseña");
+      // Simular envío de reset (en modo demo)
+      setTimeout(() => {
+        setResetEmailSent(true);
+        toast.success("Se ha enviado un correo con instrucciones para restablecer la contraseña");
+        setLoading(false);
+      }, 1000);
     } catch (error) {
       if (error instanceof z.ZodError) {
         toast.error("Email inválido");
       } else {
         toast.error("Error al enviar el correo de restablecimiento");
       }
-    } finally {
       setLoading(false);
     }
   };

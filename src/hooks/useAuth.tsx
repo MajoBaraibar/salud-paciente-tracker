@@ -26,36 +26,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const initializeAuth = async () => {
       console.log('Inicializando autenticación...');
+      setLoading(true);
+      
       try {
-        // Verificar si hay usuario almacenado
+        // Primero verificar si hay usuario almacenado en localStorage
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
           const parsedUser = JSON.parse(storedUser);
           console.log('Usuario desde localStorage:', parsedUser);
           setUser(parsedUser);
+          setLoading(false);
           return;
         }
 
-        // Intentar obtener usuario actual
+        // Intentar obtener usuario actual de Supabase
         const currentUser = await authService.getCurrentUser();
-        console.log('Usuario encontrado:', currentUser);
-        setUser(currentUser);
+        if (currentUser) {
+          console.log('Usuario encontrado:', currentUser);
+          setUser(currentUser);
+          localStorage.setItem('user', JSON.stringify(currentUser));
+        } else {
+          console.log('No hay usuario autenticado');
+          setUser(null);
+        }
       } catch (error) {
         console.error('Error al verificar autenticación:', error);
-        
-        // Crear usuario demo automáticamente para la demostración
-        const demoUser: AuthUser = {
-          id: 'demo-admin-1',
-          email: 'admin@healthcenter.com',
-          role: 'admin',
-          nombre: 'Administrador',
-          apellido: 'Demo',
-          supabaseId: 'demo-admin-1',
-          centro_id: 'demo-centro-1'
-        };
-        console.log('Creando usuario demo:', demoUser);
-        setUser(demoUser);
-        localStorage.setItem('user', JSON.stringify(demoUser));
+        setUser(null);
       } finally {
         setLoading(false);
         console.log('Autenticación inicializada');
@@ -66,10 +62,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signIn = async (email: string, password: string): Promise<AuthUser> => {
+    console.log('signIn llamado con:', email);
     const user = await authService.signIn(email, password);
+    console.log('Usuario autenticado:', user);
     setUser(user);
     // Guardar en localStorage como respaldo
     localStorage.setItem('user', JSON.stringify(user));
+    console.log('Usuario guardado en estado y localStorage');
     return user;
   };
 

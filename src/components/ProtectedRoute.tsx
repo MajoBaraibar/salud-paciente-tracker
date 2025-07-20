@@ -23,7 +23,7 @@ export const ProtectedRoute = ({
   // Usar useEffect para navegar, no durante el renderizado
   useEffect(() => {
     if (!loading && !user) {
-      toast.error('Debe iniciar sesión para acceder');
+      console.log('ProtectedRoute - Redirigiendo a login...');
       navigate('/login');
     }
   }, [user, loading, navigate]);
