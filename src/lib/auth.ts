@@ -32,9 +32,9 @@ export const authService = {
     // Obtener el perfil del usuario desde la base de datos
     if (data.user) {
       const { data: profile, error: profileError } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .select('*')
-        .eq('supabase_user_id', data.user.id)
+        .eq('id', data.user.id)
         .single();
       
       if (profileError) throw profileError;
@@ -60,9 +60,9 @@ export const authService = {
     // Crear perfil del usuario
     if (data.user) {
       const { error: profileError } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .insert({
-          supabase_user_id: data.user.id,
+          id: data.user.id,
           email: data.user.email,
           nombre: userData.nombre,
           apellido: userData.apellido,
@@ -90,9 +90,9 @@ export const authService = {
     if (!user) return null;
     
     const { data: profile, error } = await supabase
-      .from('user_profiles')
+      .from('profiles')
       .select('*')
-      .eq('supabase_user_id', user.id)
+      .eq('id', user.id)
       .single();
     
     if (error) return null;

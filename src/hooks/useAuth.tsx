@@ -90,9 +90,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Solo actualizar en Supabase si está disponible
     if (supabase) {
       const { error } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .update(userData)
-        .eq('supabase_user_id', user.supabaseId);
+        .eq('id', user.supabaseId);
       
       if (error) throw error;
     }
