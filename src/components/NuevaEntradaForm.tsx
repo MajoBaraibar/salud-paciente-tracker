@@ -1,12 +1,14 @@
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { AlertTriangle } from "lucide-react";
+import { historialValidationSchema, validateAndSanitize } from "@/lib/security";
 
 interface NuevaEntradaFormProps {
   pacienteId: string;
@@ -18,6 +20,7 @@ export const NuevaEntradaForm = ({ pacienteId, onSuccess, userRole = "medico" }:
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const { register, handleSubmit, formState: { errors }, reset } = useForm({
+    resolver: zodResolver(historialValidationSchema),
     defaultValues: {
       motivoConsulta: "",
       diagnostico: "",
@@ -49,8 +52,11 @@ export const NuevaEntradaForm = ({ pacienteId, onSuccess, userRole = "medico" }:
     setIsSubmitting(true);
     
     try {
-      // En un caso real, aquí iría la llamada a la API
-      console.log("Nueva entrada:", { pacienteId, ...data });
+      // Validar y sanitizar datos
+      const sanitizedData = validateAndSanitize(historialValidationSchema, data);
+      
+      // En un caso real, aquí iría la llamada a la API con datos sanitizados
+      console.log("Nueva entrada (sanitizada):", { pacienteId, ...sanitizedData });
       
       // Simulamos una espera
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -60,7 +66,11 @@ export const NuevaEntradaForm = ({ pacienteId, onSuccess, userRole = "medico" }:
       onSuccess();
     } catch (error) {
       console.error("Error al guardar entrada:", error);
-      toast.error("Error al guardar la entrada médica");
+      if (error instanceof Error) {
+        toast.error(`Error de validación: ${error.message}`);
+      } else {
+        toast.error("Error al guardar la entrada médica");
+      }
     } finally {
       setIsSubmitting(false);
     }

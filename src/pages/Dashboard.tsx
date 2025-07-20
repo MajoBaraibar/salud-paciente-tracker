@@ -6,24 +6,34 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { FamiliarDashboard } from "@/components/dashboard/FamiliarDashboard";
 import { AdminDashboard } from "@/components/dashboard/AdminDashboard";
 import { MedicoDashboard } from "@/components/dashboard/MedicoDashboard";
+import { authService, AuthUser } from "@/lib/auth";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState<{ email: string; role: string, patientId?: string } | null>(null);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    // Verificar si el usuario está autenticado
-    const userString = localStorage.getItem("user");
+    // Verificar autenticación con Supabase
+    const checkAuth = async () => {
+      try {
+        const user = await authService.getCurrentUser();
+        
+        if (!user) {
+          navigate("/login");
+          return;
+        }
+        
+        setCurrentUser(user);
+      } catch (error) {
+        console.error("Error al verificar autenticación:", error);
+        navigate("/login");
+      } finally {
+        setLoading(false);
+      }
+    };
     
-    if (!userString) {
-      navigate("/login");
-      return;
-    }
-    
-    const user = JSON.parse(userString);
-    setCurrentUser(user);
-    setLoading(false);
+    checkAuth();
   }, [navigate]);
   
   if (loading) {

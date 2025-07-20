@@ -5,6 +5,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "@/hooks/useAuth";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -25,66 +27,12 @@ document.title = "En Suma | Sistema Integral de Gestión Médica";
 
 const queryClient = new QueryClient();
 
-// Componente para rutas protegidas
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+// Componente para verificar autenticación en ruta raíz
+const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = localStorage.getItem("user");
   
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  return <>{children}</>;
-};
-
-// Componente para rutas de administrador
-const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  const user = localStorage.getItem("user");
-  const isAdmin = user ? JSON.parse(user).role === "admin" : false;
-  
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  if (!isAdmin) {
+  if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
-  }
-  
-  return <>{children}</>;
-};
-
-// Componente para rutas de personal médico (médicos y enfermeras)
-const MedicoEnfermeraRoute = ({ children }: { children: React.ReactNode }) => {
-  const user = localStorage.getItem("user");
-  const role = user ? JSON.parse(user).role : "";
-  const isMedicoOrEnfermera = role === "medico" || role === "enfermera";
-  
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  if (!isMedicoOrEnfermera && role !== "admin") {
-    return <Navigate to="/dashboard" replace />;
-  }
-  
-  return <>{children}</>;
-};
-
-// Componente para rutas de familiares (acceso restringido)
-const FamiliarRoute = ({ children, pacienteId }: { children: React.ReactNode, pacienteId?: string }) => {
-  const user = localStorage.getItem("user");
-  const isFamiliar = user ? JSON.parse(user).role === "familiar" : false;
-  
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-  
-  if (isFamiliar) {
-    // Si es un familiar y está accediendo a un paciente que no es suyo
-    // (esto es un ejemplo, en producción habría que verificar con la base de datos)
-    const familiarPatientId = "1"; // Simulamos que el familiar está asignado al paciente con ID 1
-    if (pacienteId && pacienteId !== familiarPatientId) {
-      return <Navigate to="/pacientes/1" replace />;
-    }
   }
   
   return <>{children}</>;
@@ -94,26 +42,27 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <BrowserRouter>
-        <Toaster />
-        <Sonner />
-        <Routes>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <Routes>
           <Route path="/login" element={<Login />} />
           
-          {/* Ruta raíz redirige a dashboard o login según autenticación */}
+          {/* Ruta raíz */}
           <Route 
             path="/" 
             element={
-              localStorage.getItem("user") ? 
-                <Navigate to="/dashboard" replace /> : 
+              <PublicRoute>
                 <Index />
+              </PublicRoute>
             } 
           />
           
-          {/* Rutas protegidas */}
+          {/* Rutas protegidas con control de roles */}
           <Route 
             path="/dashboard" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="familiar">
                 <Dashboard />
               </ProtectedRoute>
             } 
@@ -122,16 +71,16 @@ const App = () => (
           <Route 
             path="/pacientes" 
             element={
-              <MedicoEnfermeraRoute>
+              <ProtectedRoute requiredRole="enfermera">
                 <Pacientes />
-              </MedicoEnfermeraRoute>
+              </ProtectedRoute>
             } 
           />
           
           <Route 
             path="/pacientes/:id" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="familiar">
                 <DetallesPaciente />
               </ProtectedRoute>
             } 
@@ -140,16 +89,16 @@ const App = () => (
           <Route 
             path="/pacientes/nuevo" 
             element={
-              <AdminRoute>
+              <ProtectedRoute requiredRole="admin">
                 <NuevoPaciente />
-              </AdminRoute>
+              </ProtectedRoute>
             } 
           />
           
           <Route 
             path="/mensajes" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="familiar">
                 <Mensajes />
               </ProtectedRoute>
             } 
@@ -158,7 +107,7 @@ const App = () => (
           <Route 
             path="/anuncios" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="enfermera">
                 <Anuncios />
               </ProtectedRoute>
             } 
@@ -167,7 +116,7 @@ const App = () => (
           <Route 
             path="/calendario" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="familiar">
                 <Calendario />
               </ProtectedRoute>
             } 
@@ -176,7 +125,7 @@ const App = () => (
           <Route 
             path="/requisiciones" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="enfermera">
                 <Requisiciones />
               </ProtectedRoute>
             } 
@@ -185,7 +134,7 @@ const App = () => (
           <Route 
             path="/pagos" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="familiar">
                 <Pagos />
               </ProtectedRoute>
             } 
@@ -194,23 +143,24 @@ const App = () => (
           <Route 
             path="/admin" 
             element={
-              <AdminRoute>
+              <ProtectedRoute requiredRole="admin">
                 <Admin />
-              </AdminRoute>
+              </ProtectedRoute>
             } 
           />
           
           <Route 
             path="/configuracion" 
             element={
-              <ProtectedRoute>
+              <ProtectedRoute requiredRole="familiar">
                 <Configuracion />
               </ProtectedRoute>
             } 
           />
           
           <Route path="*" element={<NotFound />} />
-        </Routes>
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

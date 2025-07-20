@@ -9,12 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { pacienteValidationSchema, validateAndSanitize } from "@/lib/security";
 
 const NuevoPaciente = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
+    resolver: zodResolver(pacienteValidationSchema),
     defaultValues: {
       nombre: "",
       apellido: "",
@@ -28,18 +31,32 @@ const NuevoPaciente = () => {
   
   const watchGenero = watch("genero");
   
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     setIsSubmitting(true);
     
-    // En una aplicación real, aquí enviaríamos los datos a una API
-    // Simulamos un envío con timeout
-    setTimeout(() => {
-      console.log("Nuevo paciente:", data);
+    try {
+      // Validar y sanitizar datos
+      const sanitizedData = validateAndSanitize(pacienteValidationSchema, data);
+      
+      // En una aplicación real, aquí enviaríamos los datos sanitizados a una API
+      console.log("Nuevo paciente (sanitizado):", sanitizedData);
+      
+      // Simulamos un envío con timeout
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       toast.success("Paciente registrado correctamente");
-      setIsSubmitting(false);
       // Redirigir a la lista de pacientes
       navigate("/pacientes");
-    }, 1000);
+    } catch (error) {
+      console.error("Error al registrar paciente:", error);
+      if (error instanceof Error) {
+        toast.error(`Error de validación: ${error.message}`);
+      } else {
+        toast.error("Error al registrar el paciente");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   
   return (

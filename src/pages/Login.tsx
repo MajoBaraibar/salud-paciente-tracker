@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,38 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { UserType } from "@/types";
+import { authService } from "@/lib/auth";
+import { userValidationSchema } from "@/lib/security";
+import { z } from "zod";
 
-// Datos de ejemplo para los usuarios
-const usuarios: UserType[] = [
-  {
-    id: "1",
-    email: "medico@example.com",
-    role: "medico",
-    nombre: "Dr. Martínez",
-    especialidad: "Medicina General"
-  },
-  {
-    id: "2",
-    email: "enfermera@example.com",
-    role: "enfermera",
-    nombre: "Enf. Rodríguez"
-  },
-  {
-    id: "3",
-    email: "admin@example.com",
-    role: "admin",
-    nombre: "Admin López"
-  },
-  {
-    id: "4",
-    email: "familiar@example.com",
-    role: "familiar",
-    nombre: "Ana",
-    apellido: "González",
-    pacienteId: "1" // ID del paciente relacionado
-  }
-];
+// Esquema de validación para login
+const loginSchema = z.object({
+  email: z.string().email('Email inválido').min(1, 'Email requerido'),
+  password: z.string().min(1, 'Contraseña requerida')
+});
 
 const Login = () => {
   const navigate = useNavigate();
@@ -47,56 +24,79 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetEmailSent, setResetEmailSent] = useState(false);
+  const [errors, setErrors] = useState<{[key: string]: string}>({});
   
   // Verificar si ya hay sesión activa
-  if (localStorage.getItem("user")) {
-    navigate("/dashboard");
-  }
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const session = await authService.getSession();
+        if (session) {
+          navigate("/dashboard");
+        }
+      } catch (error) {
+        // No hay sesión activa, continuar en login
+      }
+    };
+    checkSession();
+  }, [navigate]);
   
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrors({});
     
-    // Simulamos una petición a un API
-    setTimeout(() => {
-      const usuario = usuarios.find(u => u.email === email);
+    try {
+      // Validar entrada
+      const validatedData = loginSchema.parse({ email, password });
       
-      if (usuario && password === "password") {
-        localStorage.setItem("user", JSON.stringify({
-          id: usuario.id,
-          email: usuario.email,
-          role: usuario.role,
-          nombre: usuario.nombre,
-          pacienteId: usuario.pacienteId // Solo para familiares
-        }));
-        
-        toast.success(`Bienvenido, ${usuario.nombre}`);
-        navigate("/dashboard");
+      // Autenticar con Supabase
+      const user = await authService.signIn(validatedData.email, validatedData.password);
+      
+      toast.success(`Bienvenido, ${user.nombre}`);
+      navigate("/dashboard");
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors: {[key: string]: string} = {};
+        error.errors.forEach((err) => {
+          if (err.path.length > 0) {
+            fieldErrors[err.path[0] as string] = err.message;
+          }
+        });
+        setErrors(fieldErrors);
+      } else if (error instanceof Error) {
+        toast.error(error.message === 'Invalid login credentials' 
+          ? 'Credenciales incorrectas' 
+          : 'Error al iniciar sesión');
       } else {
-        toast.error("Credenciales incorrectas");
+        toast.error("Error inesperado al iniciar sesión");
       }
-      
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
-  const handleResetPassword = (e: React.FormEvent) => {
+  const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
-    // Simulación del envío de email
-    setTimeout(() => {
-      const usuario = usuarios.find(u => u.email === resetEmail);
+    try {
+      // Validar email
+      const emailSchema = z.string().email('Email inválido');
+      emailSchema.parse(resetEmail);
       
-      if (usuario) {
-        setResetEmailSent(true);
-        toast.success("Se ha enviado un correo con instrucciones para restablecer la contraseña");
+      await authService.resetPassword(resetEmail);
+      setResetEmailSent(true);
+      toast.success("Se ha enviado un correo con instrucciones para restablecer la contraseña");
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast.error("Email inválido");
       } else {
-        toast.error("Email no encontrado");
+        toast.error("Error al enviar el correo de restablecimiento");
       }
-      
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
   
   return (
@@ -129,8 +129,10 @@ const Login = () => {
                   placeholder="ejemplo@correo.com" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className={errors.email ? "border-red-500" : ""}
                   required
                 />
+                {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
@@ -185,17 +187,17 @@ const Login = () => {
                   type="password" 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  className={errors.password ? "border-red-500" : ""}
                   required
                 />
+                {errors.password && <p className="text-sm text-red-500">{errors.password}</p>}
               </div>
               <div className="text-sm text-muted-foreground">
-                <span>Para probar, use:</span>
-                <ul className="list-disc pl-6 mt-1 space-y-1">
-                  <li>medico@example.com / password</li>
-                  <li>enfermera@example.com / password</li>
-                  <li>admin@example.com / password</li>
-                  <li>familiar@example.com / password</li>
-                </ul>
+                <span>Nota de seguridad:</span>
+                <p className="mt-1">
+                  Este sistema usa autenticación segura con Supabase. 
+                  Contacte al administrador para obtener sus credenciales.
+                </p>
               </div>
             </CardContent>
             <CardFooter>

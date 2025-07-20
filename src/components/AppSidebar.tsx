@@ -21,6 +21,8 @@ import {
   Settings,
 } from "lucide-react";
 import { useNotificationStore } from "@/stores/notificationStore";
+import { authService } from "@/lib/auth";
+import { toast } from "sonner";
 
 export const AppSidebar = () => {
   const navigate = useNavigate();
@@ -32,13 +34,30 @@ export const AppSidebar = () => {
   const calendarNotifications = notifications.filter(n => n.type === 'calendar' && !n.read).length;
   const announcementNotifications = notifications.filter(n => n.type === 'announcement' && !n.read).length;
 
-  // Get current user role
-  const currentUser = JSON.parse(localStorage.getItem("user") || '{"role":"medico"}');
+  // Get current user role - usando fallback seguro
+  const currentUser = (() => {
+    try {
+      const userString = localStorage.getItem("user");
+      return userString ? JSON.parse(userString) : { role: "medico" };
+    } catch {
+      return { role: "medico" };
+    }
+  })();
   const userRole = currentUser.role;
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await authService.signOut();
+      // Limpiar localStorage como respaldo
+      localStorage.removeItem("user");
+      toast.success("Sesión cerrada correctamente");
+      navigate("/login");
+    } catch (error) {
+      toast.error("Error al cerrar sesión");
+      // Forzar logout local en caso de error
+      localStorage.removeItem("user");
+      navigate("/login");
+    }
   };
 
   return (
