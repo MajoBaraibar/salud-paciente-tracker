@@ -17,7 +17,7 @@ const Pacientes = () => {
   const { pacientes, loading, error } = usePacientes();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterGenero, setFilterGenero] = useState("todos");
-  const [pacientesFiltrados, setPacientesFiltrados] = useState(pacientes);
+  const [pacientesFiltrados, setPacientesFiltrados] = useState([]);
   
   // Verificar autenticación
   useEffect(() => {
