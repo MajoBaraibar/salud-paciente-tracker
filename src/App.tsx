@@ -71,7 +71,7 @@ const App = () => (
           <Route 
             path="/pacientes" 
             element={
-              <ProtectedRoute requiredRole="enfermera">
+              <ProtectedRoute requiredRole="medico">
                 <Pacientes />
               </ProtectedRoute>
             } 
