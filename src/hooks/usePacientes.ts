@@ -79,6 +79,7 @@ export const usePacientes = () => {
 };
 
 export const usePacienteById = (id: string) => {
+  const { isDemoMode, pacientes: demoPacientes } = useDemoStore();
   const [paciente, setPaciente] = useState<Paciente | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -88,6 +89,14 @@ export const usePacienteById = (id: string) => {
       try {
         setLoading(true);
         setError(null);
+        
+        // Si está en modo demo, usar datos del store
+        if (isDemoMode) {
+          const demoPaciente = demoPacientes.find(p => p.id === id);
+          setPaciente(demoPaciente || null);
+          setLoading(false);
+          return;
+        }
         
         // Verificar si hay usuario temporal
         const userString = localStorage.getItem("user");
