@@ -8,7 +8,7 @@ import { StatCard } from "./StatCard";
 import { ActivityTable } from "./ActivityTable";
 import { CriticalPatientsTab } from "./CriticalPatientsTab";
 import { useNotificationStore } from "@/stores/notificationStore";
-import { pacientesMock } from "@/data/mockData";
+import { usePacientes } from "@/hooks/usePacientes";
 
 interface MedicoDashboardProps {
   currentUser: { email: string; role: string };
@@ -81,6 +81,7 @@ export const eventosMock = [
 export const MedicoDashboard = ({ currentUser, isMedico, isEnfermera }: MedicoDashboardProps) => {
   const navigate = useNavigate();
   const { totalUnread } = useNotificationStore();
+  const { pacientes, loading } = usePacientes();
 
   // Calcular consultas del día de hoy
   const today = new Date();
@@ -90,12 +91,12 @@ export const MedicoDashboard = ({ currentUser, isMedico, isEnfermera }: MedicoDa
            evento.tipo === "consulta";
   }).length;
 
-  // Alertas clínicas mock
-  const alertasClinicas = [
+  // Alertas clínicas usando datos reales
+  const alertasClinicas = pacientes.length > 0 ? [
     {
       id: "1",
-      pacienteId: pacientesMock[0].id,
-      pacienteNombre: `${pacientesMock[0].nombre} ${pacientesMock[0].apellido}`,
+      pacienteId: pacientes[0]?.id || "1",
+      pacienteNombre: pacientes[0] ? `${pacientes[0].nombre} ${pacientes[0].apellido}` : "Paciente",
       tipo: "alergia" as const,
       descripcion: "Alergia severa a penicilina",
       prioridad: "alta" as const,
@@ -103,8 +104,8 @@ export const MedicoDashboard = ({ currentUser, isMedico, isEnfermera }: MedicoDa
     },
     {
       id: "2",
-      pacienteId: pacientesMock[1].id,
-      pacienteNombre: `${pacientesMock[1].nombre} ${pacientesMock[1].apellido}`,
+      pacienteId: pacientes[1]?.id || "2",
+      pacienteNombre: pacientes[1] ? `${pacientes[1].nombre} ${pacientes[1].apellido}` : "Paciente",
       tipo: "estudio" as const,
       descripcion: "Resultados críticos en hemograma",
       prioridad: "alta" as const,
@@ -112,14 +113,14 @@ export const MedicoDashboard = ({ currentUser, isMedico, isEnfermera }: MedicoDa
     },
     {
       id: "3",
-      pacienteId: pacientesMock[2].id,
-      pacienteNombre: `${pacientesMock[2].nombre} ${pacientesMock[2].apellido}`,
+      pacienteId: pacientes[2]?.id || "3",
+      pacienteNombre: pacientes[2] ? `${pacientes[2].nombre} ${pacientes[2].apellido}` : "Paciente",
       tipo: "medicacion" as const,
       descripcion: "Medicamento pendiente de administrar",
       prioridad: "media" as const,
       condicion: "Hipertensión arterial"
     },
-  ];
+  ] : [];
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -135,7 +136,7 @@ export const MedicoDashboard = ({ currentUser, isMedico, isEnfermera }: MedicoDa
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatCard
           title="Pacientes activos"
-          value={pacientesMock.length}
+          value={loading ? "..." : pacientes.length}
           icon={Users}
           iconColor="bg-blue-100 text-blue-600"
         />

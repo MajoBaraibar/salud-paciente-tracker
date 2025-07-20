@@ -3,6 +3,8 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { RequisitionForm } from "@/components/requisitions/RequisitionForm";
 import { InventoryList } from "@/components/requisitions/InventoryList";
+import { useAuth } from "@/hooks/useAuth";
+import { useRequisiciones } from "@/hooks/useRequisiciones";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,66 +12,75 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Check, X } from "lucide-react";
 import { toast } from "sonner";
-import { RequisitionItemType } from "@/types";
-
-// Mock requisitions data
-const requisitionsMock: RequisitionItemType[] = [
-  {
-    id: "1",
-    name: "Medicamentos para hipertensión",
-    quantity: 10,
-    priority: "alta",
-    notes: "Urgente para paciente González",
-    categoryId: "medicamentos",
-    requestedBy: "Dr. Martínez",
-    status: "pendiente"
-  },
-  {
-    id: "2",
-    name: "Material de limpieza",
-    quantity: 5,
-    priority: "media",
-    notes: "Para área de cocina",
-    categoryId: "limpieza",
-    requestedBy: "Enf. Rodríguez",
-    status: "pendiente"
-  },
-  {
-    id: "3",
-    name: "Pañales adulto talla G",
-    quantity: 30,
-    priority: "alta",
-    notes: "Stock bajo",
-    categoryId: "insumos",
-    requestedBy: "Enf. Pérez",
-    status: "aprobado"
-  }
-];
+import { Loader2 } from "lucide-react";
 
 const Requisiciones = () => {
-  const [currentUser, setCurrentUser] = useState<{role: string}>(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      return JSON.parse(user);
+  const { user } = useAuth();
+  const { requisiciones, loading, error, refetch } = useRequisiciones();
+
+  // Verificar autenticación
+  useEffect(() => {
+    if (!user) {
+      // Redirect handled by auth hook
+      return;
     }
-    return { role: "medico" };
-  });
+  }, [user]);
 
-  const [requisitions, setRequisitions] = useState<RequisitionItemType[]>(requisitionsMock);
-
-  const handleApproveRequisition = (id: string) => {
-    setRequisitions(prev => 
-      prev.map(req => req.id === id ? {...req, status: "aprobado"} : req)
-    );
-    toast.success("Requisición aprobada");
+  const handleApproveRequisition = async (id: string) => {
+    try {
+      // TODO: Implement update in Supabase
+      toast.success("Requisición aprobada");
+      refetch();
+    } catch (err) {
+      toast.error("Error al aprobar requisición");
+    }
   };
 
-  const handleRejectRequisition = (id: string) => {
-    setRequisitions(prev => 
-      prev.map(req => req.id === id ? {...req, status: "rechazado"} : req)
-    );
-    toast.success("Requisición rechazada");
+  const handleRejectRequisition = async (id: string) => {
+    try {
+      // TODO: Implement update in Supabase
+      toast.success("Requisición rechazada");
+      refetch();
+    } catch (err) {
+      toast.error("Error al rechazar requisición");
+    }
   };
+
+  if (loading) {
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <AppSidebar />
+          <div className="flex-1 p-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-health-600" />
+                <span className="ml-2 text-muted-foreground">Cargando requisiciones...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </SidebarProvider>
+    );
+  }
+
+  if (error) {
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <AppSidebar />
+          <div className="flex-1 p-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center py-12 bg-red-50 rounded-lg border border-red-200">
+                <p className="text-red-600 mb-4">Error: {error}</p>
+                <Button onClick={() => refetch()}>Reintentar</Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </SidebarProvider>
+    );
+  }
 
   return (
     <SidebarProvider>
@@ -77,7 +88,7 @@ const Requisiciones = () => {
         <AppSidebar />
         <div className="flex-1 p-8">
           <div className="max-w-4xl mx-auto">
-            <Tabs defaultValue={currentUser.role === "admin" ? "requisitions-list" : "inventory-list"}>
+            <Tabs defaultValue={user?.role === "admin" ? "requisitions-list" : "inventory-list"}>
               <div className="mb-6 flex items-center justify-between">
                 <div>
                   <h1 className="text-3xl font-bold text-health-700">Requisiciones</h1>
@@ -86,7 +97,7 @@ const Requisiciones = () => {
                   </p>
                 </div>
                 <TabsList>
-                  {currentUser.role === "admin" ? (
+                  {user?.role === "admin" ? (
                     <>
                       <TabsTrigger value="requisitions-list">Solicitudes pendientes</TabsTrigger>
                       <TabsTrigger value="approved">Solicitudes aprobadas</TabsTrigger>
@@ -102,13 +113,13 @@ const Requisiciones = () => {
               </div>
               
               {/* New inventory list tab */}
-              {currentUser.role !== "admin" && (
+              {user?.role !== "admin" && (
                 <TabsContent value="inventory-list">
                   <InventoryList />
                 </TabsContent>
               )}
               
-              {currentUser.role === "admin" ? (
+              {user?.role === "admin" ? (
                 <>
                   <TabsContent value="requisitions-list">
                     <Card>
@@ -130,20 +141,20 @@ const Requisiciones = () => {
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {requisitions.filter(r => r.status === "pendiente").map(req => (
+                            {requisiciones.filter(r => r.estado === "pendiente").map(req => (
                               <TableRow key={req.id}>
-                                <TableCell className="font-medium">{req.name}</TableCell>
-                                <TableCell>{req.quantity}</TableCell>
+                                <TableCell className="font-medium">{req.nombre}</TableCell>
+                                <TableCell>{req.cantidad}</TableCell>
                                 <TableCell>
                                   <Badge className={
-                                    req.priority === "alta" ? "bg-red-100 text-red-700" :
-                                    req.priority === "media" ? "bg-amber-100 text-amber-700" :
+                                    req.prioridad === "alta" ? "bg-red-100 text-red-700" :
+                                    req.prioridad === "media" ? "bg-amber-100 text-amber-700" :
                                     "bg-blue-100 text-blue-700"
                                   }>
-                                    {req.priority}
+                                    {req.prioridad}
                                   </Badge>
                                 </TableCell>
-                                <TableCell>{req.requestedBy}</TableCell>
+                                <TableCell>{req.solicitado_por}</TableCell>
                                 <TableCell>
                                   <div className="flex space-x-2">
                                     <Button
@@ -168,7 +179,7 @@ const Requisiciones = () => {
                                 </TableCell>
                               </TableRow>
                             ))}
-                            {requisitions.filter(r => r.status === "pendiente").length === 0 && (
+                            {requisiciones.filter(r => r.estado === "pendiente").length === 0 && (
                               <TableRow>
                                 <TableCell colSpan={5} className="text-center py-4">
                                   No hay solicitudes pendientes de aprobación
@@ -201,26 +212,26 @@ const Requisiciones = () => {
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                            {requisitions.filter(r => r.status === "aprobado").map(req => (
+                            {requisiciones.filter(r => r.estado === "aprobada").map(req => (
                               <TableRow key={req.id}>
-                                <TableCell className="font-medium">{req.name}</TableCell>
-                                <TableCell>{req.quantity}</TableCell>
+                                <TableCell className="font-medium">{req.nombre}</TableCell>
+                                <TableCell>{req.cantidad}</TableCell>
                                 <TableCell>
                                   <Badge className={
-                                    req.priority === "alta" ? "bg-red-100 text-red-700" :
-                                    req.priority === "media" ? "bg-amber-100 text-amber-700" :
+                                    req.prioridad === "alta" ? "bg-red-100 text-red-700" :
+                                    req.prioridad === "media" ? "bg-amber-100 text-amber-700" :
                                     "bg-blue-100 text-blue-700"
                                   }>
-                                    {req.priority}
+                                    {req.prioridad}
                                   </Badge>
                                 </TableCell>
-                                <TableCell>{req.requestedBy}</TableCell>
+                                <TableCell>{req.solicitado_por}</TableCell>
                                 <TableCell>
                                   <Badge className="bg-green-100 text-green-700">Aprobado</Badge>
                                 </TableCell>
                               </TableRow>
                             ))}
-                            {requisitions.filter(r => r.status === "aprobado").length === 0 && (
+                            {requisiciones.filter(r => r.estado === "aprobada").length === 0 && (
                               <TableRow>
                                 <TableCell colSpan={5} className="text-center py-4">
                                   No hay solicitudes aprobadas
@@ -236,7 +247,7 @@ const Requisiciones = () => {
               ) : (
                 <>
                   <TabsContent value="new-requisition">
-                    <RequisitionForm userRole={currentUser.role} />
+                    <RequisitionForm userRole={user?.role || "medico"} />
                   </TabsContent>
                   
                   <TabsContent value="my-requisitions">

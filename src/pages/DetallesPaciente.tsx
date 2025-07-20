@@ -1,5 +1,5 @@
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -11,13 +11,15 @@ import { NuevaEntradaForm } from "@/components/NuevaEntradaForm";
 import { NuevaNotaEnfermeria } from "@/components/patient/NuevaNotaEnfermeria";
 import { EmergencyContact } from "@/components/patient/EmergencyContact";
 import { ResumenMedico } from "@/components/patient/ResumenMedico";
-import { getPacienteById, getHistorialPaciente } from "../data/mockData";
+import { usePacienteById } from "@/hooks/usePacientes";
+import { useHistorialPaciente } from "@/hooks/useHistorial";
+import { useAuth } from "@/hooks/useAuth";
 import { calcularEdad } from "@/lib/utils";
 import { 
   FileText, Plus, User, Edit, Trash2, CalendarDays, 
   Upload, Phone, Heart, Thermometer, Activity, 
   Droplets, UserCheck, Clipboard, AlertTriangle,
-  FilePen
+  FilePen, Loader2
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,25 +55,32 @@ import {
 
 const DetallesPaciente = () => {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
+  const { paciente: pacienteOriginal, loading: pacienteLoading, error: pacienteError } = usePacienteById(id || '');
+  const { entradas: historial, loading: historialLoading, error: historialError } = useHistorialPaciente(id || '');
+  
   const [activeTab, setActiveTab] = useState("perfil");
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [imagenPerfil, setImagenPerfil] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  
-  // Obtener el paciente inicial
-  const pacienteOriginal = getPacienteById(id || "");
   const [pacienteEditado, setPacienteEditado] = useState(pacienteOriginal);
   
-  const historial = getHistorialPaciente(id || "");
-  const [currentUser, setCurrentUser] = useState<{role: string}>(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      return JSON.parse(user);
+  // Update edited patient when original data loads
+  useEffect(() => {
+    if (pacienteOriginal) {
+      setPacienteEditado(pacienteOriginal);
     }
-    return { role: "medico" };
-  });
+  }, [pacienteOriginal]);
+
+  // Verificar autenticación
+  useEffect(() => {
+    if (!user) {
+      // Redirect handled by auth hook
+      return;
+    }
+  }, [user]);
   
   // Notas de enfermería (ejemplo)
   const [notasEnfermeria, setNotasEnfermeria] = useState<{
@@ -114,17 +123,40 @@ const DetallesPaciente = () => {
     ultimaActualizacion: "2025-05-12T08:30:00"
   };
   
-  if (!pacienteOriginal) {
+  if (pacienteLoading || historialLoading) {
     return (
       <SidebarProvider>
         <div className="min-h-screen flex w-full">
           <AppSidebar />
           <div className="flex-1 p-8">
-            <div className="max-w-4xl mx-auto text-center py-12">
-              <h1 className="text-2xl font-bold mb-4">Paciente no encontrado</h1>
-              <p className="text-muted-foreground">
-                El paciente que estás buscando no existe o ha sido eliminado.
-              </p>
+            <div className="max-w-5xl mx-auto">
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-health-600" />
+                <span className="ml-2 text-muted-foreground">Cargando información del paciente...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </SidebarProvider>
+    );
+  }
+
+  if (pacienteError || historialError || !pacienteOriginal) {
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <AppSidebar />
+          <div className="flex-1 p-8">
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center py-12 bg-red-50 rounded-lg border border-red-200">
+                <p className="text-red-600 mb-4">Error: {pacienteError || historialError || 'Paciente no encontrado'}</p>
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.history.back()}
+                >
+                  Volver
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -379,7 +411,7 @@ const DetallesPaciente = () => {
                     <FileText className="mr-2 h-5 w-5 text-health-600" />
                     Historial Médico
                   </h2>
-                  {currentUser.role === "medico" && (
+                  {user?.role === "medico" && (
                     <Button 
                       onClick={() => setMostrarFormulario(!mostrarFormulario)} 
                       className="bg-health-600 hover:bg-health-700"
@@ -394,7 +426,7 @@ const DetallesPaciente = () => {
                   <NuevaEntradaForm 
                     pacienteId={pacienteOriginal.id} 
                     onSuccess={() => setMostrarFormulario(false)}
-                    userRole={currentUser.role} 
+                    userRole={user?.role || "medico"} 
                   />
                 )}
                 
@@ -404,7 +436,7 @@ const DetallesPaciente = () => {
                       <EntradaHistorial 
                         key={entrada.id} 
                         entrada={entrada}
-                        userRole={currentUser.role} 
+                        userRole={user?.role || "medico"}
                       />
                     ))}
                   </div>
@@ -413,7 +445,7 @@ const DetallesPaciente = () => {
                     <p className="text-muted-foreground mb-4">
                       No hay entradas en el historial médico de este paciente
                     </p>
-                    {currentUser.role === "medico" && (
+                    {user?.role === "medico" && (
                       <Button 
                         onClick={() => setMostrarFormulario(true)}
                         variant="outline"
@@ -436,7 +468,7 @@ const DetallesPaciente = () => {
                 </div>
                 
                 {/* Solo enfermeras pueden agregar notas */}
-                {currentUser.role === "enfermera" && (
+                {user?.role === "enfermera" && (
                   <NuevaNotaEnfermeria 
                     pacienteId={pacienteOriginal.id} 
                     onSuccess={handleNuevaNotaEnfermeria}
@@ -480,7 +512,7 @@ const DetallesPaciente = () => {
                     <p className="text-muted-foreground mb-4">
                       No hay notas de enfermería para este paciente
                     </p>
-                    {currentUser.role === "enfermera" && (
+                    {user?.role === "enfermera" && (
                       <Button 
                         onClick={() => {}} // Se manejará desde el componente NuevaNotaEnfermeria
                         variant="outline"

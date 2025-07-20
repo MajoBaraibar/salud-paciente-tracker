@@ -6,27 +6,29 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { pacientesMock } from "../data/mockData";
+import { usePacientes } from "@/hooks/usePacientes";
 import { PacienteCard } from "@/components/PacienteCard";
-import { Search, Plus, Filter } from "lucide-react";
+import { Search, Plus, Filter, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const Pacientes = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { pacientes, loading, error } = usePacientes();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterGenero, setFilterGenero] = useState("todos");
-  const [pacientesFiltrados, setPacientesFiltrados] = useState(pacientesMock);
+  const [pacientesFiltrados, setPacientesFiltrados] = useState(pacientes);
   
   // Verificar autenticación
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem("user");
-    if (!isAuthenticated) {
+    if (!user) {
       navigate("/login");
     }
-  }, [navigate]);
+  }, [user, navigate]);
   
   // Filtrar pacientes cuando cambian los criterios
   useEffect(() => {
-    let filtered = pacientesMock;
+    let filtered = pacientes;
     
     // Filtrar por término de búsqueda
     if (searchTerm) {
@@ -46,7 +48,7 @@ const Pacientes = () => {
     }
     
     setPacientesFiltrados(filtered);
-  }, [searchTerm, filterGenero]);
+  }, [searchTerm, filterGenero, pacientes]);
   
   return (
     <SidebarProvider>
@@ -100,7 +102,22 @@ const Pacientes = () => {
               </div>
             </div>
             
-            {pacientesFiltrados.length === 0 ? (
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-health-600" />
+                <span className="ml-2 text-muted-foreground">Cargando pacientes...</span>
+              </div>
+            ) : error ? (
+              <div className="text-center py-12 bg-red-50 rounded-lg border border-red-200">
+                <p className="text-red-600 mb-4">Error: {error}</p>
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.location.reload()}
+                >
+                  Reintentar
+                </Button>
+              </div>
+            ) : pacientesFiltrados.length === 0 ? (
               <div className="text-center py-12 bg-muted/20 rounded-lg">
                 <p className="text-muted-foreground mb-4">No se encontraron pacientes con esos criterios</p>
                 <Button 
