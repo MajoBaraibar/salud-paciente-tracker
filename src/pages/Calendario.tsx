@@ -280,7 +280,7 @@ export default function Calendario() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {vista === "semana" ? (
+              {vista === "semana" && (
                 eventosFiltrados.length > 0 ? (
                   <div className="space-y-4">
                     {eventosFiltrados.map((evento) => (
@@ -329,11 +329,6 @@ export default function Calendario() {
                     <p>No hay eventos programados para esta semana</p>
                   </div>
                 )
-              ) : (
-                <div className="text-center py-10 text-muted-foreground">
-                  <CalendarIcon className="w-10 h-10 mx-auto mb-2 opacity-20" />
-                  <p>Los eventos del día se muestran en la columna de la derecha</p>
-                </div>
               )}
             </CardContent>
           </Card>
