@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  requiredRole?: string;
+  requiredRole?: string | string[]; // Permitir rol único o array de roles
   patientId?: string; // Para verificar acceso a paciente específico
 }
 
@@ -38,7 +38,14 @@ export const ProtectedRoute = ({
   }
 
   // Verificar permisos de rol
-  if (!hasPermission(user.role, requiredRole)) {
+  const hasRequiredRole = () => {
+    if (Array.isArray(requiredRole)) {
+      return requiredRole.some(role => hasPermission(user.role, role));
+    }
+    return hasPermission(user.role, requiredRole);
+  };
+
+  if (!hasRequiredRole()) {
     toast.error('No tiene permisos para acceder a esta página');
     navigate('/dashboard');
     return null;

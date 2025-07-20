@@ -8,44 +8,52 @@ export interface AuthUser extends UserType {
 export const authService = {
   // Iniciar sesión
   async signIn(email: string, password: string) {
-    // Fallback para desarrollo sin Supabase
-    if (!supabase) {
-      // Usar sistema anterior temporalmente
-      const usuarios = [
-        { id: "1", email: "admin@example.com", role: "admin", nombre: "Admin" },
-        { id: "2", email: "medico@example.com", role: "medico", nombre: "Dr. Martínez" }
-      ];
-      const usuario = usuarios.find(u => u.email === email);
-      if (usuario && password === "password") {
-        return { ...usuario, supabaseId: "temp" } as AuthUser;
+    // Sistema temporal de usuarios para desarrollo
+    const usuariosTemporales = [
+      { 
+        id: "admin-temp", 
+        email: "admin@healthcenter.com", 
+        role: "admin", 
+        nombre: "Admin", 
+        apellido: "Sistema",
+        especialidad: null,
+        pacienteId: null
+      },
+      { 
+        id: "medico-temp", 
+        email: "medico@healthcenter.com", 
+        role: "medico", 
+        nombre: "Dr. Carlos", 
+        apellido: "Martínez",
+        especialidad: "Geriatría",
+        pacienteId: null
+      },
+      { 
+        id: "enfermera-temp", 
+        email: "enfermera@healthcenter.com", 
+        role: "enfermera", 
+        nombre: "María", 
+        apellido: "González",
+        especialidad: null,
+        pacienteId: null
+      },
+      { 
+        id: "familiar-temp", 
+        email: "familiar@healthcenter.com", 
+        role: "familiar", 
+        nombre: "Ana", 
+        apellido: "Rodríguez",
+        especialidad: null,
+        pacienteId: "paciente-1"
       }
-      throw new Error('Credenciales incorrectas');
-    }
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
+    ];
     
-    if (error) throw error;
-    
-    // Obtener el perfil del usuario desde la base de datos
-    if (data.user) {
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', data.user.id)
-        .single();
-      
-      if (profileError) throw profileError;
-      
-      return {
-        ...profile,
-        supabaseId: data.user.id
-      } as AuthUser;
+    const usuario = usuariosTemporales.find(u => u.email === email);
+    if (usuario && password === "123456") {
+      return { ...usuario, supabaseId: usuario.id } as AuthUser;
     }
     
-    throw new Error('No se pudo obtener el usuario');
+    throw new Error('Credenciales incorrectas. Use password: 123456');
   },
 
   // Registrar usuario
@@ -85,29 +93,24 @@ export const authService = {
 
   // Obtener usuario actual
   async getCurrentUser(): Promise<AuthUser | null> {
-    const { data: { user } } = await supabase.auth.getUser();
+    // Verificar usuario temporal en localStorage
+    const userString = localStorage.getItem("user");
+    if (userString) {
+      try {
+        return JSON.parse(userString) as AuthUser;
+      } catch (error) {
+        localStorage.removeItem("user");
+      }
+    }
     
-    if (!user) return null;
-    
-    const { data: profile, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-    
-    if (error) return null;
-    
-    return {
-      ...profile,
-      supabaseId: user.id
-    } as AuthUser;
+    return null;
   },
 
   // Verificar sesión
   async getSession() {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) throw error;
-    return data.session;
+    // Para el sistema temporal, verificar localStorage
+    const userString = localStorage.getItem("user");
+    return userString ? { user: JSON.parse(userString) } : null;
   },
 
   // Restablecer contraseña
