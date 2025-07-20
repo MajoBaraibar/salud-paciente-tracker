@@ -8,6 +8,20 @@ export interface AuthUser extends UserType {
 export const authService = {
   // Iniciar sesión
   async signIn(email: string, password: string) {
+    // Fallback para desarrollo sin Supabase
+    if (!supabase) {
+      // Usar sistema anterior temporalmente
+      const usuarios = [
+        { id: "1", email: "admin@example.com", role: "admin", nombre: "Admin" },
+        { id: "2", email: "medico@example.com", role: "medico", nombre: "Dr. Martínez" }
+      ];
+      const usuario = usuarios.find(u => u.email === email);
+      if (usuario && password === "password") {
+        return { ...usuario, supabaseId: "temp" } as AuthUser;
+      }
+      throw new Error('Credenciales incorrectas');
+    }
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password
