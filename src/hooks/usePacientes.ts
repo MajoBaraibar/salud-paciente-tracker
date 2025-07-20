@@ -13,8 +13,13 @@ export const usePacientes = () => {
       setLoading(true);
       setError(null);
       
-      // Si no hay Supabase configurado, usar datos mock
-      if (!supabase) {
+      // Verificar si hay usuario temporal (no autenticado con Supabase)
+      const userString = localStorage.getItem("user");
+      const isTemporaryUser = userString && JSON.parse(userString).supabaseId?.includes('temp');
+      
+      // Si es usuario temporal o no hay Supabase configurado, usar datos mock
+      if (!supabase || isTemporaryUser) {
+        console.log('Usando datos mock para usuario temporal');
         setPacientes(pacientesMock);
         setLoading(false);
         return;
@@ -25,7 +30,12 @@ export const usePacientes = () => {
         .select('*')
         .order('nombre', { ascending: true });
 
-      if (error) throw error;
+      if (error) {
+        console.log('Error de Supabase, usando datos mock:', error);
+        setPacientes(pacientesMock);
+        setError('Usando datos de demostración');
+        return;
+      }
 
       // Transform database data to match our Paciente type
       const transformedData: Paciente[] = data.map(item => ({
@@ -69,8 +79,12 @@ export const usePacienteById = (id: string) => {
         setLoading(true);
         setError(null);
         
-        // Si no hay Supabase configurado, usar datos mock
-        if (!supabase) {
+        // Verificar si hay usuario temporal
+        const userString = localStorage.getItem("user");
+        const isTemporaryUser = userString && JSON.parse(userString).supabaseId?.includes('temp');
+        
+        // Si es usuario temporal o no hay Supabase configurado, usar datos mock
+        if (!supabase || isTemporaryUser) {
           const mockPaciente = pacientesMock.find(p => p.id === id);
           setPaciente(mockPaciente || null);
           setLoading(false);
@@ -83,7 +97,13 @@ export const usePacienteById = (id: string) => {
           .eq('id', id)
           .single();
 
-        if (error) throw error;
+        if (error) {
+          // En caso de error, usar datos mock como fallback
+          const mockPaciente = pacientesMock.find(p => p.id === id);
+          setPaciente(mockPaciente || null);
+          setError('Usando datos de demostración');
+          return;
+        }
 
         if (data) {
           const transformedData: Paciente = {
