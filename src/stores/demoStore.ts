@@ -7,9 +7,23 @@ import {
   notasEnfermeriaDemoData,
   contactosEmergenciaDemoData,
   pagosDemoData,
-  requisionesDemoData 
+  requisionesDemoData,
+  eventosDemoData 
 } from '@/data/demoData';
 import type { Paciente, EntradaHistorial, EmergencyContactType, PaymentType, RequisitionItemType } from '@/types';
+
+type Evento = {
+  id: string;
+  titulo: string;
+  fecha: Date;
+  horaInicio: string;
+  horaFin: string;
+  tipo: "consulta" | "visita" | "reunion" | "otro";
+  pacienteId?: string;
+  pacienteNombre?: string;
+  descripcion: string;
+  participantes?: string[];
+};
 
 interface DemoStore {
   // Modo demo
@@ -23,6 +37,7 @@ interface DemoStore {
   contactosEmergencia: EmergencyContactType[];
   pagos: PaymentType[];
   requisiciones: RequisitionItemType[];
+  eventos: Evento[];
   
   // Acciones CRUD para demo
   addPaciente: (paciente: Omit<Paciente, 'id'>) => void;
@@ -38,6 +53,8 @@ interface DemoStore {
   updateContactoEmergencia: (id: string, contacto: Partial<EmergencyContactType>) => void;
   
   updatePago: (id: string, pago: Partial<PaymentType>) => void;
+  
+  addEvento: (evento: Evento) => void;
   
   // Reset demo data
   resetDemoData: () => void;
@@ -55,6 +72,7 @@ export const useDemoStore = create<DemoStore>()(
       contactosEmergencia: contactosEmergenciaDemoData,
       pagos: pagosDemoData,
       requisiciones: requisionesDemoData,
+      eventos: eventosDemoData,
       
       setDemoMode: (mode) => set({ isDemoMode: mode }),
       
@@ -136,6 +154,13 @@ export const useDemoStore = create<DemoStore>()(
         }));
       },
       
+      // Eventos
+      addEvento: (evento) => {
+        set((state) => ({
+          eventos: [...state.eventos, evento]
+        }));
+      },
+      
       // Reset
       resetDemoData: () => {
         set({
@@ -144,7 +169,8 @@ export const useDemoStore = create<DemoStore>()(
           notasEnfermeria: notasEnfermeriaDemoData,
           contactosEmergencia: contactosEmergenciaDemoData,
           pagos: pagosDemoData,
-          requisiciones: requisionesDemoData
+          requisiciones: requisionesDemoData,
+          eventos: eventosDemoData
         });
       }
     }),

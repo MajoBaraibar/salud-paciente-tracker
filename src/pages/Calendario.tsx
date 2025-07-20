@@ -14,8 +14,8 @@ import { es } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
 import { Calendar as CalendarIcon, Clock, Plus, User, Users } from "lucide-react";
 import { toast } from "sonner";
-import { eventosMock } from "@/components/dashboard/MedicoDashboard";
 import { useNotificationStore } from "@/stores/notificationStore";
+import { useDemoStore } from "@/stores/demoStore";
 
 type Evento = {
   id: string;
@@ -36,7 +36,7 @@ const userRole = currentUser.role;
 
 export default function Calendario() {
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [eventos, setEventos] = useState<Evento[]>(eventosMock);
+  const { eventos, addEvento } = useDemoStore();
   const [modalAbierto, setModalAbierto] = useState(false);
   const [nuevoEvento, setNuevoEvento] = useState<Partial<Evento>>({
     fecha: date,
@@ -86,7 +86,7 @@ export default function Calendario() {
       participantes: nuevoEvento.participantes,
     };
 
-    setEventos([...eventos, eventoCompleto]);
+    addEvento(eventoCompleto);
     setModalAbierto(false);
     setNuevoEvento({ fecha: date, tipo: "consulta" });
 

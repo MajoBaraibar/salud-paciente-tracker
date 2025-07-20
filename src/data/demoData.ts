@@ -219,3 +219,65 @@ export const requisionesDemoData = [
     status: "aprobado" as const
   }
 ];
+
+// Eventos demo para calendario
+export const eventosDemoData = [
+  {
+    id: "1",
+    titulo: "Consulta María González",
+    fecha: new Date(),
+    horaInicio: "10:00",
+    horaFin: "10:30",
+    tipo: "consulta" as const,
+    pacienteId: "550e8400-e29b-41d4-a716-446655440001",
+    pacienteNombre: "María Elena García Rodríguez",
+    descripcion: "Control mensual de diabetes",
+    participantes: ["Dr. Martínez"]
+  },
+  {
+    id: "2",
+    titulo: "Consulta José Martínez",
+    fecha: new Date(),
+    horaInicio: "11:00",
+    horaFin: "11:30",
+    tipo: "consulta" as const,
+    pacienteId: "550e8400-e29b-41d4-a716-446655440002",
+    pacienteNombre: "José Antonio Martínez López",
+    descripcion: "Revisión de presión arterial",
+    participantes: ["Dr. Martínez"]
+  },
+  {
+    id: "3",
+    titulo: "Consulta Ana López",
+    fecha: new Date(),
+    horaInicio: "14:00",
+    horaFin: "14:30",
+    tipo: "consulta" as const,
+    pacienteId: "550e8400-e29b-41d4-a716-446655440003",
+    pacienteNombre: "Ana Lucía López Hernández",
+    descripcion: "Control post-operatorio",
+    participantes: ["Dr. Martínez"]
+  },
+  {
+    id: "4",
+    titulo: "Visita familiar - Roberto Pérez",
+    fecha: new Date(new Date().getTime() + 24 * 60 * 60 * 1000), // Mañana
+    horaInicio: "08:00",
+    horaFin: "09:00",
+    tipo: "visita" as const,
+    pacienteId: "550e8400-e29b-41d4-a716-446655440004",
+    pacienteNombre: "Roberto Carlos Pérez Gómez",
+    descripcion: "Visita de hija",
+    participantes: ["Familiar: Ana Rodríguez"]
+  },
+  {
+    id: "5",
+    titulo: "Reunión de personal",
+    fecha: new Date(new Date().getTime() - 24 * 60 * 60 * 1000), // Ayer
+    horaInicio: "14:00",
+    horaFin: "15:00",
+    tipo: "reunion" as const,
+    descripcion: "Revisión de protocolos de atención",
+    participantes: ["Todo el personal"]
+  }
+];
