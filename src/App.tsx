@@ -9,6 +9,7 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Pacientes from "./pages/Pacientes";
 import DetallesPaciente from "./pages/DetallesPaciente";
@@ -46,7 +47,8 @@ const App = () => (
           <Toaster />
           <Sonner />
           <Routes>
-          <Route path="/login" element={<Login />} />
+           <Route path="/login" element={<Login />} />
+           <Route path="/register" element={<Register />} />
           
           {/* Ruta raíz */}
           <Route 

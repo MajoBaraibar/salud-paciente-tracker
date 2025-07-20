@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -200,10 +200,16 @@ const Login = () => {
                 </p>
               </div>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex flex-col space-y-4">
               <Button className="w-full bg-health-600 hover:bg-health-700" type="submit" disabled={loading}>
                 {loading ? "Iniciando sesión..." : "Iniciar sesión"}
               </Button>
+              <p className="text-sm text-center text-muted-foreground">
+                ¿No tienes cuenta?{" "}
+                <Link to="/register" className="text-health-600 hover:underline">
+                  Registrarse
+                </Link>
+              </p>
             </CardFooter>
           </form>
         </Card>
