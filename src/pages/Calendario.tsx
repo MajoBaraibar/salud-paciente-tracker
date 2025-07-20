@@ -350,11 +350,10 @@ export default function Calendario() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {date ? (
+              {date && vista === "dia" ? (
                 <div className="space-y-2">
-                  {eventos.filter(evento => evento.fecha.toDateString() === date.toDateString()).length > 0 ? (
-                    eventos
-                      .filter(evento => evento.fecha.toDateString() === date.toDateString())
+                  {eventosFiltrados.length > 0 ? (
+                    eventosFiltrados
                       .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio))
                       .map((evento) => (
                         <div
@@ -379,7 +378,7 @@ export default function Calendario() {
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                  Selecciona una fecha para ver los eventos
+                  {vista === "semana" ? "Cambiar a vista día para ver eventos aquí" : "Selecciona una fecha para ver los eventos"}
                 </p>
               )}
             </CardContent>
