@@ -35,8 +35,48 @@ export type Database = {
         }
         Relationships: []
       }
+      centros_salud: {
+        Row: {
+          activo: boolean | null
+          codigo_identificacion: string
+          configuracion: Json | null
+          created_at: string
+          direccion: string
+          email: string | null
+          id: string
+          nombre: string
+          telefono: string | null
+          updated_at: string
+        }
+        Insert: {
+          activo?: boolean | null
+          codigo_identificacion: string
+          configuracion?: Json | null
+          created_at?: string
+          direccion: string
+          email?: string | null
+          id?: string
+          nombre: string
+          telefono?: string | null
+          updated_at?: string
+        }
+        Update: {
+          activo?: boolean | null
+          codigo_identificacion?: string
+          configuracion?: Json | null
+          created_at?: string
+          direccion?: string
+          email?: string | null
+          id?: string
+          nombre?: string
+          telefono?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contactos_emergencia: {
         Row: {
+          centro_id: string | null
           created_at: string | null
           email: string | null
           id: string
@@ -47,6 +87,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          centro_id?: string | null
           created_at?: string | null
           email?: string | null
           id?: string
@@ -57,6 +98,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          centro_id?: string | null
           created_at?: string | null
           email?: string | null
           id?: string
@@ -68,6 +110,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "contactos_emergencia_centro_id_fkey"
+            columns: ["centro_id"]
+            isOneToOne: false
+            referencedRelation: "centros_salud"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "contactos_emergencia_paciente_id_fkey"
             columns: ["paciente_id"]
             isOneToOne: false
@@ -78,6 +127,7 @@ export type Database = {
       }
       entradas_historial: {
         Row: {
+          centro_id: string | null
           created_at: string | null
           created_by: string | null
           diagnostico: string
@@ -92,6 +142,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          centro_id?: string | null
           created_at?: string | null
           created_by?: string | null
           diagnostico: string
@@ -106,6 +157,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          centro_id?: string | null
           created_at?: string | null
           created_by?: string | null
           diagnostico?: string
@@ -120,6 +172,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "entradas_historial_centro_id_fkey"
+            columns: ["centro_id"]
+            isOneToOne: false
+            referencedRelation: "centros_salud"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "entradas_historial_paciente_id_fkey"
             columns: ["paciente_id"]
@@ -178,6 +237,7 @@ export type Database = {
       }
       notas_enfermeria: {
         Row: {
+          centro_id: string | null
           created_at: string
           enfermera_id: string
           fecha: string
@@ -187,6 +247,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          centro_id?: string | null
           created_at?: string
           enfermera_id: string
           fecha?: string
@@ -196,6 +257,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          centro_id?: string | null
           created_at?: string
           enfermera_id?: string
           fecha?: string
@@ -204,11 +266,20 @@ export type Database = {
           paciente_id?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notas_enfermeria_centro_id_fkey"
+            columns: ["centro_id"]
+            isOneToOne: false
+            referencedRelation: "centros_salud"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pacientes: {
         Row: {
           apellido: string
+          centro_id: string | null
           created_at: string | null
           direccion: string
           fecha_nacimiento: string
@@ -222,6 +293,7 @@ export type Database = {
         }
         Insert: {
           apellido: string
+          centro_id?: string | null
           created_at?: string | null
           direccion: string
           fecha_nacimiento: string
@@ -235,6 +307,7 @@ export type Database = {
         }
         Update: {
           apellido?: string
+          centro_id?: string | null
           created_at?: string | null
           direccion?: string
           fecha_nacimiento?: string
@@ -246,10 +319,19 @@ export type Database = {
           telefono?: string
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "pacientes_centro_id_fkey"
+            columns: ["centro_id"]
+            isOneToOne: false
+            referencedRelation: "centros_salud"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pagos: {
         Row: {
+          centro_id: string | null
           created_at: string | null
           estado: string
           fecha_pago: string | null
@@ -262,6 +344,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          centro_id?: string | null
           created_at?: string | null
           estado?: string
           fecha_pago?: string | null
@@ -274,6 +357,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          centro_id?: string | null
           created_at?: string | null
           estado?: string
           fecha_pago?: string | null
@@ -287,6 +371,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "pagos_centro_id_fkey"
+            columns: ["centro_id"]
+            isOneToOne: false
+            referencedRelation: "centros_salud"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "pagos_paciente_id_fkey"
             columns: ["paciente_id"]
             isOneToOne: false
@@ -298,6 +389,7 @@ export type Database = {
       profiles: {
         Row: {
           apellido: string | null
+          centro_id: string | null
           created_at: string | null
           email: string
           especialidad: string | null
@@ -310,6 +402,7 @@ export type Database = {
         }
         Insert: {
           apellido?: string | null
+          centro_id?: string | null
           created_at?: string | null
           email: string
           especialidad?: string | null
@@ -322,6 +415,7 @@ export type Database = {
         }
         Update: {
           apellido?: string | null
+          centro_id?: string | null
           created_at?: string | null
           email?: string
           especialidad?: string | null
@@ -340,12 +434,20 @@ export type Database = {
             referencedRelation: "pacientes"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "profiles_centro_id_fkey"
+            columns: ["centro_id"]
+            isOneToOne: false
+            referencedRelation: "centros_salud"
+            referencedColumns: ["id"]
+          },
         ]
       }
       requisiciones: {
         Row: {
           cantidad: number
           categoria_id: string
+          centro_id: string | null
           created_at: string | null
           estado: string
           id: string
@@ -358,6 +460,7 @@ export type Database = {
         Insert: {
           cantidad: number
           categoria_id: string
+          centro_id?: string | null
           created_at?: string | null
           estado?: string
           id?: string
@@ -370,6 +473,7 @@ export type Database = {
         Update: {
           cantidad?: number
           categoria_id?: string
+          centro_id?: string | null
           created_at?: string | null
           estado?: string
           id?: string
@@ -387,6 +491,13 @@ export type Database = {
             referencedRelation: "categorias_requisiciones"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "requisiciones_centro_id_fkey"
+            columns: ["centro_id"]
+            isOneToOne: false
+            referencedRelation: "centros_salud"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
@@ -397,6 +508,10 @@ export type Database = {
       can_access_patient: {
         Args: { patient_id: string }
         Returns: boolean
+      }
+      get_current_user_centro_id: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       get_current_user_role: {
         Args: Record<PropertyKey, never>

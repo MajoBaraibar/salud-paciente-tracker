@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,9 +17,35 @@ const Register = () => {
     nombre: "",
     apellido: "",
     role: "",
-    especialidad: ""
+    especialidad: "",
+    centroId: ""
   });
   const [loading, setLoading] = useState(false);
+  const [centros, setCentros] = useState<any[]>([]);
+
+  // Cargar centros disponibles
+  useEffect(() => {
+    const fetchCentros = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('centros_salud')
+          .select('*')
+          .eq('activo', true);
+        
+        if (error) throw error;
+        setCentros(data || []);
+      } catch (error) {
+        console.error('Error al cargar centros:', error);
+        // Centros de fallback
+        setCentros([
+          { id: '1', nombre: 'Health Center 1', codigo_identificacion: 'HC001' },
+          { id: '2', nombre: 'Health Center 2', codigo_identificacion: 'HC002' },
+          { id: '3', nombre: 'Health Center 3', codigo_identificacion: 'HC003' }
+        ]);
+      }
+    };
+    fetchCentros();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +73,8 @@ const Register = () => {
             nombre: formData.nombre,
             apellido: formData.apellido,
             role: formData.role,
-            especialidad: formData.especialidad
+            especialidad: formData.especialidad,
+            centro_id: formData.centroId
           }
         }
       });
@@ -103,6 +130,22 @@ const Register = () => {
                     required
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="centro">Centro de Salud</Label>
+                <Select value={formData.centroId} onValueChange={(value) => setFormData(prev => ({ ...prev, centroId: value }))}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Seleccionar centro de salud" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {centros.map((centro) => (
+                      <SelectItem key={centro.id} value={centro.id}>
+                        {centro.nombre} ({centro.codigo_identificacion})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">

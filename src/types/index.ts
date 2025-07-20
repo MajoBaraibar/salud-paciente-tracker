@@ -65,6 +65,7 @@ export interface UserType {
   apellido?: string;
   especialidad?: string;
   imagenUrl?: string;
+  centro_id?: string; // ID del centro de salud
   // Solo para tipo "familiar"
   pacienteId?: string;
 }
