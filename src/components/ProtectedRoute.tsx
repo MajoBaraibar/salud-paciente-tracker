@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { hasPermission, canAccessPatient } from '@/lib/security';
@@ -20,6 +20,14 @@ export const ProtectedRoute = ({
 
   console.log('ProtectedRoute - user:', user, 'loading:', loading);
 
+  // Usar useEffect para navegar, no durante el renderizado
+  useEffect(() => {
+    if (!loading && !user) {
+      toast.error('Debe iniciar sesión para acceder');
+      navigate('/login');
+    }
+  }, [user, loading, navigate]);
+
   // Mostrar loading mientras se verifica la autenticación
   if (loading) {
     console.log('ProtectedRoute - Mostrando loading...');
@@ -33,11 +41,16 @@ export const ProtectedRoute = ({
     );
   }
 
-  // Si no hay usuario, redirigir al login
+  // Si no hay usuario, mostrar loading (useEffect se encarga de navegar)
   if (!user) {
-    toast.error('Debe iniciar sesión para acceder');
-    navigate('/login');
-    return null;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-health-600"></div>
+          <p className="text-health-700">Redirigiendo...</p>
+        </div>
+      </div>
+    );
   }
 
   // Verificar permisos de rol
@@ -48,17 +61,31 @@ export const ProtectedRoute = ({
     return hasPermission(user.role, requiredRole);
   };
 
-  if (!hasRequiredRole()) {
-    toast.error('No tiene permisos para acceder a esta página');
-    navigate('/dashboard');
-    return null;
-  }
+  // Usar useEffect para verificar permisos también
+  useEffect(() => {
+    if (user && !hasRequiredRole()) {
+      toast.error('No tiene permisos para acceder a esta página');
+      navigate('/dashboard');
+    }
+  }, [user]);
 
   // Verificar acceso a paciente específico (para familiares)
-  if (patientId && !canAccessPatient(user.role, user.id, patientId, user.pacienteId)) {
-    toast.error('No tiene permisos para acceder a este paciente');
-    navigate('/dashboard');
-    return null;
+  useEffect(() => {
+    if (user && patientId && !canAccessPatient(user.role, user.id, patientId, user.pacienteId)) {
+      toast.error('No tiene permisos para acceder a este paciente');
+      navigate('/dashboard');
+    }
+  }, [user, patientId]);
+
+  if (!hasRequiredRole()) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-health-600"></div>
+          <p className="text-health-700">Verificando permisos...</p>
+        </div>
+      </div>
+    );
   }
 
   return <>{children}</>;

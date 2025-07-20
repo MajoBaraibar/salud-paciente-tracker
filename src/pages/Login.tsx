@@ -55,6 +55,9 @@ const Login = () => {
       // Autenticar con Supabase
       const user = await authService.signIn(validatedData.email, validatedData.password);
       
+      // Guardar usuario en localStorage para persistencia
+      localStorage.setItem('user', JSON.stringify(user));
+      
       toast.success(`Bienvenido, ${user.nombre}`);
       navigate("/dashboard");
     } catch (error) {
