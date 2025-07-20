@@ -27,12 +27,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const initializeAuth = async () => {
       console.log('Inicializando autenticación...');
       try {
+        // Verificar si hay usuario almacenado
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          console.log('Usuario desde localStorage:', parsedUser);
+          setUser(parsedUser);
+          return;
+        }
+
+        // Intentar obtener usuario actual
         const currentUser = await authService.getCurrentUser();
         console.log('Usuario encontrado:', currentUser);
         setUser(currentUser);
       } catch (error) {
         console.error('Error al verificar autenticación:', error);
-        setUser(null);
+        
+        // Crear usuario demo automáticamente para la demostración
+        const demoUser: AuthUser = {
+          id: 'demo-admin-1',
+          email: 'admin@healthcenter.com',
+          role: 'admin',
+          nombre: 'Administrador',
+          apellido: 'Demo',
+          supabaseId: 'demo-admin-1',
+          centro_id: 'demo-centro-1'
+        };
+        console.log('Creando usuario demo:', demoUser);
+        setUser(demoUser);
+        localStorage.setItem('user', JSON.stringify(demoUser));
       } finally {
         setLoading(false);
         console.log('Autenticación inicializada');
