@@ -231,10 +231,18 @@ export default function Calendario() {
           </Dialog>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card className="lg:col-span-1">
             <CardHeader>
-              <CardTitle>Seleccionar fecha</CardTitle>
+              <div className="flex justify-between items-center">
+                <CardTitle>Seleccionar fecha</CardTitle>
+                <Tabs value={vista} onValueChange={(v) => setVista(v as "dia" | "semana")}>
+                  <TabsList>
+                    <TabsTrigger value="dia">Día</TabsTrigger>
+                    <TabsTrigger value="semana">Semana</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
             </CardHeader>
             <CardContent>
               <Calendar
@@ -262,29 +270,27 @@ export default function Calendario() {
             </CardContent>
           </Card>
 
-          <Card className="lg:col-span-2">
+          {/* Columna para eventos */}
+          <Card className="lg:col-span-1">
             <CardHeader>
-              <div className="flex justify-between items-center">
-                <CardTitle>
-                  {date && format(date, "EEEE, d 'de' MMMM", { locale: es })}
-                </CardTitle>
-                <Tabs value={vista} onValueChange={(v) => setVista(v as "dia" | "semana")}>
-                  <TabsList>
-                    <TabsTrigger value="dia">Día</TabsTrigger>
-                    <TabsTrigger value="semana">Semana</TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </div>
+              <CardTitle className="flex items-center">
+                <CalendarIcon className="w-4 h-4 mr-2" />
+                {vista === "dia" ? "Eventos del día" : "Eventos de la semana"}
+              </CardTitle>
               <CardDescription>
-                {vista === "dia" ? "Eventos programados para hoy" : "Eventos de la semana"}
+                {vista === "dia" 
+                  ? (date ? format(date, "d 'de' MMMM", { locale: es }) : "Selecciona una fecha")
+                  : "Eventos programados para esta semana"
+                }
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {vista === "semana" && (
-                eventosFiltrados.length > 0 ? (
-                  <div className="space-y-4">
-                    {eventosFiltrados.map((evento) => (
-                      <div 
+              {eventosFiltrados.length > 0 ? (
+                <div className="space-y-2">
+                  {eventosFiltrados
+                    .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio))
+                    .map((evento) => (
+                      <div
                         key={evento.id}
                         className={`p-3 border rounded-lg cursor-pointer transition-colors hover:shadow-md ${obtenerColorEvento(evento.tipo)}`}
                         onClick={() => abrirDetalleEvento(evento)}
@@ -305,11 +311,13 @@ export default function Calendario() {
                               )}
                             </div>
                           </div>
-                          <div>
-                            <span className="text-xs text-gray-500">
-                              {format(evento.fecha, "EEE d", { locale: es })}
-                            </span>
-                          </div>
+                          {vista === "semana" && (
+                            <div>
+                              <span className="text-xs text-gray-500">
+                                {format(evento.fecha, "EEE d", { locale: es })}
+                              </span>
+                            </div>
+                          )}
                         </div>
                         {evento.descripcion && (
                           <p className="text-sm mt-2">{evento.descripcion}</p>
@@ -321,60 +329,14 @@ export default function Calendario() {
                           </div>
                         )}
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-10 text-muted-foreground">
-                    <CalendarIcon className="w-10 h-10 mx-auto mb-2 opacity-20" />
-                    <p>No hay eventos programados para esta semana</p>
-                  </div>
-                )
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Nueva columna para eventos del día seleccionado */}
-          <Card className="lg:col-span-1">
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <CalendarIcon className="w-4 h-4 mr-2" />
-                Eventos del día
-              </CardTitle>
-              <CardDescription>
-                {date ? format(date, "d 'de' MMMM", { locale: es }) : "Selecciona una fecha"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {date && vista === "dia" ? (
-                <div className="space-y-2">
-                  {eventosFiltrados.length > 0 ? (
-                    eventosFiltrados
-                      .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio))
-                      .map((evento) => (
-                        <div
-                          key={evento.id}
-                          className={`p-2 rounded-md cursor-pointer transition-all hover:scale-105 ${obtenerColorEvento(evento.tipo)}`}
-                          onClick={() => abrirDetalleEvento(evento)}
-                        >
-                          <div className="text-xs font-medium">{evento.horaInicio}</div>
-                          <div className="text-sm truncate">{evento.titulo}</div>
-                          {evento.pacienteNombre && (
-                            <div className="text-xs text-gray-600 truncate">
-                              {evento.pacienteNombre}
-                            </div>
-                          )}
-                        </div>
-                      ))
-                  ) : (
-                    <p className="text-sm text-muted-foreground text-center py-4">
-                      No hay eventos para esta fecha
-                    </p>
-                  )}
+                    ))
+                  }
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  {vista === "semana" ? "Cambiar a vista día para ver eventos aquí" : "Selecciona una fecha para ver los eventos"}
-                </p>
+                <div className="text-center py-10 text-muted-foreground">
+                  <CalendarIcon className="w-10 h-10 mx-auto mb-2 opacity-20" />
+                  <p>{vista === "dia" ? "No hay eventos para esta fecha" : "No hay eventos programados para esta semana"}</p>
+                </div>
               )}
             </CardContent>
           </Card>
