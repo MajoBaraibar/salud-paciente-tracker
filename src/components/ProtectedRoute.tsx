@@ -18,8 +18,11 @@ export const ProtectedRoute = ({
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
+  console.log('ProtectedRoute - user:', user, 'loading:', loading);
+
   // Mostrar loading mientras se verifica la autenticación
   if (loading) {
+    console.log('ProtectedRoute - Mostrando loading...');
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="flex flex-col items-center space-y-4">

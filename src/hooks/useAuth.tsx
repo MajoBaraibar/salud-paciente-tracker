@@ -25,46 +25,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Verificar autenticación al cargar
   useEffect(() => {
     const initializeAuth = async () => {
+      console.log('Inicializando autenticación...');
       try {
-        // Si no hay Supabase configurado, usar localStorage como fallback
-        if (!supabase) {
-          const userString = localStorage.getItem("user");
-          if (userString) {
-            const userData = JSON.parse(userString);
-            setUser({ ...userData, supabaseId: "temp" });
-          }
-          setLoading(false);
-          return;
-        }
-
         const currentUser = await authService.getCurrentUser();
+        console.log('Usuario encontrado:', currentUser);
         setUser(currentUser);
       } catch (error) {
         console.error('Error al verificar autenticación:', error);
         setUser(null);
       } finally {
         setLoading(false);
+        console.log('Autenticación inicializada');
       }
     };
 
     initializeAuth();
-
-    // Solo escuchar cambios si Supabase está disponible
-    if (supabase) {
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        async (event, session) => {
-          if (event === 'SIGNED_IN' && session) {
-            const currentUser = await authService.getCurrentUser();
-            setUser(currentUser);
-          } else if (event === 'SIGNED_OUT') {
-            setUser(null);
-            localStorage.removeItem('user');
-          }
-        }
-      );
-
-      return () => subscription.unsubscribe();
-    }
   }, []);
 
   const signIn = async (email: string, password: string): Promise<AuthUser> => {
