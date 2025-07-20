@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Paciente } from '@/types';
+import { pacientesMock } from '@/data/mockData';
 
 export const usePacientes = () => {
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
@@ -11,6 +12,13 @@ export const usePacientes = () => {
     try {
       setLoading(true);
       setError(null);
+      
+      // Si no hay Supabase configurado, usar datos mock
+      if (!supabase) {
+        setPacientes(pacientesMock);
+        setLoading(false);
+        return;
+      }
       
       const { data, error } = await supabase
         .from('pacientes')
@@ -35,6 +43,8 @@ export const usePacientes = () => {
       setPacientes(transformedData);
     } catch (err) {
       console.error('Error fetching pacientes:', err);
+      // En caso de error, usar datos mock como fallback
+      setPacientes(pacientesMock);
       setError(err instanceof Error ? err.message : 'Error al cargar pacientes');
     } finally {
       setLoading(false);
@@ -58,6 +68,14 @@ export const usePacienteById = (id: string) => {
       try {
         setLoading(true);
         setError(null);
+        
+        // Si no hay Supabase configurado, usar datos mock
+        if (!supabase) {
+          const mockPaciente = pacientesMock.find(p => p.id === id);
+          setPaciente(mockPaciente || null);
+          setLoading(false);
+          return;
+        }
         
         const { data, error } = await supabase
           .from('pacientes')
@@ -83,6 +101,9 @@ export const usePacienteById = (id: string) => {
         }
       } catch (err) {
         console.error('Error fetching paciente:', err);
+        // En caso de error, usar datos mock como fallback
+        const mockPaciente = pacientesMock.find(p => p.id === id);
+        setPaciente(mockPaciente || null);
         setError(err instanceof Error ? err.message : 'Error al cargar paciente');
       } finally {
         setLoading(false);
