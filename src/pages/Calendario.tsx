@@ -37,10 +37,6 @@ const userRole = currentUser.role;
 export default function Calendario() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const { eventos, addEvento } = useDemoStore();
-  
-  // Debug: Log events to console
-  console.log('Eventos en calendario:', eventos);
-  console.log('Fecha seleccionada:', date);
   const [modalAbierto, setModalAbierto] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState<Evento | null>(null);
   const [detalleModalAbierto, setDetalleModalAbierto] = useState(false);
