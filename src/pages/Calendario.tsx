@@ -284,54 +284,59 @@ export default function Calendario() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {eventosFiltrados.length > 0 ? (
-                <div className="space-y-4">
-                  {eventosFiltrados.map((evento) => (
-                    <div 
-                      key={evento.id}
-                      className={`p-3 border rounded-lg cursor-pointer transition-colors hover:shadow-md ${obtenerColorEvento(evento.tipo)}`}
-                      onClick={() => abrirDetalleEvento(evento)}
-                    >
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-medium">{evento.titulo}</h3>
-                          <div className="flex items-center text-sm mt-1 space-x-3">
-                            <span className="flex items-center">
-                              <Clock className="w-3 h-3 mr-1" />
-                              {formatearHora(evento.horaInicio)} - {formatearHora(evento.horaFin)}
-                            </span>
-                            {evento.pacienteNombre && (
+              {vista === "semana" ? (
+                eventosFiltrados.length > 0 ? (
+                  <div className="space-y-4">
+                    {eventosFiltrados.map((evento) => (
+                      <div 
+                        key={evento.id}
+                        className={`p-3 border rounded-lg cursor-pointer transition-colors hover:shadow-md ${obtenerColorEvento(evento.tipo)}`}
+                        onClick={() => abrirDetalleEvento(evento)}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-medium">{evento.titulo}</h3>
+                            <div className="flex items-center text-sm mt-1 space-x-3">
                               <span className="flex items-center">
-                                <User className="w-3 h-3 mr-1" />
-                                {evento.pacienteNombre}
+                                <Clock className="w-3 h-3 mr-1" />
+                                {formatearHora(evento.horaInicio)} - {formatearHora(evento.horaFin)}
                               </span>
-                            )}
+                              {evento.pacienteNombre && (
+                                <span className="flex items-center">
+                                  <User className="w-3 h-3 mr-1" />
+                                  {evento.pacienteNombre}
+                                </span>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                        <div>
-                          {vista === "semana" && (
+                          <div>
                             <span className="text-xs text-gray-500">
                               {format(evento.fecha, "EEE d", { locale: es })}
                             </span>
-                          )}
+                          </div>
                         </div>
+                        {evento.descripcion && (
+                          <p className="text-sm mt-2">{evento.descripcion}</p>
+                        )}
+                        {evento.participantes && evento.participantes.length > 0 && (
+                          <div className="flex items-center mt-2 text-xs text-gray-600">
+                            <Users className="w-3 h-3 mr-1" />
+                            {evento.participantes.join(", ")}
+                          </div>
+                        )}
                       </div>
-                      {evento.descripcion && (
-                        <p className="text-sm mt-2">{evento.descripcion}</p>
-                      )}
-                      {evento.participantes && evento.participantes.length > 0 && (
-                        <div className="flex items-center mt-2 text-xs text-gray-600">
-                          <Users className="w-3 h-3 mr-1" />
-                          {evento.participantes.join(", ")}
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-10 text-muted-foreground">
+                    <CalendarIcon className="w-10 h-10 mx-auto mb-2 opacity-20" />
+                    <p>No hay eventos programados para esta semana</p>
+                  </div>
+                )
               ) : (
                 <div className="text-center py-10 text-muted-foreground">
                   <CalendarIcon className="w-10 h-10 mx-auto mb-2 opacity-20" />
-                  <p>No hay eventos programados para esta fecha</p>
+                  <p>Los eventos del día se muestran en la columna de la derecha</p>
                 </div>
               )}
             </CardContent>
