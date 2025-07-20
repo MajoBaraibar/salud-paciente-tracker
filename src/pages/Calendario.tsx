@@ -42,6 +42,8 @@ export default function Calendario() {
   console.log('Eventos en calendario:', eventos);
   console.log('Fecha seleccionada:', date);
   const [modalAbierto, setModalAbierto] = useState(false);
+  const [eventoSeleccionado, setEventoSeleccionado] = useState<Evento | null>(null);
+  const [detalleModalAbierto, setDetalleModalAbierto] = useState(false);
   const [nuevoEvento, setNuevoEvento] = useState<Partial<Evento>>({
     fecha: date,
     tipo: "consulta",
@@ -115,6 +117,11 @@ export default function Calendario() {
 
   const formatearHora = (hora: string) => {
     return hora;
+  };
+
+  const abrirDetalleEvento = (evento: Evento) => {
+    setEventoSeleccionado(evento);
+    setDetalleModalAbierto(true);
   };
 
   return (
@@ -228,7 +235,7 @@ export default function Calendario() {
           </Dialog>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <Card className="lg:col-span-1">
             <CardHeader>
               <CardTitle>Seleccionar fecha</CardTitle>
@@ -282,7 +289,8 @@ export default function Calendario() {
                   {eventosFiltrados.map((evento) => (
                     <div 
                       key={evento.id}
-                      className={`p-3 border rounded-lg ${obtenerColorEvento(evento.tipo)}`}
+                      className={`p-3 border rounded-lg cursor-pointer transition-colors hover:shadow-md ${obtenerColorEvento(evento.tipo)}`}
+                      onClick={() => abrirDetalleEvento(evento)}
                     >
                       <div className="flex justify-between items-start">
                         <div>
@@ -328,7 +336,125 @@ export default function Calendario() {
               )}
             </CardContent>
           </Card>
+
+          {/* Nueva columna para eventos del día seleccionado */}
+          <Card className="lg:col-span-1">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <CalendarIcon className="w-4 h-4 mr-2" />
+                Eventos del día
+              </CardTitle>
+              <CardDescription>
+                {date ? format(date, "d 'de' MMMM", { locale: es }) : "Selecciona una fecha"}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {date ? (
+                <div className="space-y-2">
+                  {eventos.filter(evento => evento.fecha.toDateString() === date.toDateString()).length > 0 ? (
+                    eventos
+                      .filter(evento => evento.fecha.toDateString() === date.toDateString())
+                      .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio))
+                      .map((evento) => (
+                        <div
+                          key={evento.id}
+                          className={`p-2 rounded-md cursor-pointer transition-all hover:scale-105 ${obtenerColorEvento(evento.tipo)}`}
+                          onClick={() => abrirDetalleEvento(evento)}
+                        >
+                          <div className="text-xs font-medium">{evento.horaInicio}</div>
+                          <div className="text-sm truncate">{evento.titulo}</div>
+                          {evento.pacienteNombre && (
+                            <div className="text-xs text-gray-600 truncate">
+                              {evento.pacienteNombre}
+                            </div>
+                          )}
+                        </div>
+                      ))
+                  ) : (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      No hay eventos para esta fecha
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  Selecciona una fecha para ver los eventos
+                </p>
+              )}
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Modal de detalles del evento */}
+        <Dialog open={detalleModalAbierto} onOpenChange={setDetalleModalAbierto}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center">
+                <CalendarIcon className="w-5 h-5 mr-2" />
+                {eventoSeleccionado?.titulo}
+              </DialogTitle>
+              <DialogDescription>
+                Detalles completos del evento
+              </DialogDescription>
+            </DialogHeader>
+            {eventoSeleccionado && (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Fecha</Label>
+                    <p className="text-sm">{format(eventoSeleccionado.fecha, "d 'de' MMMM 'de' yyyy", { locale: es })}</p>
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Horario</Label>
+                    <p className="text-sm">{eventoSeleccionado.horaInicio} - {eventoSeleccionado.horaFin}</p>
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Tipo</Label>
+                    <Badge className={obtenerColorEvento(eventoSeleccionado.tipo)}>
+                      {eventoSeleccionado.tipo.charAt(0).toUpperCase() + eventoSeleccionado.tipo.slice(1)}
+                    </Badge>
+                  </div>
+                  {eventoSeleccionado.pacienteNombre && (
+                    <div>
+                      <Label className="text-sm font-medium text-gray-500">Paciente</Label>
+                      <p className="text-sm flex items-center">
+                        <User className="w-3 h-3 mr-1" />
+                        {eventoSeleccionado.pacienteNombre}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {eventoSeleccionado.descripcion && (
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Descripción</Label>
+                    <p className="text-sm mt-1 p-2 bg-gray-50 rounded-md">
+                      {eventoSeleccionado.descripcion}
+                    </p>
+                  </div>
+                )}
+
+                {eventoSeleccionado.participantes && eventoSeleccionado.participantes.length > 0 && (
+                  <div>
+                    <Label className="text-sm font-medium text-gray-500">Participantes</Label>
+                    <div className="flex items-center mt-1">
+                      <Users className="w-3 h-3 mr-1" />
+                      <p className="text-sm">{eventoSeleccionado.participantes.join(", ")}</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDetalleModalAbierto(false)}>
+                Cerrar
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </Layout>
   );
