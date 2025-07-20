@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { authService } from "@/lib/auth";
 import { userValidationSchema } from "@/lib/security";
 import { z } from "zod";
+import { useCenterConfig } from "@/hooks/useCenterConfig";
 
 // Esquema de validación para login
 const loginSchema = z.object({
@@ -18,6 +19,7 @@ const loginSchema = z.object({
 });
 
 const Login = () => {
+  const centerConfig = useCenterConfig();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -105,10 +107,10 @@ const Login = () => {
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-health-700 flex items-center justify-center">
             <span className="bg-health-100 text-health-700 p-2 rounded mr-3">HC</span>
-            HealthCenter
+            {centerConfig.name}
           </h1>
           <p className="text-muted-foreground mt-2">
-            Centro de atención y cuidado para adultos mayores
+            {centerConfig.description}
           </p>
         </div>
         

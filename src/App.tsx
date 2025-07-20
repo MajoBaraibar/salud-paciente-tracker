@@ -23,8 +23,11 @@ import Admin from "./pages/Admin";
 import Configuracion from "./pages/Configuracion";
 import NotFound from "./pages/NotFound";
 
-// Cambiar el título de la página a "En Suma"
-document.title = "En Suma | Sistema Integral de Gestión Médica";
+import { getActiveConfig } from "@/config/centerConfig";
+
+// Configuración dinámica del centro
+const centerConfig = getActiveConfig();
+document.title = centerConfig.title;
 
 const queryClient = new QueryClient();
 
