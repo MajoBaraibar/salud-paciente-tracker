@@ -176,6 +176,36 @@ export type Database = {
           },
         ]
       }
+      notas_enfermeria: {
+        Row: {
+          created_at: string
+          enfermera_id: string
+          fecha: string
+          id: string
+          nota: string
+          paciente_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          enfermera_id: string
+          fecha?: string
+          id?: string
+          nota: string
+          paciente_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          enfermera_id?: string
+          fecha?: string
+          id?: string
+          nota?: string
+          paciente_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pacientes: {
         Row: {
           apellido: string

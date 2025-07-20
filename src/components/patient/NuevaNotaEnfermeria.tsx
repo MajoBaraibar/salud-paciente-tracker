@@ -7,6 +7,8 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 import { FilePen, Plus, X } from "lucide-react";
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface NuevaNotaEnfermeriaProps {
   pacienteId: string;
@@ -17,30 +19,54 @@ export const NuevaNotaEnfermeria: React.FC<NuevaNotaEnfermeriaProps> = ({
   pacienteId, 
   onSuccess 
 }) => {
+  const { user } = useAuth();
   const [mostrar, setMostrar] = useState(false);
   const [tipo, setTipo] = useState<'evolucion' | 'conducta'>('evolucion');
   const [contenido, setContenido] = useState('');
   const [enviando, setEnviando] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!contenido.trim()) {
       toast.error("Por favor escriba la nota de enfermería");
       return;
     }
+
+    if (!user) {
+      toast.error('Debe estar autenticado');
+      return;
+    }
     
     setEnviando(true);
     
-    // Simulamos envío a la API
-    setTimeout(() => {
+    try {
+      const { error } = await supabase
+        .from('notas_enfermeria')
+        .insert({
+          paciente_id: pacienteId,
+          enfermera_id: user.id,
+          nota: `${tipo.toUpperCase()}: ${contenido.trim()}`
+        });
+
+      if (error) throw error;
+
       toast.success(`Nota de ${tipo === 'evolucion' ? 'evolución' : 'conducta'} agregada correctamente`);
       setContenido('');
       setMostrar(false);
-      setEnviando(false);
       if (onSuccess) onSuccess();
-    }, 600);
+    } catch (error: any) {
+      console.error('Error al agregar nota:', error);
+      toast.error('Error al agregar la nota: ' + error.message);
+    } finally {
+      setEnviando(false);
+    }
   };
+
+  // Solo mostrar el componente si el usuario es enfermera o admin
+  if (user?.role !== 'enfermera' && user?.role !== 'admin') {
+    return null;
+  }
 
   if (!mostrar) {
     return (
