@@ -20,13 +20,40 @@ export const ProtectedRoute = ({
 
   console.log('ProtectedRoute - user:', user, 'loading:', loading);
 
-  // Usar useEffect para navegar, no durante el renderizado
+  // Verificar permisos de rol
+  const hasRequiredRole = () => {
+    if (!user) return false;
+    if (Array.isArray(requiredRole)) {
+      return requiredRole.some(role => hasPermission(user.role, role));
+    }
+    return hasPermission(user.role, requiredRole);
+  };
+
+  // TODOS LOS useEffect DEBEN IR AQUÍ, ANTES DE CUALQUIER RETURN CONDICIONAL
+  
+  // Navegar a login si no hay usuario
   useEffect(() => {
     if (!loading && !user) {
       console.log('ProtectedRoute - Redirigiendo a login...');
       navigate('/login');
     }
   }, [user, loading, navigate]);
+
+  // Verificar permisos de rol
+  useEffect(() => {
+    if (user && !hasRequiredRole()) {
+      toast.error('No tiene permisos para acceder a esta página');
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
+
+  // Verificar acceso a paciente específico (para familiares)
+  useEffect(() => {
+    if (user && patientId && !canAccessPatient(user.role, user.id, patientId, user.pacienteId)) {
+      toast.error('No tiene permisos para acceder a este paciente');
+      navigate('/dashboard');
+    }
+  }, [user, patientId, navigate]);
 
   // Mostrar loading mientras se verifica la autenticación
   if (loading) {
@@ -52,30 +79,6 @@ export const ProtectedRoute = ({
       </div>
     );
   }
-
-  // Verificar permisos de rol
-  const hasRequiredRole = () => {
-    if (Array.isArray(requiredRole)) {
-      return requiredRole.some(role => hasPermission(user.role, role));
-    }
-    return hasPermission(user.role, requiredRole);
-  };
-
-  // Usar useEffect para verificar permisos también
-  useEffect(() => {
-    if (user && !hasRequiredRole()) {
-      toast.error('No tiene permisos para acceder a esta página');
-      navigate('/dashboard');
-    }
-  }, [user]);
-
-  // Verificar acceso a paciente específico (para familiares)
-  useEffect(() => {
-    if (user && patientId && !canAccessPatient(user.role, user.id, patientId, user.pacienteId)) {
-      toast.error('No tiene permisos para acceder a este paciente');
-      navigate('/dashboard');
-    }
-  }, [user, patientId]);
 
   if (!hasRequiredRole()) {
     return (
