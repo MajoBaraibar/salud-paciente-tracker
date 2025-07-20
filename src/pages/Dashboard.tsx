@@ -9,6 +9,8 @@ import { useAuth } from "@/hooks/useAuth";
 const Dashboard = () => {
   const { user, loading } = useAuth();
   
+  console.log('Dashboard - user:', user, 'loading:', loading);
+  
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">

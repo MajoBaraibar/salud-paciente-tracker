@@ -7,7 +7,7 @@ import { DashboardHeader } from "./DashboardHeader";
 import { StatCard } from "./StatCard";
 import { ActivityTable } from "./ActivityTable";
 import { useNotificationStore } from "@/stores/notificationStore";
-import { pacientesMock } from "@/data/mockData";
+import { useDemoStore } from "@/stores/demoStore";
 
 interface AdminDashboardProps {
   currentUser: { email: string; role: string };
@@ -16,6 +16,10 @@ interface AdminDashboardProps {
 export const AdminDashboard = ({ currentUser }: AdminDashboardProps) => {
   const navigate = useNavigate();
   const { totalUnread } = useNotificationStore();
+  const { pacientes, pagos, requisiciones } = useDemoStore();
+
+  console.log('AdminDashboard - currentUser:', currentUser);
+  console.log('AdminDashboard - pacientes:', pacientes.length);
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
@@ -31,14 +35,14 @@ export const AdminDashboard = ({ currentUser }: AdminDashboardProps) => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatCard
           title="Pacientes activos"
-          value={pacientesMock.length}
+          value={pacientes.length}
           icon={Users}
           iconColor="bg-blue-100 text-blue-600"
         />
         
         <StatCard
           title="Pagos pendientes"
-          value={8}
+          value={pagos.filter(p => p.status === 'pendiente' || p.status === 'atrasado').length}
           icon={CreditCard}
           iconColor="bg-green-100 text-green-600"
           onClick={() => navigate("/admin")}
@@ -46,7 +50,7 @@ export const AdminDashboard = ({ currentUser }: AdminDashboardProps) => {
         
         <StatCard
           title="Requisiciones"
-          value={5}
+          value={requisiciones.length}
           icon={AlertTriangle}
           iconColor="bg-red-100 text-red-600"
         />
