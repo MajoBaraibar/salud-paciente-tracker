@@ -54,6 +54,9 @@ export default function Calendario() {
     markAllAsRead('calendar');
   }, [markAllAsRead]);
 
+  // Obtener días con eventos para marcar en el calendario
+  const diasConEventos = eventos.map(evento => evento.fecha);
+  
   // Filtrar eventos para el día seleccionado o semana
   const eventosFiltrados = eventos.filter(evento => {
     if (vista === "dia" && date) {
@@ -237,6 +240,12 @@ export default function Calendario() {
                 onSelect={setDate}
                 className="pointer-events-auto"
                 locale={es}
+                modifiers={{
+                  conEventos: diasConEventos
+                }}
+                modifiersClassNames={{
+                  conEventos: "bg-blue-100 text-blue-800 font-semibold border border-blue-300"
+                }}
               />
               <div className="mt-4 space-y-2">
                 <h4 className="font-medium">Tipos de eventos:</h4>
