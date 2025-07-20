@@ -26,6 +26,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        // Si no hay Supabase configurado, usar localStorage como fallback
+        if (!supabase) {
+          const userString = localStorage.getItem("user");
+          if (userString) {
+            const userData = JSON.parse(userString);
+            setUser({ ...userData, supabaseId: "temp" });
+          }
+          setLoading(false);
+          return;
+        }
+
         const currentUser = await authService.getCurrentUser();
         setUser(currentUser);
       } catch (error) {
@@ -38,30 +49,36 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     initializeAuth();
 
-    // Escuchar cambios de autenticación
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (event === 'SIGNED_IN' && session) {
-          const currentUser = await authService.getCurrentUser();
-          setUser(currentUser);
-        } else if (event === 'SIGNED_OUT') {
-          setUser(null);
-          localStorage.removeItem('user'); // Limpiar datos locales
+    // Solo escuchar cambios si Supabase está disponible
+    if (supabase) {
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        async (event, session) => {
+          if (event === 'SIGNED_IN' && session) {
+            const currentUser = await authService.getCurrentUser();
+            setUser(currentUser);
+          } else if (event === 'SIGNED_OUT') {
+            setUser(null);
+            localStorage.removeItem('user');
+          }
         }
-      }
-    );
+      );
 
-    return () => subscription.unsubscribe();
+      return () => subscription.unsubscribe();
+    }
   }, []);
 
   const signIn = async (email: string, password: string): Promise<AuthUser> => {
     const user = await authService.signIn(email, password);
     setUser(user);
+    // Guardar en localStorage como respaldo
+    localStorage.setItem('user', JSON.stringify(user));
     return user;
   };
 
   const signOut = async (): Promise<void> => {
-    await authService.signOut();
+    if (supabase) {
+      await authService.signOut();
+    }
     setUser(null);
     localStorage.removeItem('user');
     navigate('/login');
@@ -70,16 +87,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const updateUser = async (userData: Partial<AuthUser>): Promise<void> => {
     if (!user) throw new Error('No hay usuario autenticado');
     
-    // Actualizar en Supabase
-    const { error } = await supabase
-      .from('user_profiles')
-      .update(userData)
-      .eq('supabase_user_id', user.supabaseId);
-    
-    if (error) throw error;
+    // Solo actualizar en Supabase si está disponible
+    if (supabase) {
+      const { error } = await supabase
+        .from('user_profiles')
+        .update(userData)
+        .eq('supabase_user_id', user.supabaseId);
+      
+      if (error) throw error;
+    }
     
     // Actualizar estado local
-    setUser({ ...user, ...userData });
+    const updatedUser = { ...user, ...userData };
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
   return (
