@@ -23,6 +23,7 @@ type Evento = {
   pacienteNombre?: string;
   descripcion: string;
   participantes?: string[];
+  estado?: "programado" | "cancelado" | "completado";
 };
 
 interface DemoStore {
@@ -55,6 +56,8 @@ interface DemoStore {
   updatePago: (id: string, pago: Partial<PaymentType>) => void;
   
   addEvento: (evento: Evento) => void;
+  updateEvento: (id: string, evento: Partial<Evento>) => void;
+  deleteEvento: (id: string) => void;
   
   // Reset demo data
   resetDemoData: () => void;
@@ -158,6 +161,20 @@ export const useDemoStore = create<DemoStore>()(
       addEvento: (evento) => {
         set((state) => ({
           eventos: [...state.eventos, evento]
+        }));
+      },
+      
+      updateEvento: (id, updates) => {
+        set((state) => ({
+          eventos: state.eventos.map(e => 
+            e.id === id ? { ...e, ...updates } : e
+          )
+        }));
+      },
+      
+      deleteEvento: (id) => {
+        set((state) => ({
+          eventos: state.eventos.filter(e => e.id !== id)
         }));
       },
       

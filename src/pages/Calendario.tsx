@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarIcon, Clock, Plus, User, Users } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, Plus, User, Users, Edit, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { useDemoStore } from "@/stores/demoStore";
@@ -28,6 +28,7 @@ type Evento = {
   pacienteNombre?: string;
   descripcion: string;
   participantes?: string[];
+  estado?: "programado" | "cancelado" | "completado";
 }
 
 // Current user role for conditional rendering
@@ -36,14 +37,17 @@ const userRole = currentUser.role;
 
 export default function Calendario() {
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const { eventos, addEvento } = useDemoStore();
+  const { eventos, addEvento, updateEvento, deleteEvento } = useDemoStore();
   const [modalAbierto, setModalAbierto] = useState(false);
   const [eventoSeleccionado, setEventoSeleccionado] = useState<Evento | null>(null);
   const [detalleModalAbierto, setDetalleModalAbierto] = useState(false);
+  const [editModalAbierto, setEditModalAbierto] = useState(false);
   const [nuevoEvento, setNuevoEvento] = useState<Partial<Evento>>({
     fecha: date,
     tipo: "consulta",
+    estado: "programado",
   });
+  const [eventoEditando, setEventoEditando] = useState<Partial<Evento>>({});
   const [vista, setVista] = useState<"dia" | "semana">("dia");
   const { markAllAsRead } = useNotificationStore();
 
@@ -89,26 +93,29 @@ export default function Calendario() {
       pacienteId: nuevoEvento.pacienteId,
       pacienteNombre: nuevoEvento.pacienteNombre,
       participantes: nuevoEvento.participantes,
+      estado: "programado",
     };
 
     addEvento(eventoCompleto);
     setModalAbierto(false);
-    setNuevoEvento({ fecha: date, tipo: "consulta" });
+    setNuevoEvento({ fecha: date, tipo: "consulta", estado: "programado" });
 
     toast.success("Evento creado correctamente");
   };
 
-  const obtenerColorEvento = (tipo: string) => {
-    switch (tipo) {
-      case "consulta":
-        return "bg-blue-100 text-blue-800 border-blue-300";
-      case "visita":
-        return "bg-green-100 text-green-800 border-green-300";
-      case "reunion":
-        return "bg-purple-100 text-purple-800 border-purple-300";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-300";
+  const obtenerColorEvento = (tipo: string, estado?: string) => {
+    const baseColors = {
+      consulta: "bg-blue-100 text-blue-800 border-blue-300",
+      visita: "bg-green-100 text-green-800 border-green-300",
+      reunion: "bg-purple-100 text-purple-800 border-purple-300",
+      otro: "bg-gray-100 text-gray-800 border-gray-300"
+    };
+    
+    if (estado === "cancelado") {
+      return "bg-red-100 text-red-800 border-red-300 opacity-60";
     }
+    
+    return baseColors[tipo as keyof typeof baseColors] || baseColors.otro;
   };
 
   const formatearHora = (hora: string) => {
@@ -118,6 +125,39 @@ export default function Calendario() {
   const abrirDetalleEvento = (evento: Evento) => {
     setEventoSeleccionado(evento);
     setDetalleModalAbierto(true);
+  };
+
+  const abrirEditarEvento = (evento: Evento) => {
+    setEventoEditando({
+      ...evento,
+      fecha: evento.fecha,
+    });
+    setEditModalAbierto(true);
+    setDetalleModalAbierto(false);
+  };
+
+  const handleEditarEvento = () => {
+    if (!eventoEditando.titulo || !eventoEditando.fecha || !eventoEditando.horaInicio || !eventoEditando.horaFin) {
+      toast.error("Por favor complete todos los campos obligatorios");
+      return;
+    }
+
+    updateEvento(eventoEditando.id!, eventoEditando);
+    setEditModalAbierto(false);
+    setEventoEditando({});
+    toast.success("Evento actualizado correctamente");
+  };
+
+  const handleCancelarEvento = (evento: Evento) => {
+    updateEvento(evento.id, { estado: "cancelado" });
+    setDetalleModalAbierto(false);
+    toast.success("Evento cancelado");
+  };
+
+  const handleEliminarEvento = (evento: Evento) => {
+    deleteEvento(evento.id);
+    setDetalleModalAbierto(false);
+    toast.success("Evento eliminado");
   };
 
   return (
@@ -290,45 +330,50 @@ export default function Calendario() {
                   {eventosFiltrados
                     .sort((a, b) => a.horaInicio.localeCompare(b.horaInicio))
                     .map((evento) => (
-                      <div
-                        key={evento.id}
-                        className={`p-3 border rounded-lg cursor-pointer transition-colors hover:shadow-md ${obtenerColorEvento(evento.tipo)}`}
-                        onClick={() => abrirDetalleEvento(evento)}
-                      >
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h3 className="font-medium">{evento.titulo}</h3>
-                            <div className="flex items-center text-sm mt-1 space-x-3">
-                              <span className="flex items-center">
-                                <Clock className="w-3 h-3 mr-1" />
-                                {formatearHora(evento.horaInicio)} - {formatearHora(evento.horaFin)}
-                              </span>
-                              {evento.pacienteNombre && (
-                                <span className="flex items-center">
-                                  <User className="w-3 h-3 mr-1" />
-                                  {evento.pacienteNombre}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          {vista === "semana" && (
-                            <div>
-                              <span className="text-xs text-gray-500">
-                                {format(evento.fecha, "EEE d", { locale: es })}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                        {evento.descripcion && (
-                          <p className="text-sm mt-2">{evento.descripcion}</p>
-                        )}
-                        {evento.participantes && evento.participantes.length > 0 && (
-                          <div className="flex items-center mt-2 text-xs text-gray-600">
-                            <Users className="w-3 h-3 mr-1" />
-                            {evento.participantes.join(", ")}
-                          </div>
-                        )}
-                      </div>
+                       <div
+                         key={evento.id}
+                         className={`p-3 border rounded-lg cursor-pointer transition-colors hover:shadow-md ${obtenerColorEvento(evento.tipo, evento.estado)}`}
+                         onClick={() => abrirDetalleEvento(evento)}
+                       >
+                         <div className="flex justify-between items-start">
+                           <div className="flex-1">
+                             <div className="flex items-center gap-2">
+                               <h3 className="font-medium">{evento.titulo}</h3>
+                               {evento.estado === "cancelado" && (
+                                 <Badge variant="destructive" className="text-xs">Cancelado</Badge>
+                               )}
+                             </div>
+                             <div className="flex items-center text-sm mt-1 space-x-3">
+                               <span className="flex items-center">
+                                 <Clock className="w-3 h-3 mr-1" />
+                                 {formatearHora(evento.horaInicio)} - {formatearHora(evento.horaFin)}
+                               </span>
+                               {evento.pacienteNombre && (
+                                 <span className="flex items-center">
+                                   <User className="w-3 h-3 mr-1" />
+                                   {evento.pacienteNombre}
+                                 </span>
+                               )}
+                             </div>
+                           </div>
+                           {vista === "semana" && (
+                             <div>
+                               <span className="text-xs text-gray-500">
+                                 {format(evento.fecha, "EEE d", { locale: es })}
+                               </span>
+                             </div>
+                           )}
+                         </div>
+                         {evento.descripcion && (
+                           <p className="text-sm mt-2">{evento.descripcion}</p>
+                         )}
+                         {evento.participantes && evento.participantes.length > 0 && (
+                           <div className="flex items-center mt-2 text-xs text-gray-600">
+                             <Users className="w-3 h-3 mr-1" />
+                             {evento.participantes.join(", ")}
+                           </div>
+                         )}
+                       </div>
                     ))
                   }
                 </div>
@@ -368,12 +413,17 @@ export default function Calendario() {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label className="text-sm font-medium text-gray-500">Tipo</Label>
-                    <Badge className={obtenerColorEvento(eventoSeleccionado.tipo)}>
-                      {eventoSeleccionado.tipo.charAt(0).toUpperCase() + eventoSeleccionado.tipo.slice(1)}
-                    </Badge>
-                  </div>
+                   <div>
+                     <Label className="text-sm font-medium text-gray-500">Tipo</Label>
+                     <div className="flex items-center gap-2 mt-1">
+                       <Badge className={obtenerColorEvento(eventoSeleccionado.tipo, eventoSeleccionado.estado)}>
+                         {eventoSeleccionado.tipo.charAt(0).toUpperCase() + eventoSeleccionado.tipo.slice(1)}
+                       </Badge>
+                       {eventoSeleccionado.estado === "cancelado" && (
+                         <Badge variant="destructive">Cancelado</Badge>
+                       )}
+                     </div>
+                   </div>
                   {eventoSeleccionado.pacienteNombre && (
                     <div>
                       <Label className="text-sm font-medium text-gray-500">Paciente</Label>
@@ -404,11 +454,141 @@ export default function Calendario() {
                   </div>
                 )}
               </div>
-            )}
+             )}
+             <DialogFooter className="flex-col sm:flex-row gap-2">
+               <div className="flex gap-2">
+                 <Button 
+                   variant="outline" 
+                   size="sm"
+                   onClick={() => abrirEditarEvento(eventoSeleccionado!)}
+                   disabled={eventoSeleccionado?.estado === "cancelado"}
+                 >
+                   <Edit className="w-3 h-3 mr-1" />
+                   Editar
+                 </Button>
+                 <Button 
+                   variant="outline" 
+                   size="sm"
+                   onClick={() => handleCancelarEvento(eventoSeleccionado!)}
+                   disabled={eventoSeleccionado?.estado === "cancelado"}
+                   className="text-orange-600 hover:text-orange-700 hover:bg-orange-50"
+                 >
+                   <X className="w-3 h-3 mr-1" />
+                   Cancelar
+                 </Button>
+                 <Button 
+                   variant="outline" 
+                   size="sm"
+                   onClick={() => handleEliminarEvento(eventoSeleccionado!)}
+                   className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                 >
+                   <Trash2 className="w-3 h-3 mr-1" />
+                   Eliminar
+                 </Button>
+               </div>
+               <Button variant="outline" onClick={() => setDetalleModalAbierto(false)}>
+                 Cerrar
+               </Button>
+             </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Modal de edición del evento */}
+        <Dialog open={editModalAbierto} onOpenChange={setEditModalAbierto}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Editar evento</DialogTitle>
+              <DialogDescription>
+                Modifica los detalles del evento
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <Label htmlFor="edit-titulo">Título</Label>
+                <Input
+                  id="edit-titulo"
+                  placeholder="Título del evento"
+                  value={eventoEditando.titulo || ""}
+                  onChange={(e) => setEventoEditando({...eventoEditando, titulo: e.target.value})}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-hora-inicio">Hora de inicio</Label>
+                  <Input
+                    id="edit-hora-inicio"
+                    type="time"
+                    value={eventoEditando.horaInicio || ""}
+                    onChange={(e) => setEventoEditando({...eventoEditando, horaInicio: e.target.value})}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="edit-hora-fin">Hora de fin</Label>
+                  <Input
+                    id="edit-hora-fin"
+                    type="time"
+                    value={eventoEditando.horaFin || ""}
+                    onChange={(e) => setEventoEditando({...eventoEditando, horaFin: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-tipo">Tipo de evento</Label>
+                <Select
+                  value={eventoEditando.tipo}
+                  onValueChange={(value) => setEventoEditando({...eventoEditando, tipo: value as any})}
+                >
+                  <SelectTrigger id="edit-tipo">
+                    <SelectValue placeholder="Seleccione el tipo de evento" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {userRole === "admin" && (
+                      <>
+                        <SelectItem value="visita">Visita familiar</SelectItem>
+                        <SelectItem value="reunion">Reunión</SelectItem>
+                        <SelectItem value="otro">Otro</SelectItem>
+                      </>
+                    )}
+                    {(userRole === "medico" || userRole === "enfermera") && (
+                      <>
+                        <SelectItem value="consulta">Consulta</SelectItem>
+                        <SelectItem value="reunion">Reunión</SelectItem>
+                        <SelectItem value="otro">Otro</SelectItem>
+                      </>
+                    )}
+                    {userRole === "familiar" && (
+                      <>
+                        <SelectItem value="visita">Visita familiar</SelectItem>
+                        <SelectItem value="otro">Otro</SelectItem>
+                      </>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-paciente">Paciente (opcional)</Label>
+                <Input
+                  id="edit-paciente"
+                  placeholder="Nombre del paciente"
+                  value={eventoEditando.pacienteNombre || ""}
+                  onChange={(e) => setEventoEditando({...eventoEditando, pacienteNombre: e.target.value})}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="edit-descripcion">Descripción</Label>
+                <Textarea
+                  id="edit-descripcion"
+                  placeholder="Detalles adicionales del evento"
+                  value={eventoEditando.descripcion || ""}
+                  onChange={(e) => setEventoEditando({...eventoEditando, descripcion: e.target.value})}
+                />
+              </div>
+            </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setDetalleModalAbierto(false)}>
-                Cerrar
+              <Button variant="outline" onClick={() => setEditModalAbierto(false)}>
+                Cancelar
               </Button>
+              <Button onClick={handleEditarEvento}>Guardar cambios</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
