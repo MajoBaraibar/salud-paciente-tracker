@@ -539,10 +539,12 @@ const DetallesPaciente = () => {
               
               {/* Contenido del Contacto de Emergencia */}
               <TabsContent value="contacto">
-                <EmergencyContact 
-                  patientId={pacienteOriginal.id} 
-                  initialContact={mockEmergencyContact} 
-                />
+                {pacienteOriginal && (
+                  <EmergencyContact 
+                    patientId={pacienteOriginal.id} 
+                    initialContact={mockEmergencyContact} 
+                  />
+                )}
               </TabsContent>
             </Tabs>
           </div>
