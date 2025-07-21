@@ -10,6 +10,7 @@ import { EntradaHistorial } from "@/components/EntradaHistorial";
 import { NuevaEntradaForm } from "@/components/NuevaEntradaForm";
 import { NuevaNotaEnfermeria } from "@/components/patient/NuevaNotaEnfermeria";
 import { EmergencyContact } from "@/components/patient/EmergencyContact";
+import { ResultadosExamenes } from "@/components/patient/ResultadosExamenes";
 import { ResumenMedico } from "@/components/patient/ResumenMedico";
 import { usePacienteById } from "@/hooks/usePacientes";
 import { useHistorialPaciente } from "@/hooks/useHistorial";
@@ -330,7 +331,7 @@ const DetallesPaciente = () => {
             
             {/* Pestañas */}
             <Tabs defaultValue="perfil" value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-4 w-full mb-6">
+              <TabsList className="grid grid-cols-5 w-full mb-6">
                 <TabsTrigger value="perfil" className="flex gap-2 items-center">
                   <User size={16} />
                   <span>Información personal</span>
@@ -338,6 +339,10 @@ const DetallesPaciente = () => {
                 <TabsTrigger value="historial" className="flex gap-2 items-center">
                   <FileText size={16} />
                   <span>Historial médico</span>
+                </TabsTrigger>
+                <TabsTrigger value="examenes" className="flex gap-2 items-center">
+                  <Clipboard size={16} />
+                  <span>Exámenes</span>
                 </TabsTrigger>
                 <TabsTrigger value="enfermeria" className="flex gap-2 items-center">
                   <FilePen size={16} />
@@ -458,6 +463,11 @@ const DetallesPaciente = () => {
                     )}
                   </div>
                 )}
+              </TabsContent>
+              
+              {/* Nueva pestaña: Resultados de Exámenes */}
+              <TabsContent value="examenes">
+                <ResultadosExamenes pacienteId={pacienteOriginal.id} />
               </TabsContent>
               
               {/* Nueva pestaña: Notas de enfermería */}

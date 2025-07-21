@@ -80,3 +80,21 @@ export interface FamiliarType {
   telefono: string;
   email: string;
 }
+
+export interface ResultadoExamen {
+  id: string;
+  paciente_id: string;
+  medico_id: string;
+  nombre_examen: string;
+  descripcion: string | null;
+  archivo_url: string | null;
+  archivo_nombre: string | null;
+  fecha_examen: string;
+  fecha_subida: string;
+  tipo_examen: 'laboratorio' | 'imagen' | 'especializado';
+  estado: 'normal' | 'anormal' | 'critico';
+  observaciones: string | null;
+  centro_id: string | null;
+  created_at: string;
+  updated_at: string;
+}

@@ -500,6 +500,60 @@ export type Database = {
           },
         ]
       }
+      resultados_examenes: {
+        Row: {
+          archivo_nombre: string | null
+          archivo_url: string | null
+          centro_id: string | null
+          created_at: string
+          descripcion: string | null
+          estado: string
+          fecha_examen: string
+          fecha_subida: string
+          id: string
+          medico_id: string
+          nombre_examen: string
+          observaciones: string | null
+          paciente_id: string
+          tipo_examen: string
+          updated_at: string
+        }
+        Insert: {
+          archivo_nombre?: string | null
+          archivo_url?: string | null
+          centro_id?: string | null
+          created_at?: string
+          descripcion?: string | null
+          estado?: string
+          fecha_examen: string
+          fecha_subida?: string
+          id?: string
+          medico_id: string
+          nombre_examen: string
+          observaciones?: string | null
+          paciente_id: string
+          tipo_examen?: string
+          updated_at?: string
+        }
+        Update: {
+          archivo_nombre?: string | null
+          archivo_url?: string | null
+          centro_id?: string | null
+          created_at?: string
+          descripcion?: string | null
+          estado?: string
+          fecha_examen?: string
+          fecha_subida?: string
+          id?: string
+          medico_id?: string
+          nombre_examen?: string
+          observaciones?: string | null
+          paciente_id?: string
+          tipo_examen?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
