@@ -248,16 +248,18 @@ const DetallesPaciente = () => {
                     </div>
                   </div>
                 </div>
-                <div>
-                  <Button 
-                    variant="outline" 
-                    className="flex items-center gap-1 bg-white"
-                    onClick={() => setEditDialogOpen(true)}
-                  >
-                    <Edit className="h-4 w-4" />
-                    Editar perfil
-                  </Button>
-                </div>
+                {user?.role === "admin" && (
+                  <div>
+                    <Button 
+                      variant="outline" 
+                      className="flex items-center gap-1 bg-white"
+                      onClick={() => setEditDialogOpen(true)}
+                    >
+                      <Edit className="h-4 w-4" />
+                      Editar perfil
+                    </Button>
+                  </div>
+                )}
               </div>
             </Card>
             
