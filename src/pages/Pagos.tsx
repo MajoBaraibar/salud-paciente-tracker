@@ -61,50 +61,74 @@ const Pagos = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              <Card>
+              <Card className="border-blue-200 bg-blue-50/50">
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Pagos pendientes</p>
-                      <p className="text-3xl font-bold">
+                      <p className="text-sm font-medium text-blue-700 mb-1">Pagos pendientes</p>
+                      <p className="text-3xl font-bold text-blue-800">
                         {pagosMock.filter(p => p.status === "pendiente").length}
                       </p>
+                      <p className="text-xs text-blue-600 mt-1">
+                        Por cobrar este mes
+                      </p>
                     </div>
-                    <div className="p-2 bg-blue-100 rounded-full">
-                      <span className="text-blue-700 font-bold text-lg">$</span>
+                    <div className="p-3 bg-blue-100 rounded-full">
+                      <span className="text-blue-700 font-bold text-xl">💰</span>
                     </div>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-blue-200">
+                    <p className="text-sm text-blue-600">
+                      Total: ${pagosMock.filter(p => p.status === "pendiente").reduce((sum, p) => sum + p.amount, 0)}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card className="border-red-200 bg-red-50/50">
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Pagos atrasados</p>
-                      <p className="text-3xl font-bold text-red-600">
+                      <p className="text-sm font-medium text-red-700 mb-1">Pagos atrasados</p>
+                      <p className="text-3xl font-bold text-red-800">
                         {pagosMock.filter(p => p.status === "atrasado").length}
                       </p>
+                      <p className="text-xs text-red-600 mt-1">
+                        Requieren atención urgente
+                      </p>
                     </div>
-                    <div className="p-2 bg-red-100 rounded-full">
-                      <span className="text-red-700 font-bold text-lg">!</span>
+                    <div className="p-3 bg-red-100 rounded-full">
+                      <span className="text-red-700 font-bold text-xl">⚠️</span>
                     </div>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-red-200">
+                    <p className="text-sm text-red-600">
+                      Total: ${pagosMock.filter(p => p.status === "atrasado").reduce((sum, p) => sum + p.amount, 0)}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
               
-              <Card>
+              <Card className="border-green-200 bg-green-50/50">
                 <CardContent className="pt-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-muted-foreground">Pagos completados (mes)</p>
-                      <p className="text-3xl font-bold text-green-600">
+                      <p className="text-sm font-medium text-green-700 mb-1">Pagos al día</p>
+                      <p className="text-3xl font-bold text-green-800">
                         {pagosMock.filter(p => p.status === "pagado").length}
                       </p>
+                      <p className="text-xs text-green-600 mt-1">
+                        Completados este mes
+                      </p>
                     </div>
-                    <div className="p-2 bg-green-100 rounded-full">
-                      <span className="text-green-700 font-bold text-lg">✓</span>
+                    <div className="p-3 bg-green-100 rounded-full">
+                      <span className="text-green-700 font-bold text-xl">✅</span>
                     </div>
+                  </div>
+                  <div className="mt-4 pt-4 border-t border-green-200">
+                    <p className="text-sm text-green-600">
+                      Total recaudado: ${pagosMock.filter(p => p.status === "pagado").reduce((sum, p) => sum + p.amount, 0)}
+                    </p>
                   </div>
                 </CardContent>
               </Card>

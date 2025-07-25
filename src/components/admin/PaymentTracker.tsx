@@ -88,23 +88,23 @@ export const PaymentTracker = () => {
     switch (status) {
       case "pagado":
         return (
-          <Badge className="bg-green-100 text-green-800 hover:bg-green-200 flex items-center gap-1">
+          <Badge className="bg-green-100 text-green-800 hover:bg-green-200 flex items-center gap-1 border-green-300">
             <Check className="h-3 w-3" />
-            Pagado
+            Pagado ✓
           </Badge>
         );
       case "pendiente":
         return (
-          <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-200 flex items-center gap-1">
+          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 flex items-center gap-1 border-blue-300">
             <Clock className="h-3 w-3" />
-            Pendiente
+            Por cobrar
           </Badge>
         );
       case "atrasado":
         return (
-          <Badge className="bg-red-100 text-red-800 hover:bg-red-200 flex items-center gap-1">
+          <Badge className="bg-red-100 text-red-800 hover:bg-red-200 flex items-center gap-1 border-red-300">
             <X className="h-3 w-3" />
-            Atrasado
+            Vencido ⚠️
           </Badge>
         );
     }
