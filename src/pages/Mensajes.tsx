@@ -59,8 +59,10 @@ const Mensajes = () => {
   const { toast } = useToast();
   const { markAsRead } = useNotificationStore();
 
-  // Obtener el usuario actual del localStorage (simulado)
-  const usuarioActualId = "1"; // Simulando que el usuario actual es el Dr. Juan Pérez
+  // Obtener el usuario actual del localStorage
+  const currentUser = JSON.parse(localStorage.getItem("user") || '{"role":"medico", "id":"1"}');
+  const userRole = currentUser.role;
+  const usuarioActualId = userRole === "familiar" ? "5" : "1"; // ID del usuario familiar o médico
   
   // Encontrar nombre de usuario por ID - MOVIDO AQUÍ ANTES DE SU USO
   const encontrarNombreUsuario = (id: string): string => {
@@ -76,10 +78,12 @@ const Mensajes = () => {
       { id: "2", nombre: "Lic. María Rodríguez", rol: "enfermero" },
       { id: "3", nombre: "Adm. Carlos Gómez", rol: "administrativo" },
       { id: "4", nombre: "Dra. Ana Martínez", rol: "medico" },
+      { id: "5", nombre: "Ana Rodríguez", rol: "administrativo" }, // Usuario familiar
     ];
 
     // Datos de ejemplo para mensajes
-    const mensajesMock: Mensaje[] = [
+    const todosMensajes: Mensaje[] = [
+      // Mensajes entre personal médico (solo visibles para médicos)
       {
         id: "1",
         remitente: "2",
@@ -130,10 +134,37 @@ const Mensajes = () => {
         leido: true,
         conversacionId: "conv2",
       },
+      // Mensajes dirigidos a familiares
+      {
+        id: "6",
+        remitente: "3",
+        destinatario: "5",
+        asunto: "Informe médico de Roberto Pérez",
+        contenido: "Estimada Ana, le informamos que Roberto ha completado sus exámenes de rutina. Los resultados son satisfactorios. Puede visitarlo mañana en horario de 14:00 a 16:00.",
+        fecha: "2025-01-15T10:00:00",
+        leido: false,
+        conversacionId: "conv4",
+      },
+      {
+        id: "7",
+        remitente: "2",
+        destinatario: "5",
+        asunto: "Cambio de horario de visita",
+        contenido: "Hola Ana, debido a un procedimiento médico programado, las visitas para Roberto se trasladarán al martes de 15:00 a 17:00. Disculpe las molestias.",
+        fecha: "2025-01-16T08:30:00",
+        leido: false,
+        conversacionId: "conv5",
+      },
     ];
 
+    // Filtrar mensajes según el rol del usuario
+    const mensajesMock = userRole === "familiar" 
+      ? todosMensajes.filter(m => m.remitente === usuarioActualId || m.destinatario === usuarioActualId)
+      : todosMensajes;
+
     // Generar conversaciones basadas en los mensajes
-    const conversacionesMock: Conversacion[] = [
+    const todasConversaciones: Conversacion[] = [
+      // Conversaciones entre personal médico
       {
         id: "conv1",
         participantes: ["1", "2"],
@@ -155,7 +186,27 @@ const Mensajes = () => {
         fechaUltimoMensaje: "2025-05-11T10:20:00",
         noLeidos: 1,
       },
+      // Conversaciones para familiares
+      {
+        id: "conv4",
+        participantes: ["3", "5"],
+        ultimoMensaje: "Estimada Ana, le informamos que Roberto ha completado sus exámenes de rutina. Los resultados son satisfactorios. Puede visitarlo mañana en horario de 14:00 a 16:00.",
+        fechaUltimoMensaje: "2025-01-15T10:00:00",
+        noLeidos: 1,
+      },
+      {
+        id: "conv5",
+        participantes: ["2", "5"],
+        ultimoMensaje: "Hola Ana, debido a un procedimiento médico programado, las visitas para Roberto se trasladarán al martes de 15:00 a 17:00. Disculpe las molestias.",
+        fechaUltimoMensaje: "2025-01-16T08:30:00",
+        noLeidos: 1,
+      },
     ];
+
+    // Filtrar conversaciones según el rol del usuario
+    const conversacionesMock = userRole === "familiar" 
+      ? todasConversaciones.filter(conv => conv.participantes.includes(usuarioActualId))
+      : todasConversaciones;
 
     setUsuarios(usuariosMock);
     setMensajes(mensajesMock);
@@ -393,14 +444,21 @@ const Mensajes = () => {
                           onChange={(e) => setDestinatarioSeleccionado(e.target.value)}
                         >
                           <option value="">Seleccionar destinatario</option>
-                          {usuarios.map(usuario => (
-                            usuario.id !== usuarioActualId && (
+                          {usuarios
+                            .filter(usuario => {
+                              if (usuario.id === usuarioActualId) return false;
+                              // Familiares solo pueden escribir a personal administrativo y enfermeras
+                              if (userRole === "familiar") {
+                                return usuario.rol === "administrativo" || usuario.rol === "enfermero";
+                              }
+                              return true;
+                            })
+                            .map(usuario => (
                               <option key={usuario.id} value={usuario.id}>
                                 {usuario.nombre} - {usuario.rol === 'medico' ? 'Médico' : 
                                  usuario.rol === 'enfermero' ? 'Enfermero' : 'Administrativo'}
                               </option>
-                            )
-                          ))}
+                            ))}
                         </select>
                       </div>
                       <div>
@@ -615,14 +673,21 @@ const Mensajes = () => {
                             onChange={(e) => setDestinatarioSeleccionado(e.target.value)}
                           >
                             <option value="">Seleccionar destinatario</option>
-                            {usuarios.map(usuario => (
-                              usuario.id !== usuarioActualId && (
+                            {usuarios
+                              .filter(usuario => {
+                                if (usuario.id === usuarioActualId) return false;
+                                // Familiares solo pueden escribir a personal administrativo y enfermeras
+                                if (userRole === "familiar") {
+                                  return usuario.rol === "administrativo" || usuario.rol === "enfermero";
+                                }
+                                return true;
+                              })
+                              .map(usuario => (
                                 <option key={usuario.id} value={usuario.id}>
                                   {usuario.nombre} - {usuario.rol === 'medico' ? 'Médico' : 
                                    usuario.rol === 'enfermero' ? 'Enfermero' : 'Administrativo'}
                                 </option>
-                              )
-                            ))}
+                              ))}
                           </select>
                         </div>
                         <div>
