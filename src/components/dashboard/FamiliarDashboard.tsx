@@ -84,28 +84,16 @@ export const FamiliarDashboard = ({ currentUser }: FamiliarDashboardProps) => {
                     </div>
                   </div>
                   
-                  <div>
-                    <h3 className="text-sm font-medium mb-2">Signos vitales</h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      <div className="bg-blue-50 rounded-lg p-3">
-                        <p className="text-xs text-blue-500 mb-1">Presión</p>
-                        <p className="font-medium text-blue-700">{familiarPatientInfo.signos.presion}</p>
-                      </div>
-                      <div className="bg-green-50 rounded-lg p-3">
-                        <p className="text-xs text-green-500 mb-1">Temperatura</p>
-                        <p className="font-medium text-green-700">{familiarPatientInfo.signos.temperatura}°C</p>
-                      </div>
-                      <div className="bg-amber-50 rounded-lg p-3">
-                        <p className="text-xs text-amber-500 mb-1">Pulso</p>
-                        <p className="font-medium text-amber-700">{familiarPatientInfo.signos.pulso} bpm</p>
-                      </div>
-                      <div className="bg-purple-50 rounded-lg p-3">
-                        <p className="text-xs text-purple-500 mb-1">Oxígeno</p>
-                        <p className="font-medium text-purple-700">{familiarPatientInfo.signos.oxigeno}</p>
-                      </div>
+                  <div className="bg-green-50 rounded-lg p-4">
+                    <h3 className="text-sm font-medium mb-2 text-green-700">Estado general</h3>
+                    <div className="flex items-center justify-between">
+                      <p className="text-lg font-semibold text-green-800">Estable</p>
+                      <Badge variant="secondary" className="bg-green-100 text-green-700">
+                        Monitoreado
+                      </Badge>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Última actualización: {new Date(familiarPatientInfo.signos.ultimaActualizacion).toLocaleTimeString()} hrs
+                    <p className="text-xs text-green-600 mt-2">
+                      Última evaluación: {new Date(familiarPatientInfo.signos.ultimaActualizacion).toLocaleDateString('es-ES')} a las {new Date(familiarPatientInfo.signos.ultimaActualizacion).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} hrs
                     </p>
                   </div>
                 </div>
