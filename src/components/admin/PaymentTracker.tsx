@@ -47,9 +47,9 @@ export const PaymentTracker = () => {
       patientName: "Ana García Martínez",
       patientImageUrl: "",
       amount: 150,
-      dueDate: new Date(2025, 4, 5),
+      dueDate: new Date(2025, 4, 28),
       status: "pagado",
-      paymentDate: new Date(2025, 4, 2),
+      paymentDate: new Date(2025, 4, 25),
       paymentMethod: "Tarjeta de crédito",
       notes: "Pago mensualidad mayo",
     },
@@ -59,7 +59,7 @@ export const PaymentTracker = () => {
       patientName: "Miguel Rodríguez López",
       patientImageUrl: "",
       amount: 150,
-      dueDate: new Date(2025, 4, 5),
+      dueDate: new Date(2025, 4, 28),
       status: "pendiente",
     },
     {
@@ -68,7 +68,7 @@ export const PaymentTracker = () => {
       patientName: "Carmen Sánchez Pérez",
       patientImageUrl: "",
       amount: 150,
-      dueDate: new Date(2025, 4, 5),
+      dueDate: new Date(2025, 3, 28), // Previous month - overdue
       status: "atrasado",
     },
     {
@@ -77,10 +77,19 @@ export const PaymentTracker = () => {
       patientName: "Javier Fernández Díaz",
       patientImageUrl: "",
       amount: 200,
-      dueDate: new Date(2025, 4, 10),
+      dueDate: new Date(2025, 4, 28),
       status: "pagado",
-      paymentDate: new Date(2025, 4, 9),
+      paymentDate: new Date(2025, 4, 26),
       paymentMethod: "Transferencia bancaria",
+    },
+    {
+      id: "5",
+      patientId: "p5",
+      patientName: "María López Torres",
+      patientImageUrl: "",
+      amount: 150,
+      dueDate: new Date(2025, 5, 28), // Next month
+      status: "pendiente",
     },
   ];
   
@@ -143,11 +152,29 @@ export const PaymentTracker = () => {
         </TabsList>
         
         <TabsContent value="payments">
-          <Card>
-            <CardHeader>
-              <CardTitle>Pagos del mes</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Calendario de vencimientos</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                  <h3 className="font-semibold text-blue-900 mb-2">Fechas de vencimiento programadas</h3>
+                  <p className="text-blue-700">
+                    📅 Todos los pagos vencen el <strong>día 28 de cada mes</strong>
+                  </p>
+                  <p className="text-sm text-blue-600 mt-1">
+                    Los pacientes tienen hasta el día 28 para realizar su pago mensual
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Pagos del mes</CardTitle>
+              </CardHeader>
+              <CardContent>
               <div className="flex flex-col md:flex-row gap-4 mb-6">
                 <div className="flex-1">
                   <div className="relative">
@@ -248,6 +275,7 @@ export const PaymentTracker = () => {
               </div>
             </CardContent>
           </Card>
+          </div>
         </TabsContent>
         
         <TabsContent value="statistics">
