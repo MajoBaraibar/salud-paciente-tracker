@@ -19,6 +19,8 @@ import {
   CreditCard,
   LogOut,
   Settings,
+  BarChart3,
+  FolderOpen,
 } from "lucide-react";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { authService } from "@/lib/auth";
@@ -152,6 +154,29 @@ export const AppSidebar = () => {
                 <span>Requisiciones</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
+          )}
+          
+          {(userRole === "medico" || userRole === "admin") && (
+            <>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={location.pathname === "/reportes"}
+                  onClick={() => navigate("/reportes")}
+                >
+                  <BarChart3 size={20} />
+                  <span>Reportes</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton 
+                  isActive={location.pathname === "/archivos"}
+                  onClick={() => navigate("/archivos")}
+                >
+                  <FolderOpen size={20} />
+                  <span>Archivos</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </>
           )}
           
           {userRole === "admin" && (

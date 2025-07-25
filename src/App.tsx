@@ -23,6 +23,8 @@ import Requisiciones from "./pages/Requisiciones";
 import Pagos from "./pages/Pagos";
 import Admin from "./pages/Admin";
 import Configuracion from "./pages/Configuracion";
+import Reportes from "./pages/Reportes";
+import Archivos from "./pages/Archivos";
 import NotFound from "./pages/NotFound";
 
 import { getActiveConfig } from "@/config/centerConfig";
@@ -167,16 +169,34 @@ const App = () => (
             } 
           />
           
-          <Route 
-            path="/configuracion" 
-            element={
-              <ProtectedRoute requiredRole="familiar">
-                <Configuracion />
-              </ProtectedRoute>
-            } 
-          />
-          
-          <Route path="*" element={<NotFound />} />
+           <Route 
+             path="/reportes" 
+             element={
+               <ProtectedRoute requiredRole={["medico", "admin"]}>
+                 <Reportes />
+               </ProtectedRoute>
+             } 
+           />
+           
+           <Route 
+             path="/archivos" 
+             element={
+               <ProtectedRoute requiredRole={["medico", "admin"]}>
+                 <Archivos />
+               </ProtectedRoute>
+             } 
+           />
+           
+           <Route 
+             path="/configuracion" 
+             element={
+               <ProtectedRoute requiredRole="familiar">
+                 <Configuracion />
+               </ProtectedRoute>
+             } 
+           />
+           
+           <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
