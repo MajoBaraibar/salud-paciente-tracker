@@ -5,10 +5,48 @@ import { AppSidebar } from "@/components/AppSidebar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { PaymentTracker } from "@/components/admin/PaymentTracker";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { pacientesMock } from "../data/mockData";
 import { PaymentType } from "@/types";
+import { format } from "date-fns";
+import { es } from "date-fns/locale";
+import { AlertTriangle } from "lucide-react";
 
-// Datos de ejemplo para pagos
+// Datos de ejemplo para pagos familiares
+const pagosFamiliaresMock = [
+  {
+    id: "1",
+    mes: "Junio",
+    vencimiento: new Date(2025, 5, 5), // 5 de junio
+    aPagar: 50000,
+    status: "atrasado" as const
+  },
+  {
+    id: "2",
+    mes: "Julio",
+    vencimiento: new Date(2025, 6, 5), // 5 de julio
+    aPagar: 50000,
+    status: "pendiente" as const
+  },
+  {
+    id: "3",
+    mes: "Mayo",
+    vencimiento: new Date(2025, 4, 5), // 5 de mayo
+    aPagar: 50000,
+    status: "pagado" as const
+  },
+  {
+    id: "4",
+    mes: "Abril",
+    vencimiento: new Date(2025, 3, 5), // 5 de abril
+    aPagar: 50000,
+    status: "pagado" as const
+  }
+];
+
+// Datos de ejemplo para pagos admin
 const pagosMock: PaymentType[] = [
   {
     id: "1",
@@ -47,6 +85,86 @@ const Pagos = () => {
     return { role: "admin" };
   });
 
+  const getStatusBadge = (status: "pagado" | "pendiente" | "atrasado") => {
+    switch (status) {
+      case "pagado":
+        return <Badge className="bg-green-100 text-green-800 hover:bg-green-200 border-green-300">Completado</Badge>;
+      case "pendiente":
+        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 border-blue-300">Por cobrar</Badge>;
+      case "atrasado":
+        return <Badge className="bg-red-100 text-red-800 hover:bg-red-200 border-red-300">Atrasado</Badge>;
+    }
+  };
+
+  const formatCurrency = (amount: number) => {
+    return `$${amount.toLocaleString('es-CL')}`;
+  };
+
+  const hasOverduePayments = pagosFamiliaresMock.some(pago => pago.status === "atrasado");
+
+  // Vista para usuarios familiares
+  if (currentUser.role === "familiar") {
+    return (
+      <SidebarProvider>
+        <div className="min-h-screen flex w-full">
+          <AppSidebar />
+          <div className="flex-1 p-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="mb-6">
+                <h1 className="text-3xl font-bold text-health-700">Pagos</h1>
+                <p className="text-muted-foreground">
+                  Estado de mensualidades
+                </p>
+              </div>
+
+              {/* Alerta de pagos atrasados */}
+              {hasOverduePayments && (
+                <Alert className="mb-6 border-red-200 bg-red-50">
+                  <AlertTriangle className="h-4 w-4 text-red-600" />
+                  <AlertDescription className="text-red-800">
+                    <strong>Atención:</strong> Tienes pagos atrasados que requieren tu inmediata atención.
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Estado de pagos</CardTitle>
+                  <CardDescription>Información sobre tus mensualidades</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="border rounded-md">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Mes</TableHead>
+                          <TableHead>Vencimiento</TableHead>
+                          <TableHead>A pagar</TableHead>
+                          <TableHead>Pago</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {pagosFamiliaresMock.map((pago) => (
+                          <TableRow key={pago.id}>
+                            <TableCell className="font-medium">{pago.mes}</TableCell>
+                            <TableCell>{format(pago.vencimiento, 'd/M/yy')}</TableCell>
+                            <TableCell className="font-medium">{formatCurrency(pago.aPagar)}</TableCell>
+                            <TableCell>{getStatusBadge(pago.status)}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </SidebarProvider>
+    );
+  }
+
+  // Vista para administradores
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
