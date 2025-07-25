@@ -47,9 +47,9 @@ export const PaymentTracker = () => {
       patientName: "Ana García Martínez",
       patientImageUrl: "",
       amount: 150,
-      dueDate: new Date(2025, 4, 28),
+      dueDate: new Date(2025, 4, 5),
       status: "pagado",
-      paymentDate: new Date(2025, 4, 25),
+      paymentDate: new Date(2025, 4, 2),
       paymentMethod: "Tarjeta de crédito",
       notes: "Pago mensualidad mayo",
     },
@@ -59,7 +59,7 @@ export const PaymentTracker = () => {
       patientName: "Miguel Rodríguez López",
       patientImageUrl: "",
       amount: 150,
-      dueDate: new Date(2025, 4, 28),
+      dueDate: new Date(2025, 4, 5),
       status: "pendiente",
     },
     {
@@ -68,7 +68,7 @@ export const PaymentTracker = () => {
       patientName: "Carmen Sánchez Pérez",
       patientImageUrl: "",
       amount: 150,
-      dueDate: new Date(2025, 3, 28), // Previous month - overdue
+      dueDate: new Date(2025, 3, 5), // Previous month - overdue
       status: "atrasado",
     },
     {
@@ -77,9 +77,9 @@ export const PaymentTracker = () => {
       patientName: "Javier Fernández Díaz",
       patientImageUrl: "",
       amount: 200,
-      dueDate: new Date(2025, 4, 28),
+      dueDate: new Date(2025, 4, 5),
       status: "pagado",
-      paymentDate: new Date(2025, 4, 26),
+      paymentDate: new Date(2025, 4, 3),
       paymentMethod: "Transferencia bancaria",
     },
     {
@@ -88,7 +88,7 @@ export const PaymentTracker = () => {
       patientName: "María López Torres",
       patientImageUrl: "",
       amount: 150,
-      dueDate: new Date(2025, 5, 28), // Next month
+      dueDate: new Date(2025, 5, 5), // Next month
       status: "pendiente",
     },
   ];
@@ -161,10 +161,10 @@ export const PaymentTracker = () => {
                 <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
                   <h3 className="font-semibold text-blue-900 mb-2">Fechas de vencimiento programadas</h3>
                   <p className="text-blue-700">
-                    📅 Todos los pagos vencen el <strong>día 28 de cada mes</strong>
+                    📅 Todos los pagos vencen el <strong>día 5 de cada mes</strong>
                   </p>
                   <p className="text-sm text-blue-600 mt-1">
-                    Los pacientes tienen hasta el día 28 para realizar su pago mensual
+                    Los pacientes tienen hasta el día 5 para realizar su pago mensual
                   </p>
                 </div>
               </CardContent>
