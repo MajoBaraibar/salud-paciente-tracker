@@ -245,6 +245,7 @@ export type Database = {
           nota: string
           paciente_id: string
           updated_at: string
+          visible_para_familiar: boolean
         }
         Insert: {
           centro_id?: string | null
@@ -255,6 +256,7 @@ export type Database = {
           nota: string
           paciente_id: string
           updated_at?: string
+          visible_para_familiar?: boolean
         }
         Update: {
           centro_id?: string | null
@@ -265,6 +267,7 @@ export type Database = {
           nota?: string
           paciente_id?: string
           updated_at?: string
+          visible_para_familiar?: boolean
         }
         Relationships: [
           {

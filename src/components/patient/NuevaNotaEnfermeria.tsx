@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
 import { FilePen, Plus, X } from "lucide-react";
 import { supabase } from '@/integrations/supabase/client';
@@ -23,6 +24,7 @@ export const NuevaNotaEnfermeria: React.FC<NuevaNotaEnfermeriaProps> = ({
   const [mostrar, setMostrar] = useState(false);
   const [tipo, setTipo] = useState<'evolucion' | 'conducta'>('evolucion');
   const [contenido, setContenido] = useState('');
+  const [visibleParaFamiliar, setVisibleParaFamiliar] = useState(false);
   const [enviando, setEnviando] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,13 +48,15 @@ export const NuevaNotaEnfermeria: React.FC<NuevaNotaEnfermeriaProps> = ({
         .insert({
           paciente_id: pacienteId,
           enfermera_id: user.id,
-          nota: `${tipo.toUpperCase()}: ${contenido.trim()}`
+          nota: `${tipo.toUpperCase()}: ${contenido.trim()}`,
+          visible_para_familiar: visibleParaFamiliar
         });
 
       if (error) throw error;
 
       toast.success(`Nota de ${tipo === 'evolucion' ? 'evolución' : 'conducta'} agregada correctamente`);
       setContenido('');
+      setVisibleParaFamiliar(false);
       setMostrar(false);
       if (onSuccess) onSuccess();
     } catch (error: any) {
@@ -125,6 +129,17 @@ export const NuevaNotaEnfermeria: React.FC<NuevaNotaEnfermeriaProps> = ({
               onChange={(e) => setContenido(e.target.value)}
               className="min-h-[120px]"
             />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Checkbox 
+              id="visibleFamiliar"
+              checked={visibleParaFamiliar}
+              onCheckedChange={(checked) => setVisibleParaFamiliar(checked === true)}
+            />
+            <Label htmlFor="visibleFamiliar" className="cursor-pointer text-sm">
+              Permitir que el familiar vea esta nota
+            </Label>
           </div>
           
           <div className="flex justify-end space-x-2">
