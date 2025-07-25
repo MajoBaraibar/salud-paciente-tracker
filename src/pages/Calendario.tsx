@@ -35,6 +35,9 @@ type Evento = {
 const currentUser = JSON.parse(localStorage.getItem("user") || '{"role":"medico"}');
 const userRole = currentUser.role;
 
+// Debug: verificar qué rol está detectando
+console.log("Rol del usuario en calendario:", userRole, "Usuario completo:", currentUser);
+
 export default function Calendario() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const { eventos, addEvento, updateEvento, deleteEvento } = useDemoStore();
@@ -82,9 +85,19 @@ export default function Calendario() {
     if (userRole === "familiar") {
       // Los familiares solo ven eventos de su paciente asignado (Roberto Pérez)
       // Para demo, asumimos que el familiar está asociado al paciente Roberto Pérez
-      return evento.pacienteId === "550e8400-e29b-41d4-a716-446655440004" || 
-             evento.pacienteNombre?.includes("Roberto") ||
-             evento.tipo === "visita";
+      const deberaVer = evento.pacienteId === "550e8400-e29b-41d4-a716-446655440004" || 
+                       evento.pacienteNombre?.includes("Roberto") ||
+                       evento.tipo === "visita";
+      
+      console.log("Evento familiar filtrado:", {
+        titulo: evento.titulo,
+        pacienteId: evento.pacienteId,
+        pacienteNombre: evento.pacienteNombre,
+        tipo: evento.tipo,
+        deberaVer
+      });
+      
+      return deberaVer;
     }
     
     return true; // Admin, médico y enfermera ven todos los eventos
