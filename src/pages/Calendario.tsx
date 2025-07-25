@@ -61,8 +61,10 @@ export default function Calendario() {
   
   // Filtrar eventos para el día seleccionado o semana
   const eventosFiltrados = eventos.filter(evento => {
+    // Primero filtrar por fecha
+    let cumpleFecha = false;
     if (vista === "dia" && date) {
-      return evento.fecha.toDateString() === date.toDateString();
+      cumpleFecha = evento.fecha.toDateString() === date.toDateString();
     } else if (vista === "semana" && date) {
       // Para la vista semanal, mostrar los eventos de la semana actual
       const inicioSemana = new Date(date);
@@ -71,9 +73,21 @@ export default function Calendario() {
       const finSemana = new Date(inicioSemana);
       finSemana.setDate(inicioSemana.getDate() + 6);
       
-      return evento.fecha >= inicioSemana && evento.fecha <= finSemana;
+      cumpleFecha = evento.fecha >= inicioSemana && evento.fecha <= finSemana;
     }
-    return false;
+    
+    if (!cumpleFecha) return false;
+    
+    // Filtrar por rol del usuario
+    if (userRole === "familiar") {
+      // Los familiares solo ven eventos de su paciente asignado (Roberto Pérez)
+      // Para demo, asumimos que el familiar está asociado al paciente Roberto Pérez
+      return evento.pacienteId === "550e8400-e29b-41d4-a716-446655440004" || 
+             evento.pacienteNombre?.includes("Roberto") ||
+             evento.tipo === "visita";
+    }
+    
+    return true; // Admin, médico y enfermera ven todos los eventos
   });
 
   const handleCrearEvento = () => {
