@@ -194,6 +194,25 @@ export const pagosDemoData = [
     status: "atrasado" as const,
     paymentMethod: undefined,
     notes: "Pago pendiente desde enero"
+  },
+  {
+    id: "a50e8400-e29b-41d4-a716-446655440004",
+    pacienteId: "550e8400-e29b-41d4-a716-446655440004", 
+    amount: 920000,
+    dueDate: "2024-02-05",
+    status: "pagado" as const,
+    paymentDate: "2024-02-03",
+    paymentMethod: "Tarjeta de crédito",
+    notes: "Pago puntual mensualidad febrero"
+  },
+  {
+    id: "a50e8400-e29b-41d4-a716-446655440005",
+    pacienteId: "550e8400-e29b-41d4-a716-446655440005", 
+    amount: 780000,
+    dueDate: "2024-02-05",
+    status: "pendiente" as const,
+    paymentMethod: undefined,
+    notes: "Mensualidad febrero pendiente"
   }
 ];
 

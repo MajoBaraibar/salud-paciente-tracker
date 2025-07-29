@@ -136,28 +136,21 @@ const Requisiciones = () => {
                               <TableHead>Ítem</TableHead>
                               <TableHead>Cantidad</TableHead>
                               <TableHead>Stock</TableHead>
-                              <TableHead>Prioridad</TableHead>
                               <TableHead>Solicitado por</TableHead>
                               <TableHead>Acciones</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                             {requisiciones.filter(r => r.estado === "pendiente").map(req => (
+                             {requisiciones
+                              .filter(r => r.estado === "pendiente")
+                              .sort((a, b) => a.stock - b.stock) // Ordenar por stock de menor a mayor
+                              .map(req => (
                               <TableRow key={req.id}>
                                 <TableCell className="font-medium">{req.nombre}</TableCell>
                                 <TableCell>{req.cantidad}</TableCell>
                                 <TableCell>
                                   <Badge variant={req.stock < 5 ? "destructive" : req.stock < 10 ? "default" : "secondary"}>
                                     {req.stock} disponibles
-                                  </Badge>
-                                </TableCell>
-                                <TableCell>
-                                  <Badge className={
-                                    req.prioridad === "alta" ? "bg-red-100 text-red-700" :
-                                    req.prioridad === "media" ? "bg-amber-100 text-amber-700" :
-                                    "bg-blue-100 text-blue-700"
-                                  }>
-                                    {req.prioridad}
                                   </Badge>
                                 </TableCell>
                                 <TableCell>{req.solicitado_por}</TableCell>
@@ -187,7 +180,7 @@ const Requisiciones = () => {
                             ))}
                              {requisiciones.filter(r => r.estado === "pendiente").length === 0 && (
                               <TableRow>
-                                <TableCell colSpan={6} className="text-center py-4">
+                                <TableCell colSpan={5} className="text-center py-4">
                                   No hay solicitudes pendientes de aprobación
                                 </TableCell>
                               </TableRow>
@@ -213,28 +206,21 @@ const Requisiciones = () => {
                               <TableHead>Ítem</TableHead>
                               <TableHead>Cantidad</TableHead>
                               <TableHead>Stock</TableHead>
-                              <TableHead>Prioridad</TableHead>
                               <TableHead>Solicitado por</TableHead>
                               <TableHead>Estado</TableHead>
                             </TableRow>
                           </TableHeader>
                           <TableBody>
-                             {requisiciones.filter(r => r.estado === "aprobada").map(req => (
+                             {requisiciones
+                              .filter(r => r.estado === "aprobada")
+                              .sort((a, b) => a.stock - b.stock) // Ordenar por stock de menor a mayor
+                              .map(req => (
                               <TableRow key={req.id}>
                                 <TableCell className="font-medium">{req.nombre}</TableCell>
                                 <TableCell>{req.cantidad}</TableCell>
                                 <TableCell>
                                   <Badge variant={req.stock < 5 ? "destructive" : req.stock < 10 ? "default" : "secondary"}>
                                     {req.stock} disponibles
-                                  </Badge>
-                                </TableCell>
-                                <TableCell>
-                                  <Badge className={
-                                    req.prioridad === "alta" ? "bg-red-100 text-red-700" :
-                                    req.prioridad === "media" ? "bg-amber-100 text-amber-700" :
-                                    "bg-blue-100 text-blue-700"
-                                  }>
-                                    {req.prioridad}
                                   </Badge>
                                 </TableCell>
                                 <TableCell>{req.solicitado_por}</TableCell>
@@ -245,7 +231,7 @@ const Requisiciones = () => {
                             ))}
                              {requisiciones.filter(r => r.estado === "aprobada").length === 0 && (
                               <TableRow>
-                                <TableCell colSpan={6} className="text-center py-4">
+                                <TableCell colSpan={5} className="text-center py-4">
                                   No hay solicitudes aprobadas
                                 </TableCell>
                               </TableRow>

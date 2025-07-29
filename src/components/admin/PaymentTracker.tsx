@@ -322,11 +322,9 @@ export const PaymentTracker = () => {
                                 </>
                               )}
                               {payment.status === "pagado" && (
-                                <p className="text-xs text-muted-foreground">
-                                  Pagado el {format(payment.paymentDate!, 'dd/MM/yyyy')}
-                                  <br/>
-                                  via {payment.paymentMethod}
-                                </p>
+                                <div className="text-xs text-green-600 font-medium">
+                                  ✓ Pagado via {payment.paymentMethod}
+                                </div>
                               )}
                             </div>
                           </TableCell>

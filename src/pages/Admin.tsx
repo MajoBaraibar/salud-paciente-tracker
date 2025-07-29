@@ -16,9 +16,9 @@ const Admin = () => {
             <Tabs defaultValue="payments">
               <div className="mb-6 flex items-center justify-between">
                 <div>
-                  <h1 className="text-3xl font-bold text-health-700">Administración</h1>
+                  <h1 className="text-3xl font-bold text-health-700">Gestión de Pagos</h1>
                   <p className="text-muted-foreground">
-                    Panel de administración del centro médico
+                    Administración de pagos y facturación del centro médico
                   </p>
                 </div>
                 <TabsList>

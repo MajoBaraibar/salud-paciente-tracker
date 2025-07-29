@@ -179,14 +179,14 @@ export const AppSidebar = () => {
             </>
           )}
           
-          {userRole === "admin" && (
+           {userRole === "admin" && (
             <SidebarMenuItem>
               <SidebarMenuButton 
                 isActive={location.pathname === "/admin"}
                 onClick={() => navigate("/admin")}
               >
                 <CreditCard size={20} />
-                <span>Administración</span>
+                <span>Pagos</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           )}
