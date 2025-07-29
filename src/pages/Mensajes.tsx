@@ -60,9 +60,9 @@ const Mensajes = () => {
   const { markAsRead } = useNotificationStore();
 
   // Obtener el usuario actual del localStorage
-  const currentUser = JSON.parse(localStorage.getItem("user") || '{"role":"medico", "id":"1"}');
+  const currentUser = JSON.parse(localStorage.getItem("user") || '{"role":"admin", "id":"1"}');
   const userRole = currentUser.role;
-  const usuarioActualId = userRole === "familiar" ? "5" : "1"; // ID del usuario familiar o médico
+  const usuarioActualId = "1"; // Siempre usar ID 1 para el usuario actual
   
   // Encontrar nombre de usuario por ID - MOVIDO AQUÍ ANTES DE SU USO
   const encontrarNombreUsuario = (id: string): string => {
@@ -72,141 +72,234 @@ const Mensajes = () => {
 
   // Simular carga de mensajes, usuarios y conversaciones
   useEffect(() => {
-    // Datos de ejemplo para usuarios
-    const usuariosMock: Usuario[] = [
-      { id: "1", nombre: "Dr. Juan Pérez", rol: "medico" },
-      { id: "2", nombre: "Lic. María Rodríguez", rol: "enfermero" },
-      { id: "3", nombre: "Adm. Carlos Gómez", rol: "administrativo" },
-      { id: "4", nombre: "Dra. Ana Martínez", rol: "medico" },
-      { id: "5", nombre: "Ana Rodríguez", rol: "administrativo" }, // Usuario familiar
-    ];
+    // Datos de ejemplo para usuarios según el rol
+    let usuariosMock: Usuario[] = [];
+    
+    if (userRole === "admin" || userRole === "administrativo") {
+      usuariosMock = [
+        { id: "1", nombre: "Admin Sistema", rol: "administrativo" },
+        { id: "2", nombre: "Contador Principal", rol: "administrativo" },
+        { id: "3", nombre: "Gerente Operaciones", rol: "administrativo" },
+        { id: "4", nombre: "Coordinador RRHH", rol: "administrativo" },
+        { id: "5", nombre: "Supervisor Logística", rol: "administrativo" },
+      ];
+    } else if (userRole === "medico" || userRole === "enfermera") {
+      usuariosMock = [
+        { id: "1", nombre: "Dr. Juan Pérez", rol: "medico" },
+        { id: "2", nombre: "Lic. María Rodríguez", rol: "enfermero" },
+        { id: "3", nombre: "Adm. Carlos Gómez", rol: "administrativo" },
+        { id: "4", nombre: "Dra. Ana Martínez", rol: "medico" },
+      ];
+    } else {
+      usuariosMock = [
+        { id: "2", nombre: "Lic. María Rodríguez", rol: "enfermero" },
+        { id: "3", nombre: "Adm. Carlos Gómez", rol: "administrativo" },
+        { id: "5", nombre: "Ana Rodríguez", rol: "administrativo" }, // Usuario familiar
+      ];
+    }
 
-    // Datos de ejemplo para mensajes
-    const todosMensajes: Mensaje[] = [
-      // Mensajes entre personal médico (solo visibles para médicos)
-      {
-        id: "1",
-        remitente: "2",
-        destinatario: "1",
-        asunto: "Paciente en sala 3",
-        contenido: "El paciente de la sala 3 presenta fiebre alta. Por favor revisar cuando esté disponible.",
-        fecha: "2025-05-10T15:30:00",
-        leido: false,
-        conversacionId: "conv1",
-      },
-      {
-        id: "2",
-        remitente: "1",
-        destinatario: "2",
-        asunto: "Re: Paciente en sala 3",
-        contenido: "Gracias por avisar. Iré en 10 minutos a revisar al paciente.",
-        fecha: "2025-05-10T15:45:00",
-        leido: true,
-        conversacionId: "conv1",
-      },
-      {
-        id: "3",
-        remitente: "3",
-        destinatario: "1",
-        asunto: "Actualización de historial",
-        contenido: "Se ha subido el nuevo informe de laboratorio del paciente García. Ya está disponible en su historial.",
-        fecha: "2025-05-11T09:15:00",
-        leido: false,
-        conversacionId: "conv2",
-      },
-      {
-        id: "4",
-        remitente: "4",
-        destinatario: "1",
-        asunto: "Consulta sobre medicación",
-        contenido: "¿Podemos revisar juntos la medicación del paciente de la habitación 205? Hay algunas interacciones que me preocupan.",
-        fecha: "2025-05-11T10:20:00",
-        leido: false,
-        conversacionId: "conv3",
-      },
-      {
-        id: "5",
-        remitente: "1",
-        destinatario: "3",
-        asunto: "Re: Actualización de historial",
-        contenido: "Perfecto, revisaré el informe hoy mismo. Gracias por la actualización.",
-        fecha: "2025-05-11T10:30:00",
-        leido: true,
-        conversacionId: "conv2",
-      },
-      // Mensajes dirigidos a familiares
-      {
-        id: "6",
-        remitente: "3",
-        destinatario: "5",
-        asunto: "Informe médico de Roberto Pérez",
-        contenido: "Estimada Ana, le informamos que Roberto ha completado sus exámenes de rutina. Los resultados son satisfactorios. Puede visitarlo mañana en horario de 14:00 a 16:00.",
-        fecha: "2025-01-15T10:00:00",
-        leido: false,
-        conversacionId: "conv4",
-      },
-      {
-        id: "7",
-        remitente: "2",
-        destinatario: "5",
-        asunto: "Cambio de horario de visita",
-        contenido: "Hola Ana, debido a un procedimiento médico programado, las visitas para Roberto se trasladarán al martes de 15:00 a 17:00. Disculpe las molestias.",
-        fecha: "2025-01-16T08:30:00",
-        leido: false,
-        conversacionId: "conv5",
-      },
-    ];
+    // Datos de ejemplo para mensajes según el rol del usuario
+    let todosMensajes: Mensaje[] = [];
+    
+    if (userRole === "admin" || userRole === "administrativo") {
+      // Mensajes para administradores
+      todosMensajes = [
+        {
+          id: "1",
+          remitente: "2",
+          destinatario: "1",
+          asunto: "Reporte mensual de pagos",
+          contenido: "El reporte de pagos de enero está listo para su revisión. El 85% de los pagos fueron realizados a tiempo.",
+          fecha: "2025-01-25T09:30:00",
+          leido: false,
+          conversacionId: "conv1",
+        },
+        {
+          id: "2",
+          remitente: "3",
+          destinatario: "1",
+          asunto: "Solicitud de reunión",
+          contenido: "Necesitamos reunirnos para revisar las nuevas políticas de contratación y los presupuestos del próximo trimestre.",
+          fecha: "2025-01-25T14:15:00",
+          leido: false,
+          conversacionId: "conv2",
+        },
+        {
+          id: "3",
+          remitente: "4",
+          destinatario: "1",
+          asunto: "Informe de recursos humanos",
+          contenido: "Le envío el informe semanal de asistencia del personal. Hay algunas ausencias que requieren su atención.",
+          fecha: "2025-01-24T16:45:00",
+          leido: false,
+          conversacionId: "conv3",
+        },
+        {
+          id: "4",
+          remitente: "2",
+          destinatario: "1",
+          asunto: "Actualización sistemas",
+          contenido: "Los sistemas de facturación han sido actualizados exitosamente. Todo está funcionando correctamente.",
+          fecha: "2025-01-24T11:20:00",
+          leido: true,
+          conversacionId: "conv1",
+        },
+        {
+          id: "5",
+          remitente: "5",
+          destinatario: "1",
+          asunto: "Requisiciones pendientes",
+          contenido: "Hay 5 requisiciones pendientes de aprobación. Dos de ellas son de prioridad alta para equipos médicos.",
+          fecha: "2025-01-23T10:30:00",
+          leido: false,
+          conversacionId: "conv4",
+        },
+      ];
+    } else if (userRole === "medico" || userRole === "enfermera") {
+      // Mensajes para personal médico
+      todosMensajes = [
+        {
+          id: "1",
+          remitente: "2",
+          destinatario: "1",
+          asunto: "Paciente en sala 3",
+          contenido: "El paciente de la sala 3 presenta fiebre alta. Por favor revisar cuando esté disponible.",
+          fecha: "2025-01-25T15:30:00",
+          leido: false,
+          conversacionId: "conv1",
+        },
+        {
+          id: "2",
+          remitente: "3",
+          destinatario: "1",
+          asunto: "Actualización de historial",
+          contenido: "Se ha subido el nuevo informe de laboratorio del paciente García. Ya está disponible en su historial.",
+          fecha: "2025-01-25T09:15:00",
+          leido: false,
+          conversacionId: "conv2",
+        },
+        {
+          id: "3",
+          remitente: "4",
+          destinatario: "1",
+          asunto: "Consulta sobre medicación",
+          contenido: "¿Podemos revisar juntos la medicación del paciente de la habitación 205? Hay algunas interacciones que me preocupan.",
+          fecha: "2025-01-24T10:20:00",
+          leido: false,
+          conversacionId: "conv3",
+        },
+      ];
+    } else {
+      // Mensajes para familiares
+      todosMensajes = [
+        {
+          id: "6",
+          remitente: "3",
+          destinatario: "5",
+          asunto: "Informe médico de Roberto Pérez",
+          contenido: "Estimada Ana, le informamos que Roberto ha completado sus exámenes de rutina. Los resultados son satisfactorios. Puede visitarlo mañana en horario de 14:00 a 16:00.",
+          fecha: "2025-01-15T10:00:00",
+          leido: false,
+          conversacionId: "conv4",
+        },
+        {
+          id: "7",
+          remitente: "2",
+          destinatario: "5",
+          asunto: "Cambio de horario de visita",
+          contenido: "Hola Ana, debido a un procedimiento médico programado, las visitas para Roberto se trasladarán al martes de 15:00 a 17:00. Disculpe las molestias.",
+          fecha: "2025-01-16T08:30:00",
+          leido: false,
+          conversacionId: "conv5",
+        },
+      ];
+    }
 
-    // Filtrar mensajes según el rol del usuario
-    const mensajesMock = userRole === "familiar" 
-      ? todosMensajes.filter(m => m.remitente === usuarioActualId || m.destinatario === usuarioActualId)
-      : todosMensajes;
+    // Los mensajes ya están filtrados por rol
+    const mensajesMock = todosMensajes;
 
-    // Generar conversaciones basadas en los mensajes
-    const todasConversaciones: Conversacion[] = [
-      // Conversaciones entre personal médico
-      {
-        id: "conv1",
-        participantes: ["1", "2"],
-        ultimoMensaje: "Gracias por avisar. Iré en 10 minutos a revisar al paciente.",
-        fechaUltimoMensaje: "2025-05-10T15:45:00",
-        noLeidos: 0,
-      },
-      {
-        id: "conv2",
-        participantes: ["1", "3"],
-        ultimoMensaje: "Perfecto, revisaré el informe hoy mismo. Gracias por la actualización.",
-        fechaUltimoMensaje: "2025-05-11T10:30:00",
-        noLeidos: 1,
-      },
-      {
-        id: "conv3",
-        participantes: ["1", "4"],
-        ultimoMensaje: "¿Podemos revisar juntos la medicación del paciente de la habitación 205? Hay algunas interacciones que me preocupan.",
-        fechaUltimoMensaje: "2025-05-11T10:20:00",
-        noLeidos: 1,
-      },
+    // Generar conversaciones basadas en el rol
+    let todasConversaciones: Conversacion[] = [];
+    
+    if (userRole === "admin" || userRole === "administrativo") {
+      // Conversaciones para administradores
+      todasConversaciones = [
+        {
+          id: "conv1",
+          participantes: ["1", "2"],
+          ultimoMensaje: "Los sistemas de facturación han sido actualizados exitosamente. Todo está funcionando correctamente.",
+          fechaUltimoMensaje: "2025-01-24T11:20:00",
+          noLeidos: 1,
+        },
+        {
+          id: "conv2",
+          participantes: ["1", "3"],
+          ultimoMensaje: "Necesitamos reunirnos para revisar las nuevas políticas de contratación y los presupuestos del próximo trimestre.",
+          fechaUltimoMensaje: "2025-01-25T14:15:00",
+          noLeidos: 1,
+        },
+        {
+          id: "conv3",
+          participantes: ["1", "4"],
+          ultimoMensaje: "Le envío el informe semanal de asistencia del personal. Hay algunas ausencias que requieren su atención.",
+          fechaUltimoMensaje: "2025-01-24T16:45:00",
+          noLeidos: 1,
+        },
+        {
+          id: "conv4",
+          participantes: ["1", "5"],
+          ultimoMensaje: "Hay 5 requisiciones pendientes de aprobación. Dos de ellas son de prioridad alta para equipos médicos.",
+          fechaUltimoMensaje: "2025-01-23T10:30:00",
+          noLeidos: 1,
+        },
+      ];
+    } else if (userRole === "medico" || userRole === "enfermera") {
+      // Conversaciones para personal médico
+      todasConversaciones = [
+        {
+          id: "conv1",
+          participantes: ["1", "2"],
+          ultimoMensaje: "El paciente de la sala 3 presenta fiebre alta. Por favor revisar cuando esté disponible.",
+          fechaUltimoMensaje: "2025-01-25T15:30:00",
+          noLeidos: 1,
+        },
+        {
+          id: "conv2",
+          participantes: ["1", "3"],
+          ultimoMensaje: "Se ha subido el nuevo informe de laboratorio del paciente García. Ya está disponible en su historial.",
+          fechaUltimoMensaje: "2025-01-25T09:15:00",
+          noLeidos: 1,
+        },
+        {
+          id: "conv3",
+          participantes: ["1", "4"],
+          ultimoMensaje: "¿Podemos revisar juntos la medicación del paciente de la habitación 205? Hay algunas interacciones que me preocupan.",
+          fechaUltimoMensaje: "2025-01-24T10:20:00",
+          noLeidos: 1,
+        },
+      ];
+    } else {
       // Conversaciones para familiares
-      {
-        id: "conv4",
-        participantes: ["3", "5"],
-        ultimoMensaje: "Estimada Ana, le informamos que Roberto ha completado sus exámenes de rutina. Los resultados son satisfactorios. Puede visitarlo mañana en horario de 14:00 a 16:00.",
-        fechaUltimoMensaje: "2025-01-15T10:00:00",
-        noLeidos: 1,
-      },
-      {
-        id: "conv5",
-        participantes: ["2", "5"],
-        ultimoMensaje: "Hola Ana, debido a un procedimiento médico programado, las visitas para Roberto se trasladarán al martes de 15:00 a 17:00. Disculpe las molestias.",
-        fechaUltimoMensaje: "2025-01-16T08:30:00",
-        noLeidos: 1,
-      },
-    ];
+      todasConversaciones = [
+        {
+          id: "conv4",
+          participantes: ["3", "5"],
+          ultimoMensaje: "Estimada Ana, le informamos que Roberto ha completado sus exámenes de rutina. Los resultados son satisfactorios. Puede visitarlo mañana en horario de 14:00 a 16:00.",
+          fechaUltimoMensaje: "2025-01-15T10:00:00",
+          noLeidos: 1,
+        },
+        {
+          id: "conv5",
+          participantes: ["2", "5"],
+          ultimoMensaje: "Hola Ana, debido a un procedimiento médico programado, las visitas para Roberto se trasladarán al martes de 15:00 a 17:00. Disculpe las molestias.",
+          fechaUltimoMensaje: "2025-01-16T08:30:00",
+          noLeidos: 1,
+        },
+      ];
+    }
 
-    // Filtrar conversaciones según el rol del usuario
-    const conversacionesMock = userRole === "familiar" 
-      ? todasConversaciones.filter(conv => conv.participantes.includes(usuarioActualId))
-      : todasConversaciones;
+    // Las conversaciones ya están filtradas por rol
+    const conversacionesMock = todasConversaciones;
 
     setUsuarios(usuariosMock);
     setMensajes(mensajesMock);
