@@ -28,6 +28,11 @@ interface FileItem {
   category: 'medical' | 'administrative' | 'patient' | 'reports';
   url?: string;
   thumbnail?: string;
+  uploadedBy: {
+    id: string;
+    name: string;
+    role: string;
+  };
 }
 
 const mockFiles: FileItem[] = [
@@ -38,7 +43,12 @@ const mockFiles: FileItem[] = [
     size: 2400000,
     uploadDate: new Date("2025-01-15"),
     category: "medical",
-    thumbnail: "/placeholder.svg"
+    thumbnail: "/placeholder.svg",
+    uploadedBy: {
+      id: "medico1",
+      name: "Dr. Carlos Mendoza",
+      role: "médico"
+    }
   },
   {
     id: "2",
@@ -46,7 +56,12 @@ const mockFiles: FileItem[] = [
     type: "application/pdf",
     size: 890000,
     uploadDate: new Date("2025-01-10"),
-    category: "medical"
+    category: "medical",
+    uploadedBy: {
+      id: "enfermera1",
+      name: "Enfermera Patricia Silva",
+      role: "enfermera"
+    }
   },
   {
     id: "3",
@@ -54,7 +69,12 @@ const mockFiles: FileItem[] = [
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     size: 1200000,
     uploadDate: new Date("2025-01-05"),
-    category: "reports"
+    category: "reports",
+    uploadedBy: {
+      id: "admin1",
+      name: "Admin Sistema",
+      role: "administrador"
+    }
   },
   {
     id: "4",
@@ -62,7 +82,12 @@ const mockFiles: FileItem[] = [
     type: "application/pdf",
     size: 450000,
     uploadDate: new Date("2025-01-12"),
-    category: "patient"
+    category: "patient",
+    uploadedBy: {
+      id: "medico1",
+      name: "Dr. Carlos Mendoza",
+      role: "médico"
+    }
   },
   {
     id: "5",
@@ -70,7 +95,12 @@ const mockFiles: FileItem[] = [
     type: "application/pdf",
     size: 850000,
     uploadDate: new Date("2025-01-20"),
-    category: "administrative"
+    category: "administrative",
+    uploadedBy: {
+      id: "admin2",
+      name: "Gerente Administrativo",
+      role: "gerente"
+    }
   },
   {
     id: "6",
@@ -78,7 +108,12 @@ const mockFiles: FileItem[] = [
     type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     size: 1200000,
     uploadDate: new Date("2025-01-18"),
-    category: "administrative"
+    category: "administrative",
+    uploadedBy: {
+      id: "admin1",
+      name: "Admin Sistema",
+      role: "administrador"
+    }
   },
   {
     id: "7",
@@ -86,7 +121,12 @@ const mockFiles: FileItem[] = [
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     size: 950000,
     uploadDate: new Date("2025-01-22"),
-    category: "administrative"
+    category: "administrative",
+    uploadedBy: {
+      id: "admin2",
+      name: "Gerente Administrativo",
+      role: "gerente"
+    }
   }
 ];
 
@@ -161,7 +201,12 @@ export const FileUploadManager = () => {
         size: file.size,
         uploadDate: new Date(),
         category: user?.role === 'admin' ? 'administrative' : 'medical', // Admin sube archivos administrativos por defecto
-        url: URL.createObjectURL(file)
+        url: URL.createObjectURL(file),
+        uploadedBy: {
+          id: user?.id || 'unknown',
+          name: user?.nombre ? `${user.nombre} ${user.apellido || ''}`.trim() : user?.email || 'Usuario desconocido',
+          role: user?.role === 'admin' ? 'administrador' : user?.role === 'medico' ? 'médico' : user?.role === 'enfermera' ? 'enfermera' : 'usuario'
+        }
       };
 
       setFiles(prev => [...prev, newFile]);
@@ -178,6 +223,15 @@ export const FileUploadManager = () => {
   };
 
   const handleDeleteFile = (fileId: string) => {
+    const file = files.find(f => f.id === fileId);
+    if (!file) return;
+
+    // Solo permitir eliminar si el usuario actual subió el archivo
+    if (file.uploadedBy.id !== user?.id) {
+      toast.error("No puedes eliminar un archivo que no subiste");
+      return;
+    }
+
     setFiles(prev => prev.filter(f => f.id !== fileId));
     toast.success("Archivo eliminado");
   };
@@ -190,6 +244,11 @@ export const FileUploadManager = () => {
       link.click();
     }
     toast.success("Descarga iniciada");
+  };
+  
+  // Verificar si el usuario puede eliminar un archivo
+  const canDeleteFile = (file: FileItem) => {
+    return file.uploadedBy.id === user?.id;
   };
 
   // Filtrar archivos según el rol del usuario
@@ -304,6 +363,9 @@ export const FileUploadManager = () => {
                     <p className="text-xs text-gray-500">
                       {formatFileSize(file.size)} • {file.uploadDate.toLocaleDateString('es-ES')}
                     </p>
+                    <p className="text-xs text-blue-600">
+                      Subido por: {file.uploadedBy.name} ({file.uploadedBy.role})
+                    </p>
                   </div>
                 </div>
                 <Badge 
@@ -358,14 +420,26 @@ export const FileUploadManager = () => {
                   <Download className="h-3 w-3" />
                 </Button>
 
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDeleteFile(file.id)}
-                  className="text-red-600 hover:text-red-700"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </Button>
+                {canDeleteFile(file) ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDeleteFile(file.id)}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled
+                    className="text-gray-400 cursor-not-allowed"
+                    title="No puedes eliminar archivos que no subiste"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>
