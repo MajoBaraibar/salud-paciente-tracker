@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      alertas_sistema: {
+        Row: {
+          asignado_a: string | null
+          centro_id: string | null
+          created_at: string
+          descripcion: string
+          estado: string
+          fecha_resolucion: string | null
+          id: string
+          paciente_id: string | null
+          prioridad: number
+          resuelto_por: string | null
+          tipo: string
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          asignado_a?: string | null
+          centro_id?: string | null
+          created_at?: string
+          descripcion: string
+          estado?: string
+          fecha_resolucion?: string | null
+          id?: string
+          paciente_id?: string | null
+          prioridad?: number
+          resuelto_por?: string | null
+          tipo: string
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          asignado_a?: string | null
+          centro_id?: string | null
+          created_at?: string
+          descripcion?: string
+          estado?: string
+          fecha_resolucion?: string | null
+          id?: string
+          paciente_id?: string | null
+          prioridad?: number
+          resuelto_por?: string | null
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categorias_requisiciones: {
         Row: {
           created_at: string | null
@@ -234,6 +282,96 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      metricas_centro: {
+        Row: {
+          centro_id: string
+          consultas_realizadas: number
+          created_at: string
+          emergencias_atendidas: number
+          fecha: string
+          gastos_diarios: number | null
+          id: string
+          ingresos_diarios: number | null
+          nuevos_pacientes: number
+          ocupacion_porcentaje: number
+          satisfaccion_promedio: number | null
+          total_pacientes: number
+          updated_at: string
+        }
+        Insert: {
+          centro_id: string
+          consultas_realizadas?: number
+          created_at?: string
+          emergencias_atendidas?: number
+          fecha?: string
+          gastos_diarios?: number | null
+          id?: string
+          ingresos_diarios?: number | null
+          nuevos_pacientes?: number
+          ocupacion_porcentaje?: number
+          satisfaccion_promedio?: number | null
+          total_pacientes?: number
+          updated_at?: string
+        }
+        Update: {
+          centro_id?: string
+          consultas_realizadas?: number
+          created_at?: string
+          emergencias_atendidas?: number
+          fecha?: string
+          gastos_diarios?: number | null
+          id?: string
+          ingresos_diarios?: number | null
+          nuevos_pacientes?: number
+          ocupacion_porcentaje?: number
+          satisfaccion_promedio?: number | null
+          total_pacientes?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      metricas_paciente: {
+        Row: {
+          created_at: string
+          estado_general: string | null
+          fecha: string
+          id: string
+          medicamentos_programados: number | null
+          medicamentos_tomados: number | null
+          notas_medicas: number | null
+          paciente_id: string
+          signos_vitales: Json | null
+          updated_at: string
+          visitas_familiares: number | null
+        }
+        Insert: {
+          created_at?: string
+          estado_general?: string | null
+          fecha?: string
+          id?: string
+          medicamentos_programados?: number | null
+          medicamentos_tomados?: number | null
+          notas_medicas?: number | null
+          paciente_id: string
+          signos_vitales?: Json | null
+          updated_at?: string
+          visitas_familiares?: number | null
+        }
+        Update: {
+          created_at?: string
+          estado_general?: string | null
+          fecha?: string
+          id?: string
+          medicamentos_programados?: number | null
+          medicamentos_tomados?: number | null
+          notas_medicas?: number | null
+          paciente_id?: string
+          signos_vitales?: Json | null
+          updated_at?: string
+          visitas_familiares?: number | null
+        }
+        Relationships: []
       }
       notas_enfermeria: {
         Row: {
@@ -565,6 +703,10 @@ export type Database = {
       can_access_patient: {
         Args: { patient_id: string }
         Returns: boolean
+      }
+      generar_metricas_diarias: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       get_current_user_centro_id: {
         Args: Record<PropertyKey, never>
