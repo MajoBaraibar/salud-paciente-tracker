@@ -48,7 +48,7 @@ export const authService = {
     const usuariosTemporales = [
       { 
         id: "admin-temp", 
-        email: "admin@healthcenter.com", 
+        email: "admin@ensuma.com", 
         role: "admin", 
         nombre: "Admin", 
         apellido: "Sistema",
@@ -57,7 +57,7 @@ export const authService = {
       },
       { 
         id: "medico-temp", 
-        email: "medico@healthcenter.com", 
+        email: "doctor@ensuma.com", 
         role: "medico", 
         nombre: "Dr. Carlos", 
         apellido: "Martínez",
@@ -66,7 +66,7 @@ export const authService = {
       },
       { 
         id: "enfermera-temp", 
-        email: "enfermera@healthcenter.com", 
+        email: "enfermera@ensuma.com", 
         role: "enfermera", 
         nombre: "María", 
         apellido: "González",
@@ -75,7 +75,7 @@ export const authService = {
       },
       { 
         id: "familiar-temp", 
-        email: "familiar@healthcenter.com", 
+        email: "familiar@ensuma.com", 
         role: "familiar", 
         nombre: "Ana", 
         apellido: "Rodríguez",
@@ -85,7 +85,9 @@ export const authService = {
     ];
     
     const usuario = usuariosTemporales.find(u => u.email === email);
-    if (usuario && password === "123456") {
+    const passwordsValidas = ["admin123", "doctor123", "enfermera123", "familiar123", "123456"];
+    
+    if (usuario && passwordsValidas.includes(password)) {
       return { ...usuario, supabaseId: usuario.id } as AuthUser;
     }
     
