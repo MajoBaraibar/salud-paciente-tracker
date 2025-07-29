@@ -18,7 +18,7 @@ type Evento = {
   fecha: Date;
   horaInicio: string;
   horaFin: string;
-  tipo: "consulta" | "visita" | "reunion" | "otro";
+  tipo: "consulta" | "visita" | "reunion" | "otro" | "administrativo";
   pacienteId?: string;
   pacienteNombre?: string;
   descripcion: string;

@@ -23,7 +23,7 @@ type Evento = {
   fecha: Date;
   horaInicio: string;
   horaFin: string;
-  tipo: "consulta" | "visita" | "reunion" | "otro";
+  tipo: "consulta" | "visita" | "reunion" | "otro" | "administrativo";
   pacienteId?: string;
   pacienteNombre?: string;
   descripcion: string;
@@ -82,6 +82,13 @@ export default function Calendario() {
     if (!cumpleFecha) return false;
     
     // Filtrar por rol del usuario
+    if (userRole === "admin") {
+      // Los administradores solo ven eventos administrativos (reuniones, capacitaciones, auditorías)
+      // NO ven consultas médicas ya que no son personal médico
+      const tiposAdministrativos = ["reunion", "otro", "visita"];
+      return tiposAdministrativos.includes(evento.tipo);
+    }
+    
     if (userRole === "familiar") {
       // Los familiares solo ven eventos de su paciente asignado (Roberto Pérez)
       // Para demo, asumimos que el familiar está asociado al paciente Roberto Pérez
@@ -100,7 +107,7 @@ export default function Calendario() {
       return deberaVer;
     }
     
-    return true; // Admin, médico y enfermera ven todos los eventos
+    return true; // Médico y enfermera ven todos los eventos
   });
 
   const handleCrearEvento = () => {
@@ -249,8 +256,8 @@ export default function Calendario() {
                       {userRole === "admin" && (
                         <>
                           <SelectItem value="visita">Visita familiar</SelectItem>
-                          <SelectItem value="reunion">Reunión</SelectItem>
-                          <SelectItem value="otro">Otro</SelectItem>
+                          <SelectItem value="reunion">Reunión administrativa</SelectItem>
+                          <SelectItem value="otro">Capacitación/Auditoría</SelectItem>
                         </>
                       )}
                       {(userRole === "medico" || userRole === "enfermera") && (
@@ -270,10 +277,12 @@ export default function Calendario() {
                   </Select>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="paciente">Paciente (opcional)</Label>
+                  <Label htmlFor="paciente">
+                    {userRole === "admin" ? "Participantes (opcional)" : "Paciente (opcional)"}
+                  </Label>
                   <Input
                     id="paciente"
-                    placeholder="Nombre del paciente"
+                    placeholder={userRole === "admin" ? "Participantes de la reunión" : "Nombre del paciente"}
                     value={nuevoEvento.pacienteNombre || ""}
                     onChange={(e) => setNuevoEvento({...nuevoEvento, pacienteNombre: e.target.value})}
                   />
@@ -328,10 +337,20 @@ export default function Calendario() {
               <div className="mt-4 space-y-2">
                 <h4 className="font-medium">Tipos de eventos:</h4>
                 <div className="flex flex-wrap gap-2">
-                  <Badge className="bg-blue-100 text-blue-800 border-blue-300">Consulta</Badge>
-                  <Badge className="bg-green-100 text-green-800 border-green-300">Visita</Badge>
-                  <Badge className="bg-purple-100 text-purple-800 border-purple-300">Reunión</Badge>
-                  <Badge className="bg-gray-100 text-gray-800 border-gray-300">Otro</Badge>
+                  {userRole === "admin" ? (
+                    <>
+                      <Badge className="bg-green-100 text-green-800 border-green-300">Visitas familiares</Badge>
+                      <Badge className="bg-purple-100 text-purple-800 border-purple-300">Reuniones</Badge>
+                      <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">Capacitaciones</Badge>
+                    </>
+                  ) : (
+                    <>
+                      <Badge className="bg-blue-100 text-blue-800 border-blue-300">Consulta</Badge>
+                      <Badge className="bg-green-100 text-green-800 border-green-300">Visita</Badge>
+                      <Badge className="bg-purple-100 text-purple-800 border-purple-300">Reunión</Badge>
+                      <Badge className="bg-gray-100 text-gray-800 border-gray-300">Otro</Badge>
+                    </>
+                  )}
                 </div>
               </div>
             </CardContent>

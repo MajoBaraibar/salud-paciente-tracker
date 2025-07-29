@@ -279,5 +279,56 @@ export const eventosDemoData = [
     tipo: "reunion" as const,
     descripcion: "Revisión de protocolos de atención",
     participantes: ["Todo el personal"]
+  },
+  // Eventos administrativos
+  {
+    id: "6",
+    titulo: "Reunión con familia interesada",
+    fecha: new Date(),
+    horaInicio: "09:00",
+    horaFin: "10:00",
+    tipo: "reunion" as const,
+    descripcion: "Entrevista inicial con familia Rodríguez para posible ingreso",
+    participantes: ["Admin Sistema", "Familia Rodríguez"]
+  },
+  {
+    id: "7",
+    titulo: "Auditoría de calidad",
+    fecha: new Date(new Date().getTime() + 2 * 24 * 60 * 60 * 1000), // Pasado mañana
+    horaInicio: "11:00",
+    horaFin: "15:00",
+    tipo: "reunion" as const,
+    descripcion: "Inspección del Ministerio de Salud",
+    participantes: ["Inspector ministerial", "Admin Sistema"]
+  },
+  {
+    id: "8",
+    titulo: "Capacitación personal",
+    fecha: new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000),
+    horaInicio: "16:00",
+    horaFin: "18:00",
+    tipo: "otro" as const,
+    descripcion: "Capacitación en nuevos protocolos de emergencia",
+    participantes: ["Todo el personal", "Capacitador externo"]
+  },
+  {
+    id: "9",
+    titulo: "Revisión presupuestal",
+    fecha: new Date(new Date().getTime() + 5 * 24 * 60 * 60 * 1000),
+    horaInicio: "10:00",
+    horaFin: "12:00",
+    tipo: "reunion" as const,
+    descripcion: "Análisis mensual de gastos e ingresos",
+    participantes: ["Admin Sistema", "Contador"]
+  },
+  {
+    id: "10",
+    titulo: "Reunión con proveedores",
+    fecha: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
+    horaInicio: "13:00",
+    horaFin: "14:30",
+    tipo: "reunion" as const,
+    descripcion: "Negociación de contratos de suministros médicos",
+    participantes: ["Admin Sistema", "Proveedor MedSupply"]
   }
 ];
