@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,10 +63,35 @@ const mockFiles: FileItem[] = [
     size: 450000,
     uploadDate: new Date("2025-01-12"),
     category: "patient"
+  },
+  {
+    id: "5",
+    name: "Politicas_Internas_2025.pdf",
+    type: "application/pdf",
+    size: 850000,
+    uploadDate: new Date("2025-01-20"),
+    category: "administrative"
+  },
+  {
+    id: "6",
+    name: "Manual_Procedimientos.docx",
+    type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    size: 1200000,
+    uploadDate: new Date("2025-01-18"),
+    category: "administrative"
+  },
+  {
+    id: "7",
+    name: "Presupuesto_2025.xlsx",
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    size: 950000,
+    uploadDate: new Date("2025-01-22"),
+    category: "administrative"
   }
 ];
 
 export const FileUploadManager = () => {
+  const { user } = useAuth();
   const [files, setFiles] = useState<FileItem[]>(mockFiles);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -74,13 +100,29 @@ export const FileUploadManager = () => {
   const [previewFile, setPreviewFile] = useState<FileItem | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const categories = [
-    { value: "all", label: "Todos los archivos", color: "bg-gray-100" },
-    { value: "medical", label: "Médicos", color: "bg-blue-100" },
-    { value: "patient", label: "Pacientes", color: "bg-green-100" },
-    { value: "reports", label: "Reportes", color: "bg-purple-100" },
-    { value: "administrative", label: "Administrativos", color: "bg-yellow-100" }
-  ];
+  // Filtrar categorías según el rol del usuario
+  const getAvailableCategories = () => {
+    const allCategories = [
+      { value: "all", label: "Todos los archivos", color: "bg-gray-100" },
+      { value: "medical", label: "Médicos", color: "bg-blue-100" },
+      { value: "patient", label: "Pacientes", color: "bg-green-100" },
+      { value: "reports", label: "Reportes", color: "bg-purple-100" },
+      { value: "administrative", label: "Administrativos", color: "bg-yellow-100" }
+    ];
+
+    // Si es admin, solo mostrar archivos administrativos y reportes
+    if (user?.role === 'admin') {
+      return [
+        { value: "all", label: "Todos los archivos", color: "bg-gray-100" },
+        { value: "reports", label: "Reportes", color: "bg-purple-100" },
+        { value: "administrative", label: "Administrativos", color: "bg-yellow-100" }
+      ];
+    }
+
+    return allCategories;
+  };
+
+  const categories = getAvailableCategories();
 
   const getFileIcon = (type: string) => {
     if (type.startsWith('image/')) return <Image className="h-8 w-8 text-blue-500" />;
@@ -118,7 +160,7 @@ export const FileUploadManager = () => {
         type: file.type,
         size: file.size,
         uploadDate: new Date(),
-        category: 'medical', // Default category
+        category: user?.role === 'admin' ? 'administrative' : 'medical', // Admin sube archivos administrativos por defecto
         url: URL.createObjectURL(file)
       };
 
@@ -150,11 +192,26 @@ export const FileUploadManager = () => {
     toast.success("Descarga iniciada");
   };
 
-  const filteredFiles = files.filter(file => {
-    const matchesCategory = selectedCategory === "all" || file.category === selectedCategory;
-    const matchesSearch = file.name.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  // Filtrar archivos según el rol del usuario
+  const getFilteredFiles = () => {
+    let availableFiles = files;
+    
+    // Si es admin, solo mostrar archivos administrativos y reportes
+    if (user?.role === 'admin') {
+      availableFiles = files.filter(file => 
+        file.category === 'administrative' || file.category === 'reports'
+      );
+    }
+    
+    // Aplicar filtros de categoría y búsqueda
+    return availableFiles.filter(file => {
+      const matchesCategory = selectedCategory === "all" || file.category === selectedCategory;
+      const matchesSearch = file.name.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+  };
+
+  const filteredFiles = getFilteredFiles();
 
   return (
     <div className="space-y-6">
@@ -173,10 +230,16 @@ export const FileUploadManager = () => {
           >
             <Upload className="h-12 w-12 mx-auto text-gray-400 mb-4" />
             <p className="text-lg font-medium text-gray-700 mb-2">
-              Arrastra archivos aquí o haz clic para seleccionar
+              {user?.role === 'admin' 
+                ? 'Arrastra archivos administrativos aquí o haz clic para seleccionar'
+                : 'Arrastra archivos aquí o haz clic para seleccionar'
+              }
             </p>
             <p className="text-sm text-gray-500">
-              PDF, imágenes, documentos de Office (máximo 10MB por archivo)
+              {user?.role === 'admin' 
+                ? 'PDF, documentos de Office - Archivos administrativos y reportes (máximo 10MB)'
+                : 'PDF, imágenes, documentos de Office (máximo 10MB por archivo)'
+              }
             </p>
             <input
               ref={fileInputRef}
