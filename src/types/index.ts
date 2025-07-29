@@ -44,6 +44,7 @@ export interface RequisitionItemType {
   estado: "pendiente" | "aprobada" | "rechazada" | "completada";
   notas?: string;
   solicitado_por: string;
+  stock: number;
   created_at: string;
   updated_at: string;
 }
