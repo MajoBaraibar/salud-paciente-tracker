@@ -2,10 +2,11 @@
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users, CreditCard, AlertTriangle, FileText, Activity } from "lucide-react";
+import { Users, CreditCard, AlertTriangle, FileText, Activity, TrendingUp } from "lucide-react";
 import { DashboardHeader } from "./DashboardHeader";
 import { StatCard } from "./StatCard";
 import { ActivityTable } from "./ActivityTable";
+import { DashboardAvanzado } from "./DashboardAvanzado";
 import { useNotificationStore } from "@/stores/notificationStore";
 import { useDemoStore } from "@/stores/demoStore";
 
@@ -65,13 +66,22 @@ export const AdminDashboard = ({ currentUser }: AdminDashboardProps) => {
       </div>
       
       {/* Pestañas principales */}
-      <Tabs defaultValue="actividad">
+      <Tabs defaultValue="metricas">
         <TabsList className="mb-6 bg-white border">
+          <TabsTrigger value="metricas" className="data-[state=active]:bg-health-50">
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Métricas Avanzadas
+          </TabsTrigger>
           <TabsTrigger value="actividad" className="data-[state=active]:bg-health-50">
             <Activity className="h-4 w-4 mr-2" />
             Actividad reciente
           </TabsTrigger>
         </TabsList>
+        
+        {/* Contenido de métricas avanzadas */}
+        <TabsContent value="metricas" className="mt-0">
+          <DashboardAvanzado />
+        </TabsContent>
         
         {/* Contenido de actividad reciente */}
         <TabsContent value="actividad" className="mt-0">
