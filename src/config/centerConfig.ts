@@ -3,9 +3,9 @@
 
 export const centerConfig = {
   // Información del centro
-  name: "Health Center 1",
-  shortName: "HC1",
-  code: "HC001",
+  name: "Ensuma",
+  shortName: "Ensuma",
+  code: "ENS001",
   
   // Información de contacto
   address: "Av. Principal 123",
@@ -29,18 +29,18 @@ export const centerConfig = {
   subdomain: "hc1",
   
   // Configuración de la app
-  title: "Health Center 1 | Sistema de Gestión Médica",
-  description: "Centro de atención y cuidado para adultos mayores - Health Center 1"
+  title: "Ensuma | Sistema de Gestión Médica",
+  description: "Centro de atención y cuidado para adultos mayores - Ensuma"
 };
 
 // Configuraciones predefinidas para diferentes centros
 export const centerConfigs = {
   hc1: {
     ...centerConfig,
-    name: "Health Center 1",
-    shortName: "HC1",
-    code: "HC001",
-    email: "admin@healthcenter1.com",
+    name: "Ensuma",
+    shortName: "Ensuma",
+    code: "ENS001",
+    email: "admin@ensuma.com",
     primaryColor: "hsl(142, 51%, 56%)", // Verde
   },
   
