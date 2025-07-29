@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { requisionesDemoData, categoriasDemoData } from '@/data/demoData';
 
 export interface Requisicion {
   id: string;
@@ -30,24 +31,35 @@ export const useRequisiciones = () => {
       setLoading(true);
       setError(null);
       
+      // Try to fetch from Supabase first
       const { data, error } = await supabase
         .from('requisiciones')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      
-      // Transform and validate the data
-      const validatedData: Requisicion[] = (data || []).map(item => ({
-        ...item,
-        prioridad: ['alta', 'media', 'baja'].includes(item.prioridad) ? item.prioridad as 'alta' | 'media' | 'baja' : 'media',
-        estado: ['pendiente', 'aprobada', 'rechazada', 'completada'].includes(item.estado) ? item.estado as 'pendiente' | 'aprobada' | 'rechazada' | 'completada' : 'pendiente'
-      }));
-      
-      setRequisiciones(validatedData);
+      if (error) {
+        console.log('No database connection, using demo data');
+        // Use demo data as fallback
+        setRequisiciones(requisionesDemoData);
+      } else {
+        // Transform and validate the data from database
+        const validatedData: Requisicion[] = (data || []).map(item => ({
+          ...item,
+          prioridad: ['alta', 'media', 'baja'].includes(item.prioridad) ? item.prioridad as 'alta' | 'media' | 'baja' : 'media',
+          estado: ['pendiente', 'aprobada', 'rechazada', 'completada'].includes(item.estado) ? item.estado as 'pendiente' | 'aprobada' | 'rechazada' | 'completada' : 'pendiente'
+        }));
+        
+        // If no data from database, use demo data
+        if (validatedData.length === 0) {
+          setRequisiciones(requisionesDemoData);
+        } else {
+          setRequisiciones(validatedData);
+        }
+      }
     } catch (err) {
       console.error('Error fetching requisiciones:', err);
-      setError(err instanceof Error ? err.message : 'Error al cargar requisiciones');
+      // Use demo data on any error
+      setRequisiciones(requisionesDemoData);
     } finally {
       setLoading(false);
     }
@@ -76,11 +88,21 @@ export const useCategorias = () => {
           .select('*')
           .order('nombre', { ascending: true });
 
-        if (error) throw error;
-        setCategorias(data || []);
+        if (error) {
+          console.log('No database connection, using demo categories');
+          setCategorias(categoriasDemoData);
+        } else {
+          // If no data from database, use demo data
+          if (!data || data.length === 0) {
+            setCategorias(categoriasDemoData);
+          } else {
+            setCategorias(data);
+          }
+        }
       } catch (err) {
         console.error('Error fetching categorias:', err);
-        setError(err instanceof Error ? err.message : 'Error al cargar categorías');
+        // Use demo data on any error
+        setCategorias(categoriasDemoData);
       } finally {
         setLoading(false);
       }

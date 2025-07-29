@@ -200,23 +200,103 @@ export const pagosDemoData = [
 export const requisionesDemoData = [
   {
     id: "b50e8400-e29b-41d4-a716-446655440001",
-    name: "Glucómetro digital",
-    quantity: 2,
-    priority: "alta" as const,
-    notes: "Para control diabético de pacientes", 
-    categoryId: "c50e8400-e29b-41d4-a716-446655440001",
-    requestedBy: "Dra. María González",
-    status: "pendiente" as const
+    nombre: "Tensiómetro digital",
+    cantidad: 3,
+    categoria_id: "c50e8400-e29b-41d4-a716-446655440001",
+    prioridad: "alta" as const,
+    estado: "pendiente" as const,
+    notas: "Necesarios para control de presión arterial en consultas diarias",
+    solicitado_por: "Dra. María González",
+    created_at: "2024-01-20T10:00:00Z",
+    updated_at: "2024-01-20T10:00:00Z"
   },
   {
     id: "b50e8400-e29b-41d4-a716-446655440002",
-    name: "Sillas de ruedas",
-    quantity: 1,
-    priority: "media" as const,
-    notes: "Para movilidad de pacientes con dificultades",
-    categoryId: "c50e8400-e29b-41d4-a716-446655440002",
-    requestedBy: "Fisioterapeuta Luis",
-    status: "aprobado" as const
+    nombre: "Glucómetros y tiras reactivas",
+    cantidad: 5,
+    categoria_id: "c50e8400-e29b-41d4-a716-446655440001",
+    prioridad: "alta" as const,
+    estado: "pendiente" as const,
+    notas: "Para control diabético de pacientes, incluir 200 tiras reactivas",
+    solicitado_por: "Enfermera Carmen López",
+    created_at: "2024-01-21T09:30:00Z",
+    updated_at: "2024-01-21T09:30:00Z"
+  },
+  {
+    id: "b50e8400-e29b-41d4-a716-446655440003",
+    nombre: "Silla de ruedas plegable",
+    cantidad: 2,
+    categoria_id: "c50e8400-e29b-41d4-a716-446655440002",
+    prioridad: "media" as const,
+    estado: "aprobada" as const,
+    notas: "Para movilidad de pacientes con dificultades de desplazamiento",
+    solicitado_por: "Fisioterapeuta Luis Ramírez",
+    created_at: "2024-01-18T14:15:00Z",
+    updated_at: "2024-01-19T08:45:00Z"
+  },
+  {
+    id: "b50e8400-e29b-41d4-a716-446655440004",
+    nombre: "Medicamentos antihipertensivos",
+    cantidad: 50,
+    categoria_id: "c50e8400-e29b-41d4-a716-446655440003",
+    prioridad: "alta" as const,
+    estado: "pendiente" as const,
+    notas: "Enalapril 10mg y Amlodipino 5mg - stock bajo",
+    solicitado_por: "Dr. Carlos Mendoza",
+    created_at: "2024-01-22T11:20:00Z",
+    updated_at: "2024-01-22T11:20:00Z"
+  },
+  {
+    id: "b50e8400-e29b-41d4-a716-446655440005",
+    nombre: "Material de curación",
+    cantidad: 20,
+    categoria_id: "c50e8400-e29b-41d4-a716-446655440004",
+    prioridad: "media" as const,
+    estado: "completada" as const,
+    notas: "Gasas, vendas, alcohol, betadine",
+    solicitado_por: "Enfermera Patricia Silva",
+    created_at: "2024-01-15T16:00:00Z",
+    updated_at: "2024-01-17T10:30:00Z"
+  },
+  {
+    id: "b50e8400-e29b-41d4-a716-446655440006",
+    nombre: "Papel higiénico y toallas",
+    cantidad: 30,
+    categoria_id: "c50e8400-e29b-41d4-a716-446655440005",
+    prioridad: "baja" as const,
+    estado: "rechazada" as const,
+    notas: "Productos de aseo personal para pacientes",
+    solicitado_por: "Personal de limpieza",
+    created_at: "2024-01-19T13:45:00Z",
+    updated_at: "2024-01-20T09:15:00Z"
+  }
+];
+
+export const categoriasDemoData = [
+  {
+    id: "c50e8400-e29b-41d4-a716-446655440001",
+    nombre: "Equipos Médicos",
+    descripcion: "Dispositivos y equipos para diagnóstico y monitoreo"
+  },
+  {
+    id: "c50e8400-e29b-41d4-a716-446655440002", 
+    nombre: "Mobiliario",
+    descripcion: "Mobiliario médico y de apoyo para pacientes"
+  },
+  {
+    id: "c50e8400-e29b-41d4-a716-446655440003",
+    nombre: "Medicamentos",
+    descripcion: "Medicamentos y suplementos médicos"
+  },
+  {
+    id: "c50e8400-e29b-41d4-a716-446655440004",
+    nombre: "Material Médico",
+    descripcion: "Insumos médicos y material de curación"
+  },
+  {
+    id: "c50e8400-e29b-41d4-a716-446655440005",
+    nombre: "Limpieza y Aseo",
+    descripcion: "Productos de limpieza e higiene"
   }
 ];
 

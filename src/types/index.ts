@@ -37,13 +37,15 @@ export interface EmergencyContactType {
 
 export interface RequisitionItemType {
   id: string;
-  name: string;
-  quantity: number;
-  priority: "baja" | "media" | "alta";
-  notes?: string;
-  categoryId: string;
-  requestedBy: string;
-  status: "pendiente" | "aprobado" | "rechazado" | "completado";
+  nombre: string;
+  cantidad: number;
+  categoria_id: string;
+  prioridad: "alta" | "media" | "baja";
+  estado: "pendiente" | "aprobada" | "rechazada" | "completada";
+  notas?: string;
+  solicitado_por: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface PaymentType {
