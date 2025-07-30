@@ -47,7 +47,7 @@ export const PaymentTracker = () => {
       patientId: "p1",
       patientName: "María Elena García Rodríguez",
       patientImageUrl: "https://randomuser.me/api/portraits/women/65.jpg",
-      amount: 850,
+      amount: 52000,
       dueDate: new Date(2025, 6, 5), // Julio 2025
       status: "pagado",
       paymentDate: new Date(2025, 6, 3),
@@ -59,7 +59,7 @@ export const PaymentTracker = () => {
       patientId: "p2",
       patientName: "José Antonio Martínez López",
       patientImageUrl: "https://randomuser.me/api/portraits/men/32.jpg",
-      amount: 950,
+      amount: 48500,
       dueDate: new Date(2025, 6, 5), // Julio 2025
       status: "pendiente",
       notes: "Pendiente de pago julio",
@@ -69,7 +69,7 @@ export const PaymentTracker = () => {
       patientId: "p3",
       patientName: "Ana Lucía López Hernández",
       patientImageUrl: "https://randomuser.me/api/portraits/women/22.jpg",
-      amount: 750,
+      amount: 51200,
       dueDate: new Date(2025, 6, 5), // Julio 2025
       status: "pagado",
       paymentDate: new Date(2025, 6, 4),
@@ -81,7 +81,7 @@ export const PaymentTracker = () => {
       patientId: "p4",
       patientName: "Roberto Carlos Pérez Gómez",
       patientImageUrl: "https://randomuser.me/api/portraits/men/45.jpg",
-      amount: 920,
+      amount: 49800,
       dueDate: new Date(2025, 6, 5), // Julio 2025
       status: "atrasado",
       notes: "Pago pendiente desde junio",
@@ -91,7 +91,7 @@ export const PaymentTracker = () => {
       patientId: "p5",
       patientName: "Carmen Rosa Díaz Morales",
       patientImageUrl: "https://randomuser.me/api/portraits/women/17.jpg",
-      amount: 780,
+      amount: 53500,
       dueDate: new Date(2025, 6, 5), // Julio 2025
       status: "pendiente",
       notes: "Contactar para recordatorio",
@@ -102,7 +102,7 @@ export const PaymentTracker = () => {
       patientId: "p6",
       patientName: "Luis Fernando González Silva",
       patientImageUrl: "https://randomuser.me/api/portraits/men/54.jpg",
-      amount: 850,
+      amount: 50000,
       dueDate: new Date(2025, 5, 5), // Junio 2025
       status: "pagado",
       paymentDate: new Date(2025, 5, 5),
@@ -114,7 +114,7 @@ export const PaymentTracker = () => {
       patientId: "p7",
       patientName: "Esperanza Rodríguez Vega",
       patientImageUrl: "https://randomuser.me/api/portraits/women/35.jpg",
-      amount: 920,
+      amount: 54200,
       dueDate: new Date(2025, 5, 5), // Junio 2025
       status: "pagado",
       paymentDate: new Date(2025, 5, 2),
@@ -126,7 +126,7 @@ export const PaymentTracker = () => {
       patientId: "p8",
       patientName: "Fernando Jiménez Castro",
       patientImageUrl: "https://randomuser.me/api/portraits/men/28.jpg",
-      amount: 850,
+      amount: 47800,
       dueDate: new Date(2025, 5, 5), // Junio 2025
       status: "atrasado",
       notes: "Aún pendiente",
@@ -137,7 +137,7 @@ export const PaymentTracker = () => {
       patientId: "p9",
       patientName: "Gloria Martín Herrera",
       patientImageUrl: "https://randomuser.me/api/portraits/women/42.jpg",
-      amount: 780,
+      amount: 51800,
       dueDate: new Date(2025, 7, 5), // Agosto 2025
       status: "pendiente",
       notes: "Próximo vencimiento",
@@ -147,7 +147,7 @@ export const PaymentTracker = () => {
       patientId: "p10",
       patientName: "Rafael Torres Mendoza",
       patientImageUrl: "https://randomuser.me/api/portraits/men/67.jpg",
-      amount: 950,
+      amount: 55000,
       dueDate: new Date(2025, 7, 5), // Agosto 2025
       status: "pendiente",
       notes: "Servicios premium",
@@ -157,7 +157,7 @@ export const PaymentTracker = () => {
       patientId: "p11",
       patientName: "Pilar Sánchez Ruiz",
       patientImageUrl: "https://randomuser.me/api/portraits/women/58.jpg",
-      amount: 750,
+      amount: 49500,
       dueDate: new Date(2025, 7, 5), // Agosto 2025
       status: "pagado",
       paymentDate: new Date(2025, 7, 1),
@@ -169,7 +169,7 @@ export const PaymentTracker = () => {
       patientId: "p12",
       patientName: "Manuel Delgado Torres",
       patientImageUrl: "https://randomuser.me/api/portraits/men/39.jpg",
-      amount: 850,
+      amount: 52500,
       dueDate: new Date(2025, 7, 5), // Agosto 2025
       status: "pendiente",
       notes: "Recordatorio enviado",
@@ -288,7 +288,7 @@ export const PaymentTracker = () => {
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell className="font-medium">${payment.amount.toFixed(2)}</TableCell>
+                          <TableCell className="font-medium">${payment.amount.toLocaleString()}</TableCell>
                           <TableCell>{format(payment.dueDate, 'dd/MM/yyyy')}</TableCell>
                           <TableCell>{getStatusBadge(payment.status)}</TableCell>
                           <TableCell>
