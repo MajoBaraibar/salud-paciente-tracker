@@ -37,21 +37,22 @@ type PatientPayment = {
 
 export const PaymentTracker = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterMonth, setFilterMonth] = useState<string>(format(new Date(), 'yyyy-MM'));
+  const [filterMonth, setFilterMonth] = useState<string>('2025-07'); // Empezar con julio 2025
   
-  // Mock data for demonstration
+  // Mock data for demonstration - datos para diferentes meses
   const mockPayments: PatientPayment[] = [
+    // Datos para julio 2025
     {
       id: "1",
       patientId: "p1",
       patientName: "María Elena García Rodríguez",
       patientImageUrl: "https://randomuser.me/api/portraits/women/65.jpg",
       amount: 850,
-      dueDate: new Date(2025, 0, 5), // Enero 2025
+      dueDate: new Date(2025, 6, 5), // Julio 2025
       status: "pagado",
-      paymentDate: new Date(2025, 0, 3),
+      paymentDate: new Date(2025, 6, 3),
       paymentMethod: "Transferencia bancaria",
-      notes: "Pago mensual enero - servicios completos",
+      notes: "Pago mensual julio - servicios completos",
     },
     {
       id: "2",
@@ -59,11 +60,9 @@ export const PaymentTracker = () => {
       patientName: "José Antonio Martínez López",
       patientImageUrl: "https://randomuser.me/api/portraits/men/32.jpg",
       amount: 950,
-      dueDate: new Date(2025, 0, 5), // Enero 2025
-      status: "pagado",
-      paymentDate: new Date(2025, 0, 4),
-      paymentMethod: "Tarjeta de crédito",
-      notes: "Incluye terapias especializadas",
+      dueDate: new Date(2025, 6, 5), // Julio 2025
+      status: "pendiente",
+      notes: "Pendiente de pago julio",
     },
     {
       id: "3",
@@ -71,9 +70,11 @@ export const PaymentTracker = () => {
       patientName: "Ana Lucía López Hernández",
       patientImageUrl: "https://randomuser.me/api/portraits/women/22.jpg",
       amount: 750,
-      dueDate: new Date(2025, 0, 5), // Enero 2025
-      status: "atrasado",
-      notes: "Pago pendiente desde diciembre",
+      dueDate: new Date(2025, 6, 5), // Julio 2025
+      status: "pagado",
+      paymentDate: new Date(2025, 6, 4),
+      paymentMethod: "Tarjeta de crédito",
+      notes: "Pago realizado a tiempo",
     },
     {
       id: "4",
@@ -81,11 +82,9 @@ export const PaymentTracker = () => {
       patientName: "Roberto Carlos Pérez Gómez",
       patientImageUrl: "https://randomuser.me/api/portraits/men/45.jpg",
       amount: 920,
-      dueDate: new Date(2025, 0, 5), // Enero 2025
-      status: "pagado",
-      paymentDate: new Date(2025, 0, 2),
-      paymentMethod: "Efectivo",
-      notes: "Pago anticipado",
+      dueDate: new Date(2025, 6, 5), // Julio 2025
+      status: "atrasado",
+      notes: "Pago pendiente desde junio",
     },
     {
       id: "5",
@@ -93,21 +92,22 @@ export const PaymentTracker = () => {
       patientName: "Carmen Rosa Díaz Morales",
       patientImageUrl: "https://randomuser.me/api/portraits/women/17.jpg",
       amount: 780,
-      dueDate: new Date(2025, 0, 5), // Enero 2025
+      dueDate: new Date(2025, 6, 5), // Julio 2025
       status: "pendiente",
       notes: "Contactar para recordatorio",
     },
+    // Datos para junio 2025
     {
       id: "6",
       patientId: "p6",
       patientName: "Luis Fernando González Silva",
       patientImageUrl: "https://randomuser.me/api/portraits/men/54.jpg",
       amount: 850,
-      dueDate: new Date(2025, 0, 5), // Enero 2025
+      dueDate: new Date(2025, 5, 5), // Junio 2025
       status: "pagado",
-      paymentDate: new Date(2025, 0, 5),
+      paymentDate: new Date(2025, 5, 5),
       paymentMethod: "Transferencia bancaria",
-      notes: "Pago puntual",
+      notes: "Pago puntual junio",
     },
     {
       id: "7",
@@ -115,9 +115,11 @@ export const PaymentTracker = () => {
       patientName: "Esperanza Rodríguez Vega",
       patientImageUrl: "https://randomuser.me/api/portraits/women/35.jpg",
       amount: 920,
-      dueDate: new Date(2025, 0, 5), // Enero 2025
-      status: "pendiente",
-      notes: "Llamar mañana",
+      dueDate: new Date(2025, 5, 5), // Junio 2025
+      status: "pagado",
+      paymentDate: new Date(2025, 5, 2),
+      paymentMethod: "Efectivo",
+      notes: "Pago adelantado junio",
     },
     {
       id: "8",
@@ -125,21 +127,20 @@ export const PaymentTracker = () => {
       patientName: "Fernando Jiménez Castro",
       patientImageUrl: "https://randomuser.me/api/portraits/men/28.jpg",
       amount: 850,
-      dueDate: new Date(2024, 11, 5), // Diciembre 2024 - atrasado
+      dueDate: new Date(2025, 5, 5), // Junio 2025
       status: "atrasado",
-      notes: "Dos meses de retraso",
+      notes: "Aún pendiente",
     },
+    // Datos para agosto 2025 (mes actual aproximado)
     {
       id: "9",
       patientId: "p9",
       patientName: "Gloria Martín Herrera",
       patientImageUrl: "https://randomuser.me/api/portraits/women/42.jpg",
       amount: 780,
-      dueDate: new Date(2025, 0, 5), // Enero 2025
-      status: "pagado",
-      paymentDate: new Date(2025, 0, 1),
-      paymentMethod: "Tarjeta de débito",
-      notes: "Primer pago del año",
+      dueDate: new Date(2025, 7, 5), // Agosto 2025
+      status: "pendiente",
+      notes: "Próximo vencimiento",
     },
     {
       id: "10",
@@ -147,7 +148,7 @@ export const PaymentTracker = () => {
       patientName: "Rafael Torres Mendoza",
       patientImageUrl: "https://randomuser.me/api/portraits/men/67.jpg",
       amount: 950,
-      dueDate: new Date(2025, 0, 5), // Enero 2025
+      dueDate: new Date(2025, 7, 5), // Agosto 2025
       status: "pendiente",
       notes: "Servicios premium",
     },
@@ -157,9 +158,11 @@ export const PaymentTracker = () => {
       patientName: "Pilar Sánchez Ruiz",
       patientImageUrl: "https://randomuser.me/api/portraits/women/58.jpg",
       amount: 750,
-      dueDate: new Date(2024, 10, 5), // Noviembre 2024 - muy atrasado
-      status: "atrasado",
-      notes: "Contacto urgente requerido",
+      dueDate: new Date(2025, 7, 5), // Agosto 2025
+      status: "pagado",
+      paymentDate: new Date(2025, 7, 1),
+      paymentMethod: "Tarjeta de débito",
+      notes: "Pago anticipado agosto",
     },
     {
       id: "12",
@@ -167,11 +170,9 @@ export const PaymentTracker = () => {
       patientName: "Manuel Delgado Torres",
       patientImageUrl: "https://randomuser.me/api/portraits/men/39.jpg",
       amount: 850,
-      dueDate: new Date(2025, 0, 5), // Enero 2025
-      status: "pagado",
-      paymentDate: new Date(2024, 11, 30),
-      paymentMethod: "Transferencia bancaria",
-      notes: "Pago adelantado diciembre",
+      dueDate: new Date(2025, 7, 5), // Agosto 2025
+      status: "pendiente",
+      notes: "Recordatorio enviado",
     },
   ];
   
