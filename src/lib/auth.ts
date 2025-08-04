@@ -97,7 +97,13 @@ export const authService = {
   // Registrar usuario (ya existe)
 
   async signOut() {
-    await supabase.auth.signOut();
+    try {
+      if (supabase) {
+        await supabase.auth.signOut();
+      }
+    } catch (error) {
+      console.error('Error al cerrar sesión en Supabase:', error);
+    }
     localStorage.removeItem('user');
   },
 
