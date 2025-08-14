@@ -25,6 +25,8 @@ import Admin from "./pages/Admin";
 import Configuracion from "./pages/Configuracion";
 import Reportes from "./pages/Reportes";
 import Archivos from "./pages/Archivos";
+import Citas from "./pages/Citas";
+import Medicamentos from "./pages/Medicamentos";
 import NotFound from "./pages/NotFound";
 
 import { getActiveConfig } from "@/config/centerConfig";
@@ -192,6 +194,24 @@ const App = () => (
              element={
                <ProtectedRoute requiredRole="familiar">
                  <Configuracion />
+               </ProtectedRoute>
+             } 
+           />
+           
+           <Route 
+             path="/citas" 
+             element={
+               <ProtectedRoute requiredRole={["medico", "enfermera", "admin"]}>
+                 <Citas />
+               </ProtectedRoute>
+             } 
+           />
+           
+           <Route 
+             path="/medicamentos" 
+             element={
+               <ProtectedRoute requiredRole={["medico", "enfermera", "admin"]}>
+                 <Medicamentos />
                </ProtectedRoute>
              } 
            />
