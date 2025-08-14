@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -122,6 +122,63 @@ export type Database = {
         }
         Relationships: []
       }
+      citas_medicas: {
+        Row: {
+          centro_id: string | null
+          created_at: string
+          created_by: string | null
+          duracion_minutos: number
+          especialidad_id: string | null
+          estado: string
+          fecha_hora: string
+          id: string
+          medico_id: string
+          motivo_consulta: string | null
+          notas_medico: string | null
+          notas_paciente: string | null
+          paciente_id: string
+          precio: number | null
+          tipo_cita: string
+          updated_at: string
+        }
+        Insert: {
+          centro_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          duracion_minutos?: number
+          especialidad_id?: string | null
+          estado?: string
+          fecha_hora: string
+          id?: string
+          medico_id: string
+          motivo_consulta?: string | null
+          notas_medico?: string | null
+          notas_paciente?: string | null
+          paciente_id: string
+          precio?: number | null
+          tipo_cita?: string
+          updated_at?: string
+        }
+        Update: {
+          centro_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          duracion_minutos?: number
+          especialidad_id?: string | null
+          estado?: string
+          fecha_hora?: string
+          id?: string
+          medico_id?: string
+          motivo_consulta?: string | null
+          notas_medico?: string | null
+          notas_paciente?: string | null
+          paciente_id?: string
+          precio?: number | null
+          tipo_cita?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contactos_emergencia: {
         Row: {
           centro_id: string | null
@@ -172,6 +229,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      detalles_prescripcion: {
+        Row: {
+          cantidad_dispensada: number | null
+          cantidad_total: number
+          created_at: string
+          dosis: string
+          duracion_dias: number
+          frecuencia: string
+          id: string
+          instrucciones_especiales: string | null
+          medicamento_id: string
+          prescripcion_id: string
+          via_administracion: string | null
+        }
+        Insert: {
+          cantidad_dispensada?: number | null
+          cantidad_total: number
+          created_at?: string
+          dosis: string
+          duracion_dias: number
+          frecuencia: string
+          id?: string
+          instrucciones_especiales?: string | null
+          medicamento_id: string
+          prescripcion_id: string
+          via_administracion?: string | null
+        }
+        Update: {
+          cantidad_dispensada?: number | null
+          cantidad_total?: number
+          created_at?: string
+          dosis?: string
+          duracion_dias?: number
+          frecuencia?: string
+          id?: string
+          instrucciones_especiales?: string | null
+          medicamento_id?: string
+          prescripcion_id?: string
+          via_administracion?: string | null
+        }
+        Relationships: []
       }
       entradas_historial: {
         Row: {
@@ -236,6 +335,93 @@ export type Database = {
           },
         ]
       }
+      especialidades: {
+        Row: {
+          activa: boolean
+          created_at: string
+          descripcion: string | null
+          id: string
+          nombre: string
+          updated_at: string
+        }
+        Insert: {
+          activa?: boolean
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          nombre: string
+          updated_at?: string
+        }
+        Update: {
+          activa?: boolean
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          nombre?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      facturas: {
+        Row: {
+          centro_id: string | null
+          created_at: string
+          created_by: string | null
+          descuentos: number
+          estado: string
+          fecha_factura: string
+          fecha_pago: string | null
+          fecha_vencimiento: string
+          id: string
+          impuestos: number
+          metodo_pago: string | null
+          numero_factura: string
+          observaciones: string | null
+          paciente_id: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          centro_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          descuentos?: number
+          estado?: string
+          fecha_factura?: string
+          fecha_pago?: string | null
+          fecha_vencimiento: string
+          id?: string
+          impuestos?: number
+          metodo_pago?: string | null
+          numero_factura: string
+          observaciones?: string | null
+          paciente_id: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Update: {
+          centro_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          descuentos?: number
+          estado?: string
+          fecha_factura?: string
+          fecha_pago?: string | null
+          fecha_vencimiento?: string
+          id?: string
+          impuestos?: number
+          metodo_pago?: string | null
+          numero_factura?: string
+          observaciones?: string | null
+          paciente_id?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       familiares: {
         Row: {
           apellido: string
@@ -282,6 +468,138 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      horarios_medicos: {
+        Row: {
+          activo: boolean
+          centro_id: string | null
+          created_at: string
+          dia_semana: number
+          hora_fin: string
+          hora_inicio: string
+          id: string
+          medico_id: string
+          updated_at: string
+        }
+        Insert: {
+          activo?: boolean
+          centro_id?: string | null
+          created_at?: string
+          dia_semana: number
+          hora_fin: string
+          hora_inicio: string
+          id?: string
+          medico_id: string
+          updated_at?: string
+        }
+        Update: {
+          activo?: boolean
+          centro_id?: string | null
+          created_at?: string
+          dia_semana?: number
+          hora_fin?: string
+          hora_inicio?: string
+          id?: string
+          medico_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      items_factura: {
+        Row: {
+          cantidad: number
+          cita_id: string | null
+          created_at: string
+          descripcion: string
+          factura_id: string
+          id: string
+          medicamento_id: string | null
+          precio_unitario: number
+          subtotal: number
+        }
+        Insert: {
+          cantidad?: number
+          cita_id?: string | null
+          created_at?: string
+          descripcion: string
+          factura_id: string
+          id?: string
+          medicamento_id?: string | null
+          precio_unitario: number
+          subtotal: number
+        }
+        Update: {
+          cantidad?: number
+          cita_id?: string | null
+          created_at?: string
+          descripcion?: string
+          factura_id?: string
+          id?: string
+          medicamento_id?: string | null
+          precio_unitario?: number
+          subtotal?: number
+        }
+        Relationships: []
+      }
+      medicamentos: {
+        Row: {
+          activo: boolean
+          centro_id: string | null
+          codigo_atc: string | null
+          concentracion: string | null
+          contraindicaciones: string | null
+          created_at: string
+          efectos_secundarios: string | null
+          id: string
+          laboratorio: string | null
+          nombre: string
+          precio_unitario: number | null
+          presentacion: string | null
+          principio_activo: string | null
+          requiere_receta: boolean
+          stock_actual: number | null
+          stock_minimo: number | null
+          updated_at: string
+        }
+        Insert: {
+          activo?: boolean
+          centro_id?: string | null
+          codigo_atc?: string | null
+          concentracion?: string | null
+          contraindicaciones?: string | null
+          created_at?: string
+          efectos_secundarios?: string | null
+          id?: string
+          laboratorio?: string | null
+          nombre: string
+          precio_unitario?: number | null
+          presentacion?: string | null
+          principio_activo?: string | null
+          requiere_receta?: boolean
+          stock_actual?: number | null
+          stock_minimo?: number | null
+          updated_at?: string
+        }
+        Update: {
+          activo?: boolean
+          centro_id?: string | null
+          codigo_atc?: string | null
+          concentracion?: string | null
+          contraindicaciones?: string | null
+          created_at?: string
+          efectos_secundarios?: string | null
+          id?: string
+          laboratorio?: string | null
+          nombre?: string
+          precio_unitario?: number | null
+          presentacion?: string | null
+          principio_activo?: string | null
+          requiere_receta?: boolean
+          stock_actual?: number | null
+          stock_minimo?: number | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       metricas_centro: {
         Row: {
@@ -527,6 +845,48 @@ export type Database = {
           },
         ]
       }
+      prescripciones: {
+        Row: {
+          activa: boolean
+          centro_id: string | null
+          cita_id: string | null
+          created_at: string
+          diagnostico: string | null
+          fecha_prescripcion: string
+          id: string
+          medico_id: string
+          observaciones: string | null
+          paciente_id: string
+          updated_at: string
+        }
+        Insert: {
+          activa?: boolean
+          centro_id?: string | null
+          cita_id?: string | null
+          created_at?: string
+          diagnostico?: string | null
+          fecha_prescripcion?: string
+          id?: string
+          medico_id: string
+          observaciones?: string | null
+          paciente_id: string
+          updated_at?: string
+        }
+        Update: {
+          activa?: boolean
+          centro_id?: string | null
+          cita_id?: string | null
+          created_at?: string
+          diagnostico?: string | null
+          fecha_prescripcion?: string
+          id?: string
+          medico_id?: string
+          observaciones?: string | null
+          paciente_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           apellido: string | null
@@ -710,6 +1070,10 @@ export type Database = {
       generar_metricas_diarias: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      generar_numero_factura: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       get_current_user_centro_id: {
         Args: Record<PropertyKey, never>
