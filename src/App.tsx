@@ -59,10 +59,10 @@ const App = () => (
            <Route path="/login" element={<Login />} />
            <Route path="/register" element={<Register />} />
           
-           {/* Ruta raíz - Presentación Demo */}
+           {/* Ruta raíz - Ir a Login */}
            <Route 
              path="/" 
-             element={<DemoPresentation />} 
+             element={<Navigate to="/login" replace />} 
            />
            
            {/* Ruta original de index si es necesaria */}
