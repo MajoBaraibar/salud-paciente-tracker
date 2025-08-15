@@ -66,7 +66,7 @@ interface DemoStore {
 export const useDemoStore = create<DemoStore>()(
   persist(
     (set, get) => ({
-      isDemoMode: true,
+      isDemoMode: false,
       
       // Datos iniciales
       pacientes: pacientesDemoData,

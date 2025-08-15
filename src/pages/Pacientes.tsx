@@ -11,7 +11,7 @@ import { PacienteCard } from "@/components/PacienteCard";
 import { Search, Plus, Filter, Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useDemoStore } from "@/stores/demoStore";
-import { DemoControls } from "@/components/DemoControls";
+
 
 const Pacientes = () => {
   const navigate = useNavigate();
@@ -55,7 +55,6 @@ const Pacientes = () => {
   
   return (
     <SidebarProvider>
-      <DemoControls />
       <div className="min-h-screen flex w-full">
         <AppSidebar />
         <div className="flex-1 p-8">
