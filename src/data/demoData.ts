@@ -3,6 +3,7 @@ import mariaGonzalezImg from "@/assets/patients/maria-gonzalez.jpg";
 import carlosRodriguezImg from "@/assets/patients/carlos-rodriguez.jpg";
 import anaMartinezImg from "@/assets/patients/ana-martinez.jpg";
 import robertoLopezImg from "@/assets/patients/roberto-lopez.jpg";
+import luciaTorresImg from "@/assets/patients/lucia-torres.jpg";
 
 // Datos de demostración realistas para presentaciones de ventas
 export const pacientesDemoData = [
@@ -52,14 +53,14 @@ export const pacientesDemoData = [
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440005",
-    nombre: "Carmen Rosa",
-    apellido: "Díaz Morales",
-    fechaNacimiento: "1943-09-30",
+    nombre: "Lucía",
+    apellido: "Torres Vargas",
+    fechaNacimiento: "1944-09-12",
     genero: "femenino",
-    numeroIdentificacion: "45678901",
-    telefono: "+57 301 345 6789",
-    direccion: "Diagonal 34 #12-56, Bucaramanga",
-    imagenUrl: "https://randomuser.me/api/portraits/women/17.jpg"
+    numeroIdentificacion: "56789012",
+    telefono: "+57 305 876 5432",
+    direccion: "Diagonal 23 #14-56, Bucaramanga",
+    imagenUrl: luciaTorresImg
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440006",

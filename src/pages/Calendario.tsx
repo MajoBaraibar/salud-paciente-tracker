@@ -83,15 +83,27 @@ export default function Calendario() {
     
     // Filtrar por rol del usuario
     if (userRole === "admin") {
-      // Los administradores solo ven eventos administrativos (reuniones, capacitaciones, auditorías)
-      // NO ven consultas médicas ya que no son personal médico
+      // Los administradores ven eventos administrativos (reuniones, capacitaciones, auditorías)
       const tiposAdministrativos = ["reunion", "otro", "visita"];
       return tiposAdministrativos.includes(evento.tipo);
     }
     
+    if (userRole === "medico") {
+      // Los médicos solo ven consultas médicas, NO eventos administrativos
+      const tiposMedicos = ["consulta"];
+      return tiposMedicos.includes(evento.tipo);
+    }
+    
+    if (userRole === "enfermera") {
+      // Las enfermeras ven consultas y algunas reuniones relacionadas con cuidados
+      const tiposEnfermera = ["consulta", "reunion"];
+      return tiposEnfermera.includes(evento.tipo) && 
+             !evento.descripcion?.toLowerCase().includes("presupuestal") &&
+             !evento.descripcion?.toLowerCase().includes("proveedor");
+    }
+    
     if (userRole === "familiar") {
       // Los familiares solo ven eventos de su paciente asignado (Roberto Pérez)
-      // Para demo, asumimos que el familiar está asociado al paciente Roberto Pérez
       const deberaVer = evento.pacienteId === "550e8400-e29b-41d4-a716-446655440004" || 
                        evento.pacienteNombre?.includes("Roberto") ||
                        evento.tipo === "visita";
@@ -107,7 +119,7 @@ export default function Calendario() {
       return deberaVer;
     }
     
-    return true; // Médico y enfermera ven todos los eventos
+    return true; // Por defecto, mostrar eventos
   });
 
   const handleCrearEvento = () => {

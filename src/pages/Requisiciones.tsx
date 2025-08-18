@@ -257,11 +257,39 @@ const Requisiciones = () => {
                         </CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="text-center py-12 bg-muted/30 rounded-lg">
-                          <p className="text-muted-foreground">
-                            No tienes solicitudes activas en este momento
-                          </p>
-                        </div>
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>Ítem</TableHead>
+                              <TableHead>Cantidad</TableHead>
+                              <TableHead>Estado</TableHead>
+                              <TableHead>Fecha</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {requisiciones
+                              .filter(r => r.solicitado_por === user?.id)
+                              .map(req => (
+                              <TableRow key={req.id}>
+                                <TableCell className="font-medium">{req.nombre}</TableCell>
+                                <TableCell>{req.cantidad}</TableCell>
+                                <TableCell>
+                                  <Badge variant={req.estado === 'aprobada' ? 'default' : req.estado === 'pendiente' ? 'secondary' : 'destructive'}>
+                                    {req.estado === 'aprobada' ? 'Aprobada' : req.estado === 'pendiente' ? 'Pendiente' : 'Rechazada'}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>{new Date(req.created_at).toLocaleDateString('es-ES')}</TableCell>
+                              </TableRow>
+                            ))}
+                            {requisiciones.filter(r => r.solicitado_por === user?.id).length === 0 && (
+                              <TableRow>
+                                <TableCell colSpan={4} className="text-center py-4">
+                                  No tienes solicitudes registradas aún
+                                </TableCell>
+                              </TableRow>
+                            )}
+                          </TableBody>
+                        </Table>
                       </CardContent>
                     </Card>
                   </TabsContent>

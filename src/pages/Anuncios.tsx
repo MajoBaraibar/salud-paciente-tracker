@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar, FileText, User, Clock, Send, Reply } from "lucide-react";
+import { Calendar, FileText, User, Clock, Send, Reply, Download, File } from "lucide-react";
 import { useNotificationStore } from "@/stores/notificationStore";
 
 // Mock data para usuarios y categorías
@@ -23,11 +23,16 @@ const anunciosMock = [
   {
     id: "1",
     titulo: "Nuevo protocolo de administración de medicamentos",
-    contenido: "Se ha actualizado el protocolo para la administración de medicamentos. Todos los profesionales deben revisar los nuevos procedimientos.",
+    contenido: "Se ha actualizado el protocolo para la administración de medicamentos. Todos los profesionales deben revisar los nuevos procedimientos. Documento adjunto: Protocolo_Medicamentos_v2.pdf",
     fecha: new Date(),
-    autor: "Administración",
+    autor: "Dr. García",
     tipo: "protocolo" as const,
     prioridad: "alta" as const,
+    archivo: {
+      nombre: "Protocolo_Medicamentos_v2.pdf",
+      tamaño: "2.3 MB",
+      url: "#" // En producción sería una URL real
+    },
     comentarios: [
       {
         id: "c1",
@@ -41,7 +46,7 @@ const anunciosMock = [
   {
     id: "2", 
     titulo: "Capacitación en primeros auxilios",
-    contenido: "Se realizará una capacitación obligatoria en primeros auxilios el próximo viernes a las 14:00 horas.",
+    contenido: "Se realizará una capacitación obligatoria en primeros auxilios el próximo viernes a las 14:00 horas en el salón de conferencias.",
     fecha: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
     autor: "Recursos Humanos",
     tipo: "capacitacion" as const,
@@ -50,11 +55,11 @@ const anunciosMock = [
   },
   {
     id: "3",
-    titulo: "Actualización del sistema",
-    contenido: "El sistema estará en mantenimiento el domingo de 02:00 a 06:00 horas. Durante este tiempo no estará disponible.",
+    titulo: "Horario de visitas familiares",
+    contenido: "Recordamos que el horario de visitas familiares es de 14:00 a 18:00 horas de lunes a domingo. Máximo 2 visitantes por paciente.",
     fecha: new Date(new Date().getTime() - 2 * 24 * 60 * 60 * 1000),
-    autor: "Sistemas",
-    tipo: "mantenimiento" as const,
+    autor: "Administración",
+    tipo: "informativo" as const,
     prioridad: "baja" as const,
     comentarios: []
   }
@@ -214,6 +219,25 @@ export default function Anuncios() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-sm leading-relaxed">{anuncio.contenido}</p>
+                
+                {/* Archivo adjunto si existe */}
+                {anuncio.archivo && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <File className="h-4 w-4 text-blue-600" />
+                        <div>
+                          <p className="text-sm font-medium text-blue-900">{anuncio.archivo.nombre}</p>
+                          <p className="text-xs text-blue-600">{anuncio.archivo.tamaño}</p>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm" className="text-blue-600 border-blue-300 hover:bg-blue-100">
+                        <Download className="h-3 w-3 mr-1" />
+                        Descargar
+                      </Button>
+                    </div>
+                  </div>
+                )}
                 
                 {/* Comentarios existentes */}
                 {anuncio.comentarios.length > 0 && (
