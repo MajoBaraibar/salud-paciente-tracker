@@ -1,50 +1,54 @@
 
 import { Paciente, EntradaHistorial } from "../types";
+import mariaGonzalezImg from "@/assets/patients/maria-gonzalez.jpg";
+import carlosRodriguezImg from "@/assets/patients/carlos-rodriguez.jpg";
+import anaMartinezImg from "@/assets/patients/ana-martinez.jpg";
+import robertoLopezImg from "@/assets/patients/roberto-lopez.jpg";
 
 export const pacientesMock: Paciente[] = [
   {
     id: "1",
-    nombre: "María",
+    nombre: "María del Carmen",
     apellido: "González",
-    fechaNacimiento: "1985-05-12",
+    fechaNacimiento: "1948-03-15",
     genero: "Femenino",
-    numeroIdentificacion: "12345678",
-    telefono: "555-123-4567",
-    direccion: "Av. Principal 123, Ciudad",
-    imagenUrl: "https://randomuser.me/api/portraits/women/65.jpg"
+    numeroIdentificacion: "52123456",
+    telefono: "301-234-5678",
+    direccion: "Carrera 15 #45-67, Medellín",
+    imagenUrl: mariaGonzalezImg
   },
   {
     id: "2",
-    nombre: "Carlos",
+    nombre: "Carlos Alberto",
     apellido: "Rodríguez",
-    fechaNacimiento: "1978-09-23",
+    fechaNacimiento: "1943-07-22",
     genero: "Masculino",
-    numeroIdentificacion: "87654321",
-    telefono: "555-765-4321",
-    direccion: "Calle 45 #28-15, Ciudad",
-    imagenUrl: "https://randomuser.me/api/portraits/men/32.jpg"
+    numeroIdentificacion: "43876543",
+    telefono: "304-567-8901",
+    direccion: "Calle 30 #20-15, Bogotá",
+    imagenUrl: carlosRodriguezImg
   },
   {
     id: "3",
-    nombre: "Ana",
+    nombre: "Ana Isabel",
     apellido: "Martínez",
-    fechaNacimiento: "1990-12-03",
+    fechaNacimiento: "1945-11-08",
     genero: "Femenino",
-    numeroIdentificacion: "23456789",
-    telefono: "555-987-6543",
-    direccion: "Carrera 78 #15-42, Ciudad",
-    imagenUrl: "https://randomuser.me/api/portraits/women/22.jpg"
+    numeroIdentificacion: "65432109",
+    telefono: "312-345-6789",
+    direccion: "Avenida 68 #15-30, Cali",
+    imagenUrl: anaMartinezImg
   },
   {
     id: "4",
-    nombre: "Juan",
-    apellido: "Pérez",
-    fechaNacimiento: "1965-03-18",
+    nombre: "Roberto",
+    apellido: "López Silva",
+    fechaNacimiento: "1941-01-30",
     genero: "Masculino",
-    numeroIdentificacion: "34567890",
-    telefono: "555-234-5678",
-    direccion: "Av. Central 456, Ciudad",
-    imagenUrl: "https://randomuser.me/api/portraits/men/45.jpg"
+    numeroIdentificacion: "78901234",
+    telefono: "315-678-9012",
+    direccion: "Transversal 45 #78-90, Barranquilla",
+    imagenUrl: robertoLopezImg
   },
   {
     id: "5",
