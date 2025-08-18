@@ -1,48 +1,54 @@
+// Importar imágenes de adultos mayores
+import mariaGonzalezImg from "@/assets/patients/maria-gonzalez.jpg";
+import carlosRodriguezImg from "@/assets/patients/carlos-rodriguez.jpg";
+import anaMartinezImg from "@/assets/patients/ana-martinez.jpg";
+import robertoLopezImg from "@/assets/patients/roberto-lopez.jpg";
+
 // Datos de demostración realistas para presentaciones de ventas
 export const pacientesDemoData = [
   {
     id: "550e8400-e29b-41d4-a716-446655440001",
-    nombre: "María Elena",
-    apellido: "García Rodríguez",
-    fechaNacimiento: "1938-03-15",
+    nombre: "María del Carmen",
+    apellido: "González",
+    fechaNacimiento: "1948-03-15",
     genero: "femenino",
     numeroIdentificacion: "12345678",
     telefono: "+57 300 123 4567",
     direccion: "Carrera 15 #45-67, Bogotá",
-    imagenUrl: "https://randomuser.me/api/portraits/women/65.jpg"
+    imagenUrl: mariaGonzalezImg
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440002", 
-    nombre: "José Antonio",
-    apellido: "Martínez López",
-    fechaNacimiento: "1942-07-22",
+    nombre: "Carlos Alberto",
+    apellido: "Rodríguez",
+    fechaNacimiento: "1943-07-22",
     genero: "masculino",
     numeroIdentificacion: "87654321",
     telefono: "+57 310 987 6543",
     direccion: "Calle 32 #18-45, Medellín",
-    imagenUrl: "https://randomuser.me/api/portraits/men/32.jpg"
+    imagenUrl: carlosRodriguezImg
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440003",
-    nombre: "Ana Lucía",
-    apellido: "López Hernández",
+    nombre: "Ana Isabel",
+    apellido: "Martínez",
     fechaNacimiento: "1945-11-08",
     genero: "femenino", 
     numeroIdentificacion: "11223344",
     telefono: "+57 320 555 7890",
     direccion: "Avenida 68 #25-34, Cali",
-    imagenUrl: "https://randomuser.me/api/portraits/women/22.jpg"
+    imagenUrl: anaMartinezImg
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440004",
-    nombre: "Roberto Carlos",
-    apellido: "Pérez Gómez",
-    fechaNacimiento: "1940-05-18",
+    nombre: "Roberto",
+    apellido: "López Silva",
+    fechaNacimiento: "1941-01-30",
     genero: "masculino",
     numeroIdentificacion: "34567890",
     telefono: "+57 315 234 5678",
     direccion: "Transversal 45 #67-89, Barranquilla",
-    imagenUrl: "https://randomuser.me/api/portraits/men/45.jpg"
+    imagenUrl: robertoLopezImg
   },
   {
     id: "550e8400-e29b-41d4-a716-446655440005",

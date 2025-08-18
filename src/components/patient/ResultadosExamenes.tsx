@@ -61,6 +61,7 @@ export const ResultadosExamenes = ({ pacienteId }: ResultadosExamenesProps) => {
   const [archivo, setArchivo] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
 
+  // Solo médicos y administradores pueden subir archivos, no enfermeras
   const esDoctor = user?.role === "medico" || user?.role === "admin";
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
