@@ -14,7 +14,7 @@ const mockUsers = [
   { id: "2", name: "Ana López", category: "enfermera" },
   { id: "3", name: "Carlos Ruiz", category: "enfermero" },
   { id: "4", name: "María Torres", category: "enfermera" },
-  { id: "5", name: "Admin Sistema", category: "admin" }
+  { id: "5", name: "Administración", category: "admin" }
 ];
 
 const mockCategories = ["medicos", "enfermeros", "enfermeras", "admin", "todos"];
@@ -31,7 +31,7 @@ const anunciosMock = [
     archivo: {
       nombre: "Protocolo_Medicamentos_v2.pdf",
       tamaño: "2.3 MB",
-      url: "#" // En producción sería una URL real
+      url: "/documents/protocolo_medicamentos_v2.pdf"
     },
     comentarios: [
       {

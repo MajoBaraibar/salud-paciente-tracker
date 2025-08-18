@@ -447,9 +447,8 @@ const Mensajes = () => {
       conv.id === conversacionId ? { ...conv, noLeidos: 0 } : conv
     ));
 
-    // Mark notifications as read in the notification store
-    // This is the crucial part that was missing before
-    markAsRead('1'); // Marking the message notification as read
+    // Marcar notificaciones como leídas
+    markAsRead('message'); // Marcar notificaciones de tipo message como leídas
   };
 
   // Función para seleccionar una conversación

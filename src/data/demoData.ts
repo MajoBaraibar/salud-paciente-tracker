@@ -3,7 +3,7 @@ import mariaGonzalezImg from "@/assets/patients/maria-gonzalez.jpg";
 import carlosRodriguezImg from "@/assets/patients/carlos-rodriguez.jpg";
 import anaMartinezImg from "@/assets/patients/ana-martinez.jpg";
 import robertoLopezImg from "@/assets/patients/roberto-lopez.jpg";
-import luciaTorresImg from "@/assets/patients/lucia-torres.jpg";
+import luciaTorresImg from "@/assets/patients/lucia-torres-elderly.jpg";
 
 // Datos de demostración realistas para presentaciones de ventas
 export const pacientesDemoData = [

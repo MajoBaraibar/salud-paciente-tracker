@@ -136,7 +136,8 @@ export const useNotificationStore = create<NotificationState>()(
       markAsRead: (id) => {
         set((state) => {
           const updatedNotifications = state.notifications.map(notification => 
-            notification.id === id || (notification.type === 'message' && id === '1') ? 
+            notification.id === id || 
+            (notification.type === 'message' && id === 'message') ? 
               { ...notification, read: true } : notification
           );
           

@@ -67,7 +67,8 @@ export default function Calendario() {
     // Primero filtrar por fecha
     let cumpleFecha = false;
     if (vista === "dia" && date) {
-      cumpleFecha = evento.fecha.toDateString() === date.toDateString();
+      const eventoFecha = new Date(evento.fecha);
+      cumpleFecha = eventoFecha.toDateString() === date.toDateString();
     } else if (vista === "semana" && date) {
       // Para la vista semanal, mostrar los eventos de la semana actual
       const inicioSemana = new Date(date);
