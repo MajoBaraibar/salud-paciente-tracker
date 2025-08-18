@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { MoreHorizontal, Edit, Trash2, CheckCircle, XCircle, Clock, User, Stethoscope, Phone } from "lucide-react";
+import { MoreHorizontal, Edit, Trash2, CheckCircle, XCircle, Clock, User, Stethoscope, Phone, 
+         Users, BookOpen, Settings, UserCheck, FileText, Calendar as CalendarIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,7 +33,9 @@ interface Cita {
   fechaHora: string;
   duracionMinutos: number;
   estado: "programada" | "confirmada" | "en_curso" | "completada" | "cancelada" | "no_asistio";
-  tipoCita: string;
+  tipoCita: "consulta" | "control" | "procedimiento" | "emergencia" | "interconsulta" | "junta_medica" | 
+           "seguimiento" | "reunion_staff" | "capacitacion" | "supervision" | "procedimiento_enfermeria" |
+           "reunion_familia" | "auditoria" | "capacitacion_staff" | "evaluacion";
   motivoConsulta: string;
   precio?: number;
 }
@@ -42,6 +45,72 @@ export function ListaCitas({ filtros }: ListaCitasProps) {
   const [citaAEliminar, setCitaAEliminar] = useState<string | null>(null);
   const [paginaActual, setPaginaActual] = useState(1);
   const citasPorPagina = 10;
+
+  // Función para obtener el icono según el tipo de cita
+  const getIconForTipoCita = (tipoCita: string) => {
+    const iconMap: Record<string, any> = {
+      consulta: User,
+      control: CalendarIcon,
+      procedimiento: Settings,
+      emergencia: Stethoscope,
+      interconsulta: Users,
+      junta_medica: Users,
+      seguimiento: UserCheck,
+      reunion_staff: Users,
+      capacitacion: BookOpen,
+      supervision: UserCheck,
+      procedimiento_enfermeria: Settings,
+      reunion_familia: Users,
+      auditoria: FileText,
+      capacitacion_staff: BookOpen,
+      evaluacion: UserCheck,
+    };
+    return iconMap[tipoCita] || CalendarIcon;
+  };
+
+  // Función para obtener color según el tipo de cita
+  const getColorForTipoCita = (tipoCita: string) => {
+    const colorMap: Record<string, string> = {
+      consulta: "bg-blue-50 text-blue-700 border-blue-200",
+      control: "bg-green-50 text-green-700 border-green-200",
+      procedimiento: "bg-purple-50 text-purple-700 border-purple-200",
+      emergencia: "bg-red-50 text-red-700 border-red-200",
+      interconsulta: "bg-cyan-50 text-cyan-700 border-cyan-200",
+      junta_medica: "bg-indigo-50 text-indigo-700 border-indigo-200",
+      seguimiento: "bg-teal-50 text-teal-700 border-teal-200",
+      reunion_staff: "bg-amber-50 text-amber-700 border-amber-200",
+      capacitacion: "bg-orange-50 text-orange-700 border-orange-200",
+      supervision: "bg-lime-50 text-lime-700 border-lime-200",
+      procedimiento_enfermeria: "bg-pink-50 text-pink-700 border-pink-200",
+      reunion_familia: "bg-violet-50 text-violet-700 border-violet-200",
+      auditoria: "bg-gray-50 text-gray-700 border-gray-200",
+      capacitacion_staff: "bg-yellow-50 text-yellow-700 border-yellow-200",
+      evaluacion: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    };
+    return colorMap[tipoCita] || "bg-gray-50 text-gray-700 border-gray-200";
+  };
+
+  // Función para obtener texto legible del tipo de cita
+  const getTextForTipoCita = (tipoCita: string) => {
+    const textMap: Record<string, string> = {
+      consulta: "Consulta",
+      control: "Control",
+      procedimiento: "Procedimiento",
+      emergencia: "Emergencia",
+      interconsulta: "Interconsulta",
+      junta_medica: "Junta Médica",
+      seguimiento: "Seguimiento",
+      reunion_staff: "Reunión Staff",
+      capacitacion: "Capacitación",
+      supervision: "Supervisión",
+      procedimiento_enfermeria: "Proc. Enfermería",
+      reunion_familia: "Reunión Familia",
+      auditoria: "Auditoría",
+      capacitacion_staff: "Capacitación Staff",
+      evaluacion: "Evaluación",
+    };
+    return textMap[tipoCita] || tipoCita;
+  };
 
   // Datos simulados de citas
   const citasSimuladas: Cita[] = [
@@ -73,7 +142,7 @@ export function ListaCitas({ filtros }: ListaCitasProps) {
       fechaHora: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
       duracionMinutos: 45,
       estado: "programada",
-      tipoCita: "consulta",
+      tipoCita: "interconsulta",
       motivoConsulta: "Dolor en el pecho",
       precio: 75000
     },
@@ -89,7 +158,7 @@ export function ListaCitas({ filtros }: ListaCitasProps) {
       fechaHora: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
       duracionMinutos: 30,
       estado: "completada",
-      tipoCita: "control",
+      tipoCita: "junta_medica",
       motivoConsulta: "Vacunación",
       precio: 45000
     },
@@ -105,7 +174,7 @@ export function ListaCitas({ filtros }: ListaCitasProps) {
       fechaHora: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
       duracionMinutos: 30,
       estado: "no_asistio",
-      tipoCita: "consulta",
+      tipoCita: "reunion_familia",
       motivoConsulta: "Control ginecológico",
       precio: 60000
     }
@@ -260,8 +329,14 @@ export function ListaCitas({ filtros }: ListaCitasProps) {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline">
-                            {cita.tipoCita.charAt(0).toUpperCase() + cita.tipoCita.slice(1)}
+                          <Badge variant="outline" className={getColorForTipoCita(cita.tipoCita)}>
+                            <div className="flex items-center gap-1">
+                              {(() => {
+                                const IconComponent = getIconForTipoCita(cita.tipoCita);
+                                return <IconComponent className="w-3 h-3" />;
+                              })()}
+                              {getTextForTipoCita(cita.tipoCita)}
+                            </div>
                           </Badge>
                         </TableCell>
                         <TableCell>

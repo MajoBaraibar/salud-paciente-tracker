@@ -57,7 +57,7 @@ export function CalendarioCitas({ filtros }: CalendarioCitasProps) {
       fechaHora: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
       duracionMinutos: 30,
       estado: "programada",
-      tipoCita: "control",
+      tipoCita: "interconsulta",
       motivoConsulta: "Vacunación"
     }
   ];

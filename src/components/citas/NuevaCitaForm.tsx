@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { X, Calendar, Clock, User, FileText } from "lucide-react";
+import { X, Calendar, Clock, User, FileText, Users, BookOpen, Settings, UserCheck } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -18,7 +19,12 @@ const formSchema = z.object({
   fecha: z.string().min(1, "Debe seleccionar una fecha"),
   hora: z.string().min(1, "Debe seleccionar una hora"),
   duracionMinutos: z.number().min(15).max(180),
-  tipoCita: z.enum(["consulta", "control", "procedimiento", "emergencia"]),
+  tipoCita: z.enum([
+    "consulta", "control", "procedimiento", "emergencia",
+    "interconsulta", "junta_medica", "seguimiento", 
+    "reunion_staff", "capacitacion", "supervision", "procedimiento_enfermeria",
+    "reunion_familia", "auditoria", "capacitacion_staff", "evaluacion"
+  ]),
   motivoConsulta: z.string().min(1, "Debe especificar el motivo de la consulta"),
   notasPaciente: z.string().optional(),
   precio: z.number().min(0).optional(),
@@ -33,6 +39,44 @@ interface NuevaCitaFormProps {
 export function NuevaCitaForm({ onClose, onSuccess, citaEditar }: NuevaCitaFormProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+  
+  // Obtener tipos de cita según el rol del usuario
+  const getTiposCitaByRole = (role: string) => {
+    switch (role) {
+      case 'medico':
+        return [
+          { value: 'consulta', label: 'Consulta médica', icon: User },
+          { value: 'interconsulta', label: 'Interconsulta', icon: Users },
+          { value: 'junta_medica', label: 'Junta médica', icon: Users },
+          { value: 'seguimiento', label: 'Seguimiento', icon: UserCheck },
+          { value: 'procedimiento', label: 'Procedimiento', icon: Settings },
+          { value: 'control', label: 'Control', icon: Calendar },
+        ];
+      case 'enfermera':
+        return [
+          { value: 'reunion_staff', label: 'Reunión de staff', icon: Users },
+          { value: 'capacitacion', label: 'Capacitación', icon: BookOpen },
+          { value: 'supervision', label: 'Supervisión', icon: UserCheck },
+          { value: 'procedimiento_enfermeria', label: 'Procedimiento enfermería', icon: Settings },
+          { value: 'control', label: 'Control', icon: Calendar },
+        ];
+      case 'admin':
+        return [
+          { value: 'reunion_familia', label: 'Reunión con familia', icon: Users },
+          { value: 'auditoria', label: 'Auditoría', icon: FileText },
+          { value: 'capacitacion_staff', label: 'Capacitación staff', icon: BookOpen },
+          { value: 'evaluacion', label: 'Evaluación', icon: UserCheck },
+        ];
+      default:
+        return [
+          { value: 'consulta', label: 'Consulta', icon: User },
+          { value: 'control', label: 'Control', icon: Calendar },
+        ];
+    }
+  };
+  
+  const tiposCita = getTiposCitaByRole(user?.role || 'medico');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -212,10 +256,17 @@ export function NuevaCitaForm({ onClose, onSuccess, citaEditar }: NuevaCitaFormP
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="consulta">Consulta</SelectItem>
-                        <SelectItem value="control">Control</SelectItem>
-                        <SelectItem value="procedimiento">Procedimiento</SelectItem>
-                        <SelectItem value="emergencia">Emergencia</SelectItem>
+                        {tiposCita.map((tipo) => {
+                          const IconComponent = tipo.icon;
+                          return (
+                            <SelectItem key={tipo.value} value={tipo.value}>
+                              <div className="flex items-center gap-2">
+                                <IconComponent className="w-4 h-4" />
+                                {tipo.label}
+                              </div>
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                     <FormMessage />

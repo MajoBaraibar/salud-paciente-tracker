@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { NuevaCitaForm } from "./NuevaCitaForm";
 import { CalendarioCitas } from "./CalendarioCitas";
 import { ListaCitas } from "./ListaCitas";
+import { CitasReales } from "./CitasReales";
 
 export function CitasMedicas() {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
@@ -118,7 +119,7 @@ export function CitasMedicas() {
         </TabsContent>
 
         <TabsContent value="lista" className="space-y-4">
-          <ListaCitas filtros={{ estado: filtroEstado, busqueda }} />
+          <CitasReales filtros={{ estado: filtroEstado, busqueda }} />
         </TabsContent>
 
         <TabsContent value="horarios" className="space-y-4">
