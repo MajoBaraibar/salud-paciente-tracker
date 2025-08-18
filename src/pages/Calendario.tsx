@@ -59,8 +59,37 @@ export default function Calendario() {
     markAllAsRead('calendar');
   }, [markAllAsRead]);
 
-  // Obtener días con eventos para marcar en el calendario
-  const diasConEventos = eventos.map(evento => evento.fecha);
+  // Obtener días con eventos para marcar en el calendario - solo eventos visibles para el usuario
+  const eventosVisibles = eventos.filter(evento => {
+    // Aplicar los mismos filtros por rol que se usan para eventosFiltrados
+    if (userRole === "admin") {
+      const tiposAdministrativos = ["reunion", "otro", "visita"];
+      return tiposAdministrativos.includes(evento.tipo);
+    }
+    
+    if (userRole === "medico") {
+      return evento.tipo === "consulta" && 
+             !evento.descripcion?.toLowerCase().includes("presupuestal") &&
+             !evento.descripcion?.toLowerCase().includes("proveedor");
+    }
+    
+    if (userRole === "enfermera") {
+      const tiposEnfermera = ["consulta", "reunion"];
+      return tiposEnfermera.includes(evento.tipo) && 
+             !evento.descripcion?.toLowerCase().includes("presupuestal") &&
+             !evento.descripcion?.toLowerCase().includes("proveedor");
+    }
+    
+    if (userRole === "familiar") {
+      return evento.pacienteId === "550e8400-e29b-41d4-a716-446655440004" || 
+             evento.pacienteNombre?.includes("Roberto") ||
+             evento.tipo === "visita";
+    }
+    
+    return true;
+  });
+  
+  const diasConEventos = eventosVisibles.map(evento => new Date(evento.fecha));
   
   // Filtrar eventos para el día seleccionado o semana
   const eventosFiltrados = eventos.filter(evento => {
