@@ -60,7 +60,7 @@ const DetallesPaciente = () => {
   const { paciente: pacienteOriginal, loading: pacienteLoading, error: pacienteError } = usePacienteById(id || '');
   const { entradas: historial, loading: historialLoading, error: historialError } = useHistorialPaciente(id || '');
   
-  const [activeTab, setActiveTab] = useState("perfil");
+  const [activeTab, setActiveTab] = useState("historial");
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -330,12 +330,8 @@ const DetallesPaciente = () => {
             )}
             
             {/* Pestañas */}
-            <Tabs defaultValue="perfil" value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid grid-cols-5 w-full mb-6">
-                <TabsTrigger value="perfil" className="flex gap-2 items-center">
-                  <User size={16} />
-                  <span>Información personal</span>
-                </TabsTrigger>
+            <Tabs defaultValue="historial" value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className={`grid w-full mb-6 ${user?.role === "admin" ? "grid-cols-4" : "grid-cols-3"}`}>
                 <TabsTrigger value="historial" className="flex gap-2 items-center">
                   <FileText size={16} />
                   <span>Historial médico</span>
@@ -348,68 +344,13 @@ const DetallesPaciente = () => {
                   <FilePen size={16} />
                   <span>Notas de enfermería</span>
                 </TabsTrigger>
-                <TabsTrigger value="contacto" className="flex gap-2 items-center">
-                  <Phone size={16} />
-                  <span>Contacto de emergencia</span>
-                </TabsTrigger>
+                {user?.role === "admin" && (
+                  <TabsTrigger value="contacto" className="flex gap-2 items-center">
+                    <Phone size={16} />
+                    <span>Contacto de emergencia</span>
+                  </TabsTrigger>
+                )}
               </TabsList>
-              
-              {/* Contenido de Información Personal */}
-              <TabsContent value="perfil">
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="flex items-center">
-                      <Clipboard className="mr-2 h-5 w-5 text-health-600" />
-                      Información del paciente
-                    </CardTitle>
-                    <CardDescription>Datos personales y de contacto</CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                      <div className="p-4 bg-muted rounded-md">
-                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Nombre completo</h3>
-                        <p className="font-medium">{pacienteEditado?.nombre} {pacienteEditado?.apellido}</p>
-                      </div>
-                      <div className="p-4 bg-muted rounded-md">
-                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Fecha de nacimiento</h3>
-                        <p className="font-medium">{pacienteEditado?.fechaNacimiento ? new Date(pacienteEditado.fechaNacimiento).toLocaleDateString('es-ES') : ""}</p>
-                      </div>
-                      <div className="p-4 bg-muted rounded-md">
-                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Edad</h3>
-                        <p className="font-medium">{calcularEdad(pacienteEditado?.fechaNacimiento || "")} años</p>
-                      </div>
-                      <div className="p-4 bg-muted rounded-md">
-                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Género</h3>
-                        <p className="font-medium">{pacienteEditado?.genero}</p>
-                      </div>
-                      <div className="p-4 bg-muted rounded-md">
-                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Teléfono</h3>
-                        <p className="font-medium">{pacienteEditado?.telefono || "No registrado"}</p>
-                      </div>
-                      <div className="p-4 bg-muted rounded-md">
-                        <h3 className="text-sm font-medium text-muted-foreground mb-1">Dirección</h3>
-                        <p className="font-medium">{pacienteEditado?.direccion || "No registrada"}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="mt-6">
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button variant="outline" className="w-full">
-                              <FileText className="mr-2 h-4 w-4" />
-                              Generar informe completo
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Genera un PDF con todos los datos del paciente</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
               
               {/* Contenido de Historial Médico */}
               <TabsContent value="historial">
@@ -537,15 +478,17 @@ const DetallesPaciente = () => {
                 )}
               </TabsContent>
               
-              {/* Contenido del Contacto de Emergencia */}
-              <TabsContent value="contacto">
-                {pacienteOriginal && (
-                  <EmergencyContact 
-                    patientId={pacienteOriginal.id} 
-                    initialContact={mockEmergencyContact} 
-                  />
-                )}
-              </TabsContent>
+              {/* Contenido del Contacto de Emergencia - Solo para administradores */}
+              {user?.role === "admin" && (
+                <TabsContent value="contacto">
+                  {pacienteOriginal && (
+                    <EmergencyContact 
+                      patientId={pacienteOriginal.id} 
+                      initialContact={mockEmergencyContact} 
+                    />
+                  )}
+                </TabsContent>
+              )}
             </Tabs>
           </div>
         </div>
