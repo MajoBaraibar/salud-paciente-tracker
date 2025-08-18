@@ -1,16 +1,17 @@
 
 import { Paciente, EntradaHistorial } from "../types";
-import mariaGonzalezImg from "@/assets/patients/maria-gonzalez.jpg";
-import carlosRodriguezImg from "@/assets/patients/carlos-rodriguez.jpg";
-import anaMartinezImg from "@/assets/patients/ana-martinez.jpg";
-import robertoLopezImg from "@/assets/patients/roberto-lopez.jpg";
+import mariaGonzalezImg from "@/assets/patients/maria-gonzalez-elderly.jpg";
+import carlosRodriguezImg from "@/assets/patients/carlos-rodriguez-elderly.jpg";
+import anaMartinezImg from "@/assets/patients/ana-martinez-elderly.jpg";
+import robertoLopezImg from "@/assets/patients/roberto-lopez-elderly.jpg";
+import luciaTorresImg from "@/assets/patients/lucia-torres-final.jpg";
 
 export const pacientesMock: Paciente[] = [
   {
-    id: "1",
-    nombre: "María del Carmen",
-    apellido: "González",
-    fechaNacimiento: "1948-03-15",
+    id: "550e8400-e29b-41d4-a716-446655440002",
+    nombre: "María",
+    apellido: "González Ruiz",
+    fechaNacimiento: "1941-03-15",
     genero: "Femenino",
     numeroIdentificacion: "52123456",
     telefono: "301-234-5678",
@@ -18,10 +19,10 @@ export const pacientesMock: Paciente[] = [
     imagenUrl: mariaGonzalezImg
   },
   {
-    id: "2",
-    nombre: "Carlos Alberto",
-    apellido: "Rodríguez",
-    fechaNacimiento: "1943-07-22",
+    id: "550e8400-e29b-41d4-a716-446655440004",
+    nombre: "Carlos",
+    apellido: "Rodríguez López",
+    fechaNacimiento: "1945-07-22",
     genero: "Masculino",
     numeroIdentificacion: "43876543",
     telefono: "304-567-8901",
@@ -29,10 +30,10 @@ export const pacientesMock: Paciente[] = [
     imagenUrl: carlosRodriguezImg
   },
   {
-    id: "3",
-    nombre: "Ana Isabel",
-    apellido: "Martínez",
-    fechaNacimiento: "1945-11-08",
+    id: "550e8400-e29b-41d4-a716-446655440006",
+    nombre: "Ana",
+    apellido: "Martínez Sánchez",
+    fechaNacimiento: "1938-11-08",
     genero: "Femenino",
     numeroIdentificacion: "65432109",
     telefono: "312-345-6789",
@@ -40,10 +41,10 @@ export const pacientesMock: Paciente[] = [
     imagenUrl: anaMartinezImg
   },
   {
-    id: "4",
+    id: "550e8400-e29b-41d4-a716-446655440003",
     nombre: "Roberto",
-    apellido: "López Silva",
-    fechaNacimiento: "1941-01-30",
+    apellido: "López Torres",
+    fechaNacimiento: "1944-01-30",
     genero: "Masculino",
     numeroIdentificacion: "78901234",
     telefono: "315-678-9012",
@@ -51,22 +52,22 @@ export const pacientesMock: Paciente[] = [
     imagenUrl: robertoLopezImg
   },
   {
-    id: "5",
-    nombre: "Laura",
-    apellido: "Díaz",
-    fechaNacimiento: "1995-07-30",
+    id: "550e8400-e29b-41d4-a716-446655440005",
+    nombre: "Lucía",
+    apellido: "Torres Vargas",
+    fechaNacimiento: "1944-09-12",
     genero: "Femenino",
-    numeroIdentificacion: "45678901",
-    telefono: "555-345-6789",
-    direccion: "Calle 12 #34-56, Ciudad",
-    imagenUrl: "https://randomuser.me/api/portraits/women/17.jpg"
+    numeroIdentificacion: "87654321",
+    telefono: "318-901-2345",
+    direccion: "Calle 25 #12-34, Cartagena",
+    imagenUrl: luciaTorresImg
   }
 ];
 
 export const historialMock: EntradaHistorial[] = [
   {
     id: "h1",
-    pacienteId: "1",
+    pacienteId: "550e8400-e29b-41d4-a716-446655440002",
     fecha: "2023-05-10",
     doctorNombre: "Dr. López",
     motivoConsulta: "Dolor de cabeza persistente",
@@ -77,7 +78,7 @@ export const historialMock: EntradaHistorial[] = [
   },
   {
     id: "h2",
-    pacienteId: "1",
+    pacienteId: "550e8400-e29b-41d4-a716-446655440002",
     fecha: "2023-06-15",
     doctorNombre: "Dra. Ramírez",
     motivoConsulta: "Seguimiento de migraña",
@@ -88,7 +89,7 @@ export const historialMock: EntradaHistorial[] = [
   },
   {
     id: "h3",
-    pacienteId: "2",
+    pacienteId: "550e8400-e29b-41d4-a716-446655440004",
     fecha: "2023-04-20",
     doctorNombre: "Dr. Fernández",
     motivoConsulta: "Dolor en rodilla derecha",
@@ -99,7 +100,7 @@ export const historialMock: EntradaHistorial[] = [
   },
   {
     id: "h4",
-    pacienteId: "3",
+    pacienteId: "550e8400-e29b-41d4-a716-446655440006",
     fecha: "2023-07-05",
     doctorNombre: "Dra. Gómez",
     motivoConsulta: "Revisión anual",
@@ -110,7 +111,7 @@ export const historialMock: EntradaHistorial[] = [
   },
   {
     id: "h5",
-    pacienteId: "4",
+    pacienteId: "550e8400-e29b-41d4-a716-446655440003",
     fecha: "2023-03-12",
     doctorNombre: "Dr. Sánchez",
     motivoConsulta: "Presión arterial elevada",
@@ -118,6 +119,17 @@ export const historialMock: EntradaHistorial[] = [
     tratamiento: "Enalapril 10mg diarios, dieta baja en sodio",
     notas: "Control en un mes, monitoreo diario de presión",
     tipo: "externo"
+  },
+  {
+    id: "h6",
+    pacienteId: "550e8400-e29b-41d4-a716-446655440005",
+    fecha: "2023-08-18",
+    doctorNombre: "Dr. Martínez",
+    motivoConsulta: "Control rutinario geriátrico",
+    diagnostico: "Estado de salud estable",
+    tratamiento: "Continuar con vitaminas y ejercicios suaves",
+    notas: "Paciente muestra buen estado de ánimo y movilidad adecuada para su edad",
+    tipo: "interno"
   }
 ];
 
