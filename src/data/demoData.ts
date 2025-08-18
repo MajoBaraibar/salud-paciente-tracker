@@ -1,9 +1,9 @@
 // Importar imágenes de adultos mayores
-import mariaGonzalezImg from "@/assets/patients/maria-gonzalez.jpg";
-import carlosRodriguezImg from "@/assets/patients/carlos-rodriguez.jpg";
-import anaMartinezImg from "@/assets/patients/ana-martinez.jpg";
-import robertoLopezImg from "@/assets/patients/roberto-lopez.jpg";
-import luciaTorresImg from "@/assets/patients/lucia-torres-elderly.jpg";
+import mariaGonzalezImg from "@/assets/patients/maria-gonzalez-elderly.jpg";
+import carlosRodriguezImg from "@/assets/patients/carlos-rodriguez-elderly.jpg";
+import anaMartinezImg from "@/assets/patients/ana-martinez-elderly.jpg";
+import robertoLopezImg from "@/assets/patients/roberto-lopez-elderly.jpg";
+import luciaTorresImg from "@/assets/patients/lucia-torres-final.jpg";
 
 // Datos de demostración realistas para presentaciones de ventas
 export const pacientesDemoData = [
