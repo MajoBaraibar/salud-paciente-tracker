@@ -156,7 +156,7 @@ export const AppSidebar = () => {
             </SidebarMenuItem>
           )}
           
-          {(userRole === "medico" || userRole === "admin") && (
+          {userRole === "admin" && (
             <>
               <SidebarMenuItem>
                 <SidebarMenuButton 

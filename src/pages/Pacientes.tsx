@@ -61,13 +61,16 @@ const Pacientes = () => {
           <div className="max-w-5xl mx-auto">
             <div className="flex justify-between items-center mb-8">
               <h1 className="text-3xl font-bold text-health-700">Pacientes</h1>
-              <Button 
-                onClick={() => navigate(isDemoMode ? "/demo/pacientes/nuevo" : "/pacientes/nuevo")} 
-                className="bg-health-600 hover:bg-health-700"
-              >
-                <Plus className="mr-2 h-4 w-4" />
-                Nuevo paciente
-              </Button>
+              {/* Solo los administradores pueden crear nuevos pacientes */}
+              {user?.role === "admin" && (
+                <Button 
+                  onClick={() => navigate(isDemoMode ? "/demo/pacientes/nuevo" : "/pacientes/nuevo")} 
+                  className="bg-health-600 hover:bg-health-700"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  Nuevo paciente
+                </Button>
+              )}
             </div>
             
             <div className="bg-white p-4 rounded-lg shadow-sm border mb-6">
