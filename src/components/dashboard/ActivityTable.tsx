@@ -29,7 +29,7 @@ export const ActivityTable = () => {
               Actualización historial
             </Badge>
           </TableCell>
-          <TableCell>María González</TableCell>
+          <TableCell>María González Ruiz</TableCell>
           <TableCell className="text-muted-foreground text-sm">
             Hace 25 minutos
           </TableCell>
@@ -48,7 +48,7 @@ export const ActivityTable = () => {
               Aplicación medicación
             </Badge>
           </TableCell>
-          <TableCell>Carlos Sánchez</TableCell>
+          <TableCell>Carlos Rodríguez López</TableCell>
           <TableCell className="text-muted-foreground text-sm">
             Hace 40 minutos
           </TableCell>
@@ -67,7 +67,7 @@ export const ActivityTable = () => {
               Nuevo paciente
             </Badge>
           </TableCell>
-          <TableCell>Laura Pérez</TableCell>
+          <TableCell>Ana Martínez Sánchez</TableCell>
           <TableCell className="text-muted-foreground text-sm">
             Hace 1 hora
           </TableCell>
