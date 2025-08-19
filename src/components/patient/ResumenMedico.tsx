@@ -104,7 +104,7 @@ export const ResumenMedico: React.FC<ResumenMedicoProps> = ({ pacienteId }) => {
   return (
     <div className="mb-6">
       {/* Header con botón de edición */}
-      {currentUser.role === "medico" && (
+      {(currentUser.role === "medico" || currentUser.role === "admin") && (
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Resumen Médico</h2>
           {!isEditing ? (

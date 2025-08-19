@@ -359,7 +359,7 @@ const DetallesPaciente = () => {
                     <FileText className="mr-2 h-5 w-5 text-health-600" />
                     Historial Médico
                   </h2>
-                  {user?.role === "medico" && (
+                  {(user?.role === "medico" || user?.role === "admin") && (
                     <Button 
                       onClick={() => setMostrarFormulario(!mostrarFormulario)} 
                       className="bg-health-600 hover:bg-health-700"
@@ -393,7 +393,7 @@ const DetallesPaciente = () => {
                     <p className="text-muted-foreground mb-4">
                       No hay entradas en el historial médico de este paciente
                     </p>
-                    {user?.role === "medico" && (
+                    {(user?.role === "medico" || user?.role === "admin") && (
                       <Button 
                         onClick={() => setMostrarFormulario(true)}
                         variant="outline"
