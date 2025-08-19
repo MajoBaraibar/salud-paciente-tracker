@@ -82,7 +82,7 @@ export default function Calendario() {
     
     if (userRole === "familiar") {
       return evento.pacienteId === "550e8400-e29b-41d4-a716-446655440004" || 
-             evento.pacienteNombre?.includes("Roberto") ||
+             evento.pacienteNombre?.includes("Roberto López Silva") ||
              evento.tipo === "visita";
     }
     
@@ -133,9 +133,9 @@ export default function Calendario() {
     }
     
     if (userRole === "familiar") {
-      // Los familiares solo ven eventos de su paciente asignado (Roberto Pérez)
+      // Los familiares solo ven eventos de su paciente asignado (Roberto López Silva)
       const deberaVer = evento.pacienteId === "550e8400-e29b-41d4-a716-446655440004" || 
-                       evento.pacienteNombre?.includes("Roberto") ||
+                       evento.pacienteNombre?.includes("Roberto López Silva") ||
                        evento.tipo === "visita";
       
       console.log("Evento familiar filtrado:", {

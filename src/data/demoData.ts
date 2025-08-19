@@ -336,49 +336,49 @@ export const categoriasDemoData = [
 export const eventosDemoData = [
   {
     id: "1",
-    titulo: "Consulta María González",
+    titulo: "Consulta María del Carmen González",
     fecha: new Date(),
     horaInicio: "10:00",
     horaFin: "10:30",
     tipo: "consulta" as const,
     pacienteId: "550e8400-e29b-41d4-a716-446655440001",
-    pacienteNombre: "María Elena García Rodríguez",
+    pacienteNombre: "María del Carmen González",
     descripcion: "Control mensual de diabetes",
     participantes: ["Dr. Martínez"]
   },
   {
     id: "2",
-    titulo: "Consulta José Martínez",
+    titulo: "Consulta Carlos Alberto Rodríguez",
     fecha: new Date(),
     horaInicio: "11:00",
     horaFin: "11:30",
     tipo: "consulta" as const,
     pacienteId: "550e8400-e29b-41d4-a716-446655440002",
-    pacienteNombre: "José Antonio Martínez López",
+    pacienteNombre: "Carlos Alberto Rodríguez",
     descripcion: "Revisión de presión arterial",
     participantes: ["Dr. Martínez"]
   },
   {
     id: "3",
-    titulo: "Consulta Ana López",
+    titulo: "Consulta Ana Isabel Martínez",
     fecha: new Date(),
     horaInicio: "14:00",
     horaFin: "14:30",
     tipo: "consulta" as const,
     pacienteId: "550e8400-e29b-41d4-a716-446655440003",
-    pacienteNombre: "Ana Lucía López Hernández",
+    pacienteNombre: "Ana Isabel Martínez",
     descripcion: "Control post-operatorio",
     participantes: ["Dr. Martínez"]
   },
   {
     id: "4",
-    titulo: "Visita familiar - Roberto Pérez",
+    titulo: "Visita familiar - Roberto López Silva",
     fecha: new Date(new Date().getTime() + 24 * 60 * 60 * 1000), // Mañana
     horaInicio: "08:00",
     horaFin: "09:00",
     tipo: "visita" as const,
     pacienteId: "550e8400-e29b-41d4-a716-446655440004",
-    pacienteNombre: "Roberto Carlos Pérez Gómez",
+    pacienteNombre: "Roberto López Silva",
     descripcion: "Visita de hija",
     participantes: ["Familiar: Ana Rodríguez"]
   },
