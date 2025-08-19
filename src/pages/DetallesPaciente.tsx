@@ -330,16 +330,28 @@ const DetallesPaciente = () => {
             )}
             
             {/* Pestañas */}
-            <Tabs defaultValue="historial" value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className={`grid w-full mb-6 ${user?.role === "admin" ? "grid-cols-4" : "grid-cols-3"}`}>
-                <TabsTrigger value="historial" className="flex gap-2 items-center">
-                  <FileText size={16} />
-                  <span>Historial médico</span>
-                </TabsTrigger>
-                <TabsTrigger value="examenes" className="flex gap-2 items-center">
-                  <Clipboard size={16} />
-                  <span>Exámenes</span>
-                </TabsTrigger>
+            <Tabs 
+              defaultValue={user?.role === "enfermera" ? "enfermeria" : "historial"} 
+              value={activeTab} 
+              onValueChange={setActiveTab} 
+              className="w-full"
+            >
+              <TabsList className={`grid w-full mb-6 ${
+                user?.role === "enfermera" ? "grid-cols-1" : 
+                user?.role === "admin" ? "grid-cols-4" : "grid-cols-3"
+              }`}>
+                {(user?.role === "medico" || user?.role === "admin") && (
+                  <TabsTrigger value="historial" className="flex gap-2 items-center">
+                    <FileText size={16} />
+                    <span>Historial médico</span>
+                  </TabsTrigger>
+                )}
+                {(user?.role === "medico" || user?.role === "admin") && (
+                  <TabsTrigger value="examenes" className="flex gap-2 items-center">
+                    <Clipboard size={16} />
+                    <span>Exámenes</span>
+                  </TabsTrigger>
+                )}
                 <TabsTrigger value="enfermeria" className="flex gap-2 items-center">
                   <FilePen size={16} />
                   <span>Notas de enfermería</span>
