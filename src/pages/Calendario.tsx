@@ -74,10 +74,27 @@ export default function Calendario() {
     }
     
     if (userRole === "enfermera") {
-      const tiposEnfermera = ["consulta", "reunion"];
-      return tiposEnfermera.includes(evento.tipo) && 
-             !evento.descripcion?.toLowerCase().includes("presupuestal") &&
-             !evento.descripcion?.toLowerCase().includes("proveedor");
+      // Las enfermeras solo ven consultas médicas y reuniones específicas de enfermería/cuidados
+      if (evento.tipo === "consulta") return true;
+      
+      if (evento.tipo === "reunion") {
+        // Solo reuniones relacionadas con atención médica y protocolos de enfermería
+        const descripcionLower = evento.descripcion?.toLowerCase() || "";
+        const tituloLower = evento.titulo?.toLowerCase() || "";
+        const esReunionEnfermeria = 
+          descripcionLower.includes("protocolo") ||
+          descripcionLower.includes("atención") ||
+          descripcionLower.includes("cuidado") ||
+          descripcionLower.includes("enfermeria") ||
+          descripcionLower.includes("enfermería") ||
+          tituloLower.includes("personal") ||
+          tituloLower.includes("enfermeria") ||
+          tituloLower.includes("enfermería");
+        
+        return esReunionEnfermeria;
+      }
+      
+      return false;
     }
     
     if (userRole === "familiar") {
@@ -125,11 +142,27 @@ export default function Calendario() {
     }
     
     if (userRole === "enfermera") {
-      // Las enfermeras ven consultas y algunas reuniones relacionadas con cuidados
-      const tiposEnfermera = ["consulta", "reunion"];
-      return tiposEnfermera.includes(evento.tipo) && 
-             !evento.descripcion?.toLowerCase().includes("presupuestal") &&
-             !evento.descripcion?.toLowerCase().includes("proveedor");
+      // Las enfermeras solo ven consultas médicas y reuniones específicas de enfermería/cuidados
+      if (evento.tipo === "consulta") return true;
+      
+      if (evento.tipo === "reunion") {
+        // Solo reuniones relacionadas con atención médica y protocolos de enfermería
+        const descripcionLower = evento.descripcion?.toLowerCase() || "";
+        const tituloLower = evento.titulo?.toLowerCase() || "";
+        const esReunionEnfermeria = 
+          descripcionLower.includes("protocolo") ||
+          descripcionLower.includes("atención") ||
+          descripcionLower.includes("cuidado") ||
+          descripcionLower.includes("enfermeria") ||
+          descripcionLower.includes("enfermería") ||
+          tituloLower.includes("personal") ||
+          tituloLower.includes("enfermeria") ||
+          tituloLower.includes("enfermería");
+        
+        return esReunionEnfermeria;
+      }
+      
+      return false;
     }
     
     if (userRole === "familiar") {
