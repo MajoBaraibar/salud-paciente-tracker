@@ -30,14 +30,14 @@ export const StatCard = ({
             <p className="text-sm text-muted-foreground font-medium uppercase tracking-wide">{title}</p>
             <p className="text-4xl font-bold gradient-text group-hover:scale-110 transition-transform duration-300">{value}</p>
           </div>
-          <div className={`p-3 ${iconColor} rounded-xl shadow-lg float-animation group-hover:pulse-glow transition-all duration-300`}>
+          <div className={`p-3 ${iconColor} rounded-xl shadow-lg transition-all duration-300`}>
             <Icon className="h-8 w-8" />
           </div>
         </div>
         
         {/* Decorative elements */}
-        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-2xl -z-10 group-hover:scale-150 transition-transform duration-500"></div>
-        <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-accent/10 to-primary/10 rounded-full blur-xl -z-10 group-hover:scale-125 transition-transform duration-700"></div>
+        <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-primary/5 to-accent/5 rounded-full blur-2xl -z-10"></div>
+        <div className="absolute bottom-0 left-0 w-16 h-16 bg-gradient-to-tr from-accent/5 to-primary/5 rounded-full blur-xl -z-10"></div>
       </CardContent>
     </Card>
   );
