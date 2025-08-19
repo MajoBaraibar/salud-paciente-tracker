@@ -6,15 +6,17 @@ import { NotificationCenter } from "@/components/NotificationCenter";
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <div className="flex min-h-svh w-full">
+      <div className="flex min-h-svh w-full bg-gradient-subtle">
         <AppSidebar />
         <SidebarInset>
-          <div className="bg-background min-h-svh flex flex-col">
+          <div className="bg-background/80 backdrop-blur-sm min-h-svh flex flex-col">
             <div className="flex justify-end p-4">
               <NotificationCenter />
             </div>
-            <div className="flex-1">
-              {children}
+            <div className="flex-1 px-4 pb-4">
+              <div className="premium-card p-6 h-full">
+                {children}
+              </div>
             </div>
           </div>
         </SidebarInset>

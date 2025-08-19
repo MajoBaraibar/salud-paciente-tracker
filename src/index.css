@@ -114,3 +114,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .premium-card {
+    @apply bg-card border border-border/50 shadow-elegant rounded-lg backdrop-blur-sm;
+  }
+  
+  .premium-button {
+    @apply bg-gradient-primary text-primary-foreground shadow-elegant hover:shadow-glow transition-all duration-300;
+  }
+  
+  .glass-effect {
+    @apply bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20;
+  }
+}
