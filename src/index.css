@@ -111,20 +111,26 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-medium;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
 @layer components {
   .premium-card {
-    @apply bg-card border border-border/50 shadow-elegant rounded-lg backdrop-blur-sm;
+    @apply bg-card/95 border border-border/50 backdrop-blur-sm rounded-xl;
+    box-shadow: var(--shadow-elegant);
+    background: hsl(var(--card) / 0.95);
   }
   
-  .premium-button {
-    @apply bg-gradient-primary text-primary-foreground shadow-elegant hover:shadow-glow transition-all duration-300;
+  .premium-gradient {
+    background: var(--gradient-primary);
   }
   
   .glass-effect {
-    @apply bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20;
+    @apply backdrop-blur-md border border-white/20;
+    background: hsl(var(--background) / 0.8);
   }
 }

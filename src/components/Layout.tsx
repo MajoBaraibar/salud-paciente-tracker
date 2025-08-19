@@ -6,14 +6,16 @@ import { NotificationCenter } from "@/components/NotificationCenter";
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
-      <div className="flex min-h-svh w-full bg-gradient-subtle">
+      <div className="flex min-h-svh w-full">
         <AppSidebar />
         <SidebarInset>
-          <div className="bg-background/80 backdrop-blur-sm min-h-svh flex flex-col">
-            <div className="flex justify-end p-4">
-              <NotificationCenter />
+          <div className="min-h-svh flex flex-col">
+            <div className="premium-gradient p-4">
+              <div className="flex justify-end">
+                <NotificationCenter />
+              </div>
             </div>
-            <div className="flex-1 px-4 pb-4">
+            <div className="flex-1 p-6" style={{ background: 'var(--gradient-subtle)' }}>
               <div className="premium-card p-6 h-full">
                 {children}
               </div>
